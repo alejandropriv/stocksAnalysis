@@ -1,9 +1,35 @@
-from alpha_vantage.timeseries import TimeSeries
-import matplotlib.pyplot as plt
+# ./execution
+# python3 Main.py
+from PlotData import PlotData
+from Stock import Stock
+class Main:
 
-apikey="86VFFOKUNB1M9YQ8"
-ts = TimeSeries(key='YOUR_API_KEY', output_format='pandas')
-data, meta_data = ts.get_intraday(symbol='MSFT',interval='1min', outputsize='full')
-data['4. close'].plot()
-plt.title('Intraday Times Series for the MSFT stock (1 min)')
-plt.show()
+    apikey = "86VFFOKUNB1M9YQ8"
+
+    def __init__(self):
+
+        self.owned_stocks_str = ["FB", "TSLA"]
+        self.owned_stocks = []
+
+
+        PlotData.set_interactive_mode(True)
+
+        i = len(self.owned_stocks_str)
+
+        for symbol_str in self.owned_stocks_str:
+
+            i -= 1
+            if i == 0:
+                PlotData.set_interactive_mode(False)
+
+            stock = Stock(self.apikey, symbol_str)
+            stock.retrieve_daily_data(True)
+            stock.print_metadata()
+            self.owned_stocks.append(stock)
+
+
+
+
+main = Main()
+
+

@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="102fc34c-951c-4952-af09-8ba2806d704c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/BalanceSheet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Scrapper.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ScrapperParameters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/execution" beforeDir="false" afterPath="$PROJECT_DIR$/execution" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalanceSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalanceSheet.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,8 +60,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/BalanceSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="48">
-              <caret line="18" column="91" selection-start-line="18" selection-start-column="91" selection-end-line="18" selection-end-column="91" />
+            <state relative-caret-position="289">
+              <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+              <folding>
+                <element signature="e#41#70#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -101,6 +99,12 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>total</find>
+      <find>other</find>
+      <find>other</find>
+      <find>net income</find>
+      <find>operating income or loss</find>
+      <find>operating income</find>
+      <find>204</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -126,7 +130,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="x" value="1" />
+    <option name="y" value="186" />
     <option name="width" value="1440" />
     <option name="height" value="877" />
   </component>
@@ -230,7 +235,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="877" extended-state="0" />
+    <frame x="1" y="186" width="1440" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24947146" />
@@ -351,8 +356,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/BalanceSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="18" column="91" selection-start-line="18" selection-start-column="91" selection-end-line="18" selection-end-column="91" />
+        <state relative-caret-position="289">
+          <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+          <folding>
+            <element signature="e#41#70#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -18,6 +18,7 @@ class BalanceSheet:
         self.src = src
         self.parsedHtml = BeautifulSoup(self.src.text, 'html.parser')
 
+        print(self.parsedHtml.prettify())
 
         #self.set_data("Total Revenue", "Weighted average shares outstanding", "span")
         #self.set_data("Income Before Tax", "Weighted average shares outstanding", "span")
@@ -31,19 +32,17 @@ class BalanceSheet:
     def set_data(self, search_string, stop_string, html_tag):
 
 
-        search_string = search_string.replace("/", "\\/")
+        search_string = search_string.replace("/", ".")
         print("Search Str: %s" % search_string)
-        # item = self.parsedHtml.find(re.compile(search_string))
-        
-        item = self.parsedHtml.find(re.compile("^Total Other Income.Expenses Net"))
-        print(item.next_sibling)
+
+        item = self.parsedHtml.find(text=re.compile(search_string))
 
 
         values = []
 
         while True:
             try:
-                print (item)
+                print("ITEM: "+item)
                 item = item.find_next(html_tag)
 
                 value = item.getText().replace(',', '')

@@ -5,7 +5,6 @@ which python3
 pip install alpha_vantage
 pip install matplotlib
 pip install pandas
-
-
-#pip install alpha_vantage pandas
-#pip install pandas
+pip install requests
+pip install bs4
+pip install lxml

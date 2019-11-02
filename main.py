@@ -2,11 +2,20 @@
 # python3 Main.py
 from PlotData import PlotData
 from Stock import Stock
+from Scrapper import Scrapper
 class Main:
 
     apikey = "86VFFOKUNB1M9YQ8"
 
     def __init__(self):
+
+
+        scrapper = Scrapper()
+
+        scrapper.load_webpage()
+        scrapper.extract_data()
+
+
 
         self.owned_stocks_str = ["FB", "TSLA"]
         self.owned_stocks = []
@@ -26,6 +35,7 @@ class Main:
             stock.retrieve_daily_data(True)
             stock.print_metadata()
             self.owned_stocks.append(stock)
+
 
 
 

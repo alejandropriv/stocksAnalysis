@@ -3,7 +3,7 @@
 
 import requests
 
-from BalanceSheet import BalanceSheet
+from IncomeStatement import IncomeStatement
 
 class Scrapper:
 
@@ -43,8 +43,8 @@ class Scrapper:
 
     def extract_data(self):
 
-        balanceSheet = BalanceSheet(self.src)
-        balanceSheet.get_data()
+        income_statement = IncomeStatement(self.src)
+        income_statement.get_data()
 
 
     def load_parameters(self):

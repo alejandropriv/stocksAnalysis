@@ -6,19 +6,15 @@ import re
 import sys
 
 
-class IncomeStatement:
-
-    TotalRevenue = dict()
+class CashFlow:
     parsedHtml = None
     items = dict()
     src = None
-
 
     def __init__(self, src):
 
         self.src = src
         self.parsedHtml = BeautifulSoup(self.src.text, 'html.parser')
-
 
         # In this run Basic and diluted are filled with Bogus data, a run after will fix values for this keys
         search_string = "Total Revenue"
@@ -26,9 +22,6 @@ class IncomeStatement:
         item = self.parsedHtml.find(text=search_string).parent
 
         self.set_data_model(item, "EBITDA", "span")
-
-
-
 
         #############################################
         #############################################
@@ -39,21 +32,14 @@ class IncomeStatement:
 
         self.set_data_model(item, "Interest Expense", "div")
 
-
-
-
         #############################################
         #############################################
-
 
         search_string = "Total Other Income.Expenses Net"
 
         item = self.parsedHtml.find(text=re.compile(search_string)).parent
 
         self.set_data_model(item, "Total Other Income", "div")
-
-
-
 
         #############################################
         #############################################
@@ -66,9 +52,6 @@ class IncomeStatement:
 
         self.items["Reported EPS-Basic"] = self.items.pop("Basic")
 
-
-
-
         #############################################
         #############################################
 
@@ -80,9 +63,6 @@ class IncomeStatement:
 
         self.items["Reported EPS-Diluted"] = self.items.pop("Diluted")
 
-
-
-
         #############################################
         #############################################
 
@@ -93,7 +73,6 @@ class IncomeStatement:
         self.set_data_model(item, "Basic", "div")
 
         self.items["Weighted average shares outstanding-Basic"] = self.items.pop("Basic")
-
 
         #############################################
         #############################################
@@ -108,84 +87,53 @@ class IncomeStatement:
 
         print(self.items)
 
-
-
-
-
-
-
     def set_data_model(self, search_item, stop_string, html_tag):
 
-            item = search_item
+        item = search_item
 
-            values = []
+        values = []
 
-            while True:
-                try:
+        while True:
+            try:
 
-                    item = item.find_next(html_tag)
+                item = item.find_next(html_tag)
 
-                    while True:
-                        value = item.getText().replace(',', '')
+                while True:
+                    value = item.getText().replace(',', '')
 
-                        if len(value) >= 1:
-                            if len(value) == 1 and value == "-":
-                                value = "-"
-                                break
-
-                            elif len(value) > 1:
-                                break
+                    if len(value) >= 1:
+                        if len(value) >= 0:
+                            break
 
                         else:
                             item = item.find_next(html_tag)
 
-                    if value != "-":
-                        m = re.search("(^[- ]?\\d+$|^\\s*$)", value)
-                        m2 = re.search("(^[- ]?\\d+\\.\\d+$)", value)
+                    else:
+                        item = item.find_next(html_tag)
 
-                        if m is not None or m2 is not None:
-                            values.append(float(value))
+                if value != "-":
+                    m = re.search("(^[- ]?\\d+$|^\\s*$)", value)
+                    m2 = re.search("(^[- ]?\\d+\\.\\d+$)", value)
 
-                        else:
-                            self.items[search_item.get_text()] = values
-
-                            if stop_string not in search_item.get_text():
-                                self.set_data_model(item, stop_string, html_tag)
-
-                            break
+                    if m is not None or m2 is not None:
+                        values.append(float(value))
 
                     else:
-                        values.append(value)
+                        self.items[search_item.get_text()] = values
+
+                        if stop_string not in search_item.get_text():
+                            self.set_data_model(item, stop_string, html_tag)
+
+                        break
+
+                else:
+                    values.append(value)
 
 
-                except Exception as e:
-                    exc_info = sys.exc_info()
-                    print("Unexpected error:", exc_info, e)
-                    break
-
-
-
-
-
-        # ttm = item.find_next(html_tag)
-        # ttm_1 = ttm.find_next(html_tag)
-        # ttm_2 = ttm_1.find_next(html_tag)
-        # ttm_3 = ttm_2.find_next(html_tag)
-        # ttm_4 = ttm_3.find_next(html_tag)
-        #
-        # self.items["ttm"] = ttm.getText()
-        # self.items["ttm_1"] = ttm_1.getText()
-        # self.items["ttm_2"] = ttm_2.getText()
-        # self.items["ttm_3"] = ttm_3.getText()
-        # self.items["ttm_4"] = ttm_4.getText()
-
-
+            except Exception as e:
+                exc_info = sys.exc_info()
+                print("Unexpected error:", exc_info, e)
+                break
 
     def get_data(self):
         pass
-
-
-
-
-
-

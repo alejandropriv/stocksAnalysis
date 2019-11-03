@@ -2,7 +2,7 @@
 # python3 Main.py
 from PlotData import PlotData
 from Stock import Stock
-from Scrapper import Scrapper
+from scrapper.Scrapper import Scrapper
 class Main:
 
     apikey = "86VFFOKUNB1M9YQ8"
@@ -11,9 +11,7 @@ class Main:
 
 
         scrapper = Scrapper()
-
-        scrapper.load_webpage()
-        scrapper.extract_data()
+        scrapper.get_fundamentals()
 
 
 

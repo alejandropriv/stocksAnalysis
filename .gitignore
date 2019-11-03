@@ -2,3 +2,5 @@ stockenv
 bin
 lib
 .idea
+*.pyc
+.DS_Store

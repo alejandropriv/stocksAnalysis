@@ -3,6 +3,7 @@
 
 from bs4 import BeautifulSoup
 import re
+import sys
 
 
 class BalanceSheet:
@@ -20,53 +21,67 @@ class BalanceSheet:
 
         print(self.parsedHtml.prettify())
 
-        #self.set_data("Total Revenue", "Weighted average shares outstanding", "span")
-        #self.set_data("Income Before Tax", "Weighted average shares outstanding", "span")
-        self.set_data("Total Other Income/Expenses Net", "Weighted average shares outstanding", "span")
-        #self.set_data("Total Other Income", "Weighted average shares outstanding", "span")
+        search_string = "Total Revenue"
+
+        item = self.parsedHtml.find(text=search_string).parent
+
+        self.set_data(item, "Reported EPS", "span")
+
+        print(self.items)
+
+        search_string = "Basic"
+
+        item = self.parsedHtml.find(text=search_string).parent
+
+        self.set_data(item, "Diluted", "")
+
+        search_string = "Diluted"
+
+        item = self.parsedHtml.find(text=search_string).parent
+
+        self.set_data(item, "Weighted average shares outstanding", "")
 
         print(self.items)
 
 
 
-    def set_data(self, search_string, stop_string, html_tag):
+    def set_data(self, search_item, stop_string, html_tag):
 
-
-        search_string = search_string.replace("/", ".")
-        print("Search Str: %s" % search_string)
-
-        item = self.parsedHtml.find(text=re.compile(search_string))
-
+        #print("Search Item:"+str(search_item))
+        item = search_item
 
         values = []
 
         while True:
             try:
-                print("ITEM: "+item)
-                item = item.find_next(html_tag)
 
+
+                item = item.find_next(html_tag)
                 value = item.getText().replace(',', '')
 
-                m = re.search("([^0-9,]+)", value)
+                m = re.search("(^[- ]?[^-0-9,]+$|^\\s*$)", value)
 
                 if m is None:
 
-                    print(float(value))
-                    values.append(value)
+                    #print(float(value))
+                    if value != "-":
+                        values.append(float(value))
+                    else:
+                        values.append(-.0001)
 
                 else:
-                    self.items[search_string] = values
+                    self.items[search_item.get_text()] = values
 
-                    if search_string != stop_string:
-                        search_string = value
-                        self.set_data(search_string, stop_string, html_tag)
+                    if search_item.get_text() != stop_string:
+                        self.set_data(item, stop_string, html_tag)
 
                     break
 
 
             except Exception as e:
-                print("Unexpected error:", e)
-                break
+                 exc_info = sys.exc_info()
+                 print("Unexpected error:", exc_info, e)
+                 break
 
 
 

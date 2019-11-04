@@ -36,8 +36,8 @@ class BalanceSheet:
             "Equity and other investments",
             "Goodwill",
             "Intangible Assets",
-            "Other long - term assets",
-            "Total non - current assets"
+            "Other long-term assets",
+            "Total non-current assets"
         ]
 
 
@@ -87,23 +87,19 @@ class BalanceSheet:
 
     def set_balance_sheet_data(self, parsed_html):
 
-        list_balance_sheet = []
         list_balance_sheet = self.traverse_data(self.elements)
 
-        # parser = FundamentalsParser()
-        #
-        # for category in self.elements:
-        #
-        #     print("Category " + category)
-        #
-        #     for search_string in self.elements[category]:
-        #         print(search_string)
-        #
-        #         item = parsed_html.find(text=search_string).parent
-        #
-        #         self.items = parser.parse_data_model(item, "div")
-        #
-        #         print(self.items)
+        parser = FundamentalsParser()
+
+
+        for search_string in list_balance_sheet:
+            item = parsed_html.find(text=search_string).parent
+            self.items = parser.parse_data_model(item, "div")
+
+        print(self.items)
+
+
+
 
 
 
@@ -115,15 +111,25 @@ class BalanceSheet:
 
             for child in node:
                 if isinstance(node, dict):
-                    self.traverse_data(node[child])
+                    result = self.traverse_data(node[child])
+
+                    if isinstance(result, (list, tuple)):
+                        list_balance_sheet.extend(result)
+                    else:
+                        list_balance_sheet.append(result)
+
                 else:
-                    self.traverse_data(child)
+
+                    result = self.traverse_data(child)
+
+                    if isinstance(result, (list, tuple)):
+                        list_balance_sheet.extend(result)
+                    else:
+                        list_balance_sheet.append(result)
 
         else:
 
-            print("leaf: "+str(node))
-            list_balance_sheet.append(node)
-
+            return node
 
         return list_balance_sheet
 

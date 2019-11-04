@@ -51,9 +51,6 @@ class IncomeStatement:
 
                 self.items = parser.parse_data_model(item, "div")
 
-                #print(self.items)
-
-
 
         #############################################
         #############################################

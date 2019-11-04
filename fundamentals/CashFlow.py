@@ -1,136 +1,103 @@
 from bs4 import BeautifulSoup
-import re
-import sys
+from fundamentals.FundamentalsParser import FundamentalsParser
+
 
 
 class CashFlow:
-    parsedHtml = None
-    items = dict()
-    src = None
+    items = None
+
+    elements = None
 
     def __init__(self, src):
+        print("Scrapping the Balance Sheet")
 
-        self.src = src
-        self.parsedHtml = BeautifulSoup(self.src.text, 'html.parser')
+        self.items = dict()
 
-        # In this run Basic and diluted are filled with Bogus data, a run after will fix values for this keys
-        search_string = "Total Revenue"
+        self.elements = dict()
 
-        item = self.parsedHtml.find(text=search_string).parent
 
-        self.set_data_model(item, "EBITDA", "span")
 
-        #############################################
-        #############################################
 
-        search_string = "Interest Expense"
+        Cash_flows_from_operating_activities	 = ["Net Income",
+                "Depreciation & amortization",
+                "Total Cash"
+                ]
 
-        item = self.parsedHtml.find(text=search_string).parent
+        current_assets = [cash,
+                          "Net Receivables",
+                          "Inventory",
+                          "Other Current Assets",
+                          "Total Current Assets"
+                          ]
 
-        self.set_data_model(item, "Interest Expense", "div")
+        property_plant_equipment = ["Gross property, plant and equipment",
+                                    "Accumulated Depreciation",
+                                    "Net property, plant and equipment"
+                                    ]
 
-        #############################################
-        #############################################
+        non_current_assets = [
+            property_plant_equipment,
+            "Equity and other investments",
+            "Goodwill",
+            "Intangible Assets",
+            "Other long-term assets",
+            "Total non-current assets"
+        ]
 
-        search_string = "Total Other Income.Expenses Net"
+        self.elements["Assets"] = [
+            current_assets,
+            non_current_assets,
+            "Total Assets"]
 
-        item = self.parsedHtml.find(text=re.compile(search_string)).parent
+        current_liabilities = [
+            "Total Revenue",
+            "Accounts Payable",
+            "Taxes payable",
+            "Accrued liabilities",
+            "Deferred revenues",
+            "Other Current Liabilities",
+            "Total Current Liabilities"
+        ]
 
-        self.set_data_model(item, "Total Other Income", "div")
+        non_current_liabilities = [
+            "Long Term Debt",
+            "Deferred taxes liabilities",
+            "Deferred revenues",
+            "Other long-term liabilities",
+            "Total non-current liabilities"
+        ]
 
-        #############################################
-        #############################################
+        liabilities = [
+            current_liabilities,
+            non_current_liabilities,
+            "Total Liabilities"]
 
-        search_string = "Basic"
+        stockholders_equity = [
+            "Common Stock",
+            "Retained Earnings",
+            "Accumulated other comprehensive income",
+            "Total stockholders' equity"
+        ]
 
-        item = self.parsedHtml.find(text=search_string).parent.parent
+        self.elements["Liabilities and stockholders equity"] = [
+            liabilities,
+            stockholders_equity
+        ]
 
-        self.set_data_model(item, "Basic", "div")
+        parsed_html = BeautifulSoup(src.text, 'html.parser')
+        self.set_balance_sheet_data(parsed_html)
 
-        self.items["Reported EPS-Basic"] = self.items.pop("Basic")
+    def set_balance_sheet_data(self, parsed_html):
+        list_balance_sheet = self.traverse_data(self.elements)
 
-        #############################################
-        #############################################
+        parser = FundamentalsParser()
 
-        search_string = "Diluted"
-
-        item = self.parsedHtml.find(text=search_string).parent.parent
-
-        self.set_data_model(item, "Diluted", "div")
-
-        self.items["Reported EPS-Diluted"] = self.items.pop("Diluted")
-
-        #############################################
-        #############################################
-
-        search_string = "Basic"
-
-        item = self.parsedHtml.find_all(text=search_string)[1].parent.parent
-
-        self.set_data_model(item, "Basic", "div")
-
-        self.items["Weighted average shares outstanding-Basic"] = self.items.pop("Basic")
-
-        #############################################
-        #############################################
-
-        search_string = "Diluted"
-
-        item = self.parsedHtml.find_all(text=search_string)[1].parent.parent
-
-        self.set_data_model(item, "Diluted", "div")
-
-        self.items["Weighted average shares outstanding-Diluted"] = self.items.pop("Diluted")
+        for search_string in list_balance_sheet:
+            item = parsed_html.find(text=search_string).parent
+            self.items = parser.parse_data_model(item, "div")
 
         print(self.items)
 
-    def set_data_model(self, search_item, stop_string, html_tag):
 
-        item = search_item
-
-        values = []
-
-        while True:
-            try:
-
-                item = item.find_next(html_tag)
-
-                while True:
-                    value = item.getText().replace(',', '')
-
-                    if len(value) >= 1:
-                        if len(value) >= 0:
-                            break
-
-                        else:
-                            item = item.find_next(html_tag)
-
-                    else:
-                        item = item.find_next(html_tag)
-
-                if value != "-":
-                    m = re.search("(^[- ]?\\d+$|^\\s*$)", value)
-                    m2 = re.search("(^[- ]?\\d+\\.\\d+$)", value)
-
-                    if m is not None or m2 is not None:
-                        values.append(float(value))
-
-                    else:
-                        self.items[search_item.get_text()] = values
-
-                        if stop_string not in search_item.get_text():
-                            self.set_data_model(item, stop_string, html_tag)
-
-                        break
-
-                else:
-                    values.append(value)
-
-
-            except Exception as e:
-                exc_info = sys.exc_info()
-                print("Unexpected error:", exc_info, e)
-                break
-
-    def get_data(self):
+ def get_data(self):
         pass

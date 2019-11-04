@@ -1,6 +1,3 @@
-# ./execution
-# python3 Scrapper.py
-
 import requests
 
 from fundamentals.IncomeStatement import IncomeStatement

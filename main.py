@@ -3,6 +3,7 @@
 from PlotData import PlotData
 from Stock import Stock
 from scrapper.Scrapper import Scrapper
+
 class Main:
 
     apikey = "86VFFOKUNB1M9YQ8"

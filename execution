@@ -7,4 +7,5 @@ pip install matplotlib
 pip install pandas
 pip install requests
 pip install bs4
-pip install lxml
+#pip install lxml
+#pip install ete2

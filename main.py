@@ -10,21 +10,22 @@ class Main:
 
     def __init__(self):
 
+        self.tickers = ["FB", "TSLA"]
 
-        scrapper = Scrapper()
+        scrapper = Scrapper(self.tickers)
         scrapper.get_fundamentals()
 
 
 
-        self.owned_stocks_str = ["FB", "TSLA"]
+
         self.owned_stocks = []
 
 
         PlotData.set_interactive_mode(True)
 
-        i = len(self.owned_stocks_str)
+        i = len(self.tickers)
 
-        for symbol_str in self.owned_stocks_str:
+        for symbol_str in self.tickers:
 
             i -= 1
             if i == 0:
@@ -40,5 +41,6 @@ class Main:
 
 
 main = Main()
+
 
 

@@ -9,11 +9,8 @@ class YahooAPIDataSource(DataSource):
         self.end_date = end_date
 
 
-
     def __init__(self, ticker):
         pass
-
-
 
 
     # all_tickers = ["AAPL", "MSFT", "CSCO", "AMZN", "INTC"]

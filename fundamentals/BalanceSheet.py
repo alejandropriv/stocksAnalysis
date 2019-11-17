@@ -1,11 +1,22 @@
 from bs4 import BeautifulSoup
+from utilities.RequestHandler import RequestHandler
+
 
 class BalanceSheet:
 
+    ticker = None
     data = {}
 
-    def __init__(self, src):
-        print("\n\n--Scrapping the Balance Sheet---")
+
+    def __init__(self, ticker):
+
+        self.ticker = ticker
+        print("\n\n--- Scrapping the Balance Sheet - Ticker: "+self.ticker+" ---")
+
+        self.webpage = "https://finance.yahoo.com/quote/" + self.ticker + "/balance-sheet?p=" + self.ticker
+
+        request_handler = RequestHandler()
+        src = request_handler.load_webpage(self.webpage)
 
         self.set_balance_sheet_data(src.content)
 

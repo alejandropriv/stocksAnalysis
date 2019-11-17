@@ -1,11 +1,19 @@
 from bs4 import BeautifulSoup
+from utilities.RequestHandler import RequestHandler
 
 class Statistics:
 
     data = {}
+    ticker = None
 
-    def __init__(self, src):
-        print("\n\n--Scrapping the Statistics---")
+    def __init__(self, ticker):
+
+        self.ticker = ticker
+        print("\n\n--- Scrapping the Statisitics - Ticker: "+self.ticker+" ---")
+        self.webpage = "https://finance.yahoo.com/quote/" + self.ticker + "/key-statistics?p=" + self.ticker
+
+        request_handler = RequestHandler()
+        src = request_handler.load_webpage(self.webpage)
 
         self.set_statistics_data(src.content)
 
@@ -15,7 +23,7 @@ class Statistics:
 
         # getting key statistics data from yahoo finance for the given ticker
         soup = BeautifulSoup(page_content, 'html.parser')
-        tabl = soup.find_all("table", {"class": "W(100%) Bdcl(c) Mt(10px)  Mb(10px)"})
+        tabl = soup.findAll("table")
         for t in tabl:
             rows = t.find_all("tr")
             for row in rows:

@@ -25,7 +25,7 @@ class PlotData:
 
         plt.figure(self.figure)
         self.plotable_obj.data['4. close'].plot()
-        plt.title('Daily Times Series for the {} stock '.format(self.plotable_obj.symbol))
+        plt.title('Daily Times Series for the {} scrapper '.format(self.plotable_obj.symbol))
 
         plt.show()
         try:

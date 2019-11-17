@@ -2,23 +2,40 @@
 # python3 Main.py
 from PlotData import PlotData
 from Stock import Stock
-from scrapper.Scrapper import Scrapper
+
+from StockPlot import StockPlot
 
 class Main:
 
     apikey = "86VFFOKUNB1M9YQ8"
 
+    run_fundamentals = True
+
     def __init__(self):
 
         self.tickers = ["FB", "TSLA"]
 
-        scrapper = Scrapper(self.tickers)
-        scrapper.get_fundamentals()
+        for ticker in self.tickers:
+
+            if self.run_fundamentals:
+
+                stock = Stock(ticker)
+                stock.get_fundamentals()
+                print(stock.fundamentals.income_statement.get_data())
+                print(stock.fundamentals.balance_sheet.get_data())
+                print(stock.fundamentals.cash_flow.get_data())
+                print(stock.fundamentals.statistics.get_data())
 
 
 
 
-        self.owned_stocks = []
+
+
+
+
+
+
+
 
 
         PlotData.set_interactive_mode(True)
@@ -31,10 +48,12 @@ class Main:
             if i == 0:
                 PlotData.set_interactive_mode(False)
 
-            stock = Stock(self.apikey, symbol_str)
-            stock.retrieve_daily_data(True)
-            stock.print_metadata()
-            self.owned_stocks.append(stock)
+            stock_plot = StockPlot(self.apikey, symbol_str)
+            stock_plot.retrieve_daily_data(True)
+            stock_plot.print_metadata()
+            stocks = []
+
+            stocks.append(stock_plot)
 
 
 

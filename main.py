@@ -2,6 +2,8 @@
 # python3 Main.py
 from PlotData import PlotData
 from Stock import Stock
+from Data.DataSource import DataSource
+
 
 from StockPlot import StockPlot
 
@@ -9,23 +11,33 @@ class Main:
 
     apikey = "86VFFOKUNB1M9YQ8"
 
-    run_fundamentals = True
+    fundamentals = True
+    historical_data = True
 
     def __init__(self):
 
-        self.tickers = ["FB", "TSLA"]
+        self.tickers = ["FB", "TSLA", "", ""]# put validation on empty symbols
+
+        stock = None
 
         for ticker in self.tickers:
 
-            if self.run_fundamentals:
+            stock = Stock(ticker)
+            stock.set_data_source(data_source_type=DataSource.DataSourceType.YAHOOFINANCIALS)
 
-                stock = Stock(ticker)
+
+            if self.fundamentals:
+
                 stock.get_fundamentals()
                 print(stock.fundamentals.income_statement.get_data())
                 print(stock.fundamentals.balance_sheet.get_data())
                 print(stock.fundamentals.cash_flow.get_data())
                 print(stock.fundamentals.statistics.get_data())
 
+
+            if self.historical_data:
+
+                stock.get_historical_data()
 
 
 

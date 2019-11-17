@@ -26,7 +26,7 @@ class Fundamentals:
     def __init__(self, ticker):
         self.ticker = ticker
 
-    def acquire_fundamentals(self):
+    def get_data(self):
 
 
         print("\nGetting Fundamentals for:" + self.ticker + " ticker.")

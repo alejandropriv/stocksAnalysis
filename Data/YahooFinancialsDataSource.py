@@ -1,30 +1,29 @@
-import pandas as pd
 from yahoofinancials import YahooFinancials
+
+import pandas as pd
+
 import datetime
 import sys
 
+from Data.DataSource import DataSource
 
-class YahooFinancialsData:
 
-    ticker = None
+class YahooFinancialsDataSource(DataSource):
 
     def __init__(self, ticker, start_date, end_date):
         self.ticker = ticker
         self.start_date = start_date
         self.end_date = end_date
 
-
-
     def __init__(self, ticker):
         self.ticker = ticker
         self.end_date = (datetime.date.today()).strftime('%Y-%m-%d')
         self.start_date = (datetime.date.today() - datetime.timedelta(1825)).strftime('%Y-%m-%d')
 
-
-
-
     # all_tickers = ["AAPL", "MSFT", "CSCO", "AMZN", "INTC"]
+
     def extract_historical_data(self):
+
         self.extract_data()
 
     def extract_data(self):
@@ -50,11 +49,13 @@ class YahooFinancialsData:
                 close_prices[self.ticker] = temp2["adjclose"]
                 drop.append(self.ticker)
 
+                print(ohlv)
+                break
+
             except:
                 print("Unexpected error:", sys.exc_info())
                 print(self.ticker, " :failed to fetch data...retrying")
 
                 continue
 
-
-        attempt += 1
+            attempt += 1

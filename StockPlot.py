@@ -10,10 +10,6 @@ class StockPlot:
     data_plot = None
     plot_number = 0
 
-    def __init__(self, _apikey):
-        print("Stock created")
-
-        self.init_parameters(_apikey)
 
     def __init__(self, _apikey, _symbol):
         self.symbol = _symbol

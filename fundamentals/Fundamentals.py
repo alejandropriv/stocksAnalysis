@@ -1,5 +1,3 @@
-import requests
-
 from fundamentals.IncomeStatement import IncomeStatement
 from fundamentals.BalanceSheet import BalanceSheet
 from fundamentals.CashFlow import CashFlow

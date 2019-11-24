@@ -1,6 +1,6 @@
 from fundamentals.Fundamentals import Fundamentals
-from Data.YahooAPIDataSource import YahooAPIDataSource
-from Data.YahooFinancialsDataSource import YahooFinancialsDataSource
+from data.YahooAPIDataSource import YahooAPIDataSource
+from data.YahooFinancialsDataSource import YahooFinancialsDataSource
 
 
 
@@ -11,39 +11,44 @@ class Stock:
 
     fundamentals = None
 
-    ticker = None
+    tickers = None
 
     data_source = None
 
+    time_series = None
 
 
-    def __init__(self, ticker):
-        print("Stock {} created".format(ticker))
-        self.ticker = ticker
-        self.data_source = YahooAPIDataSource(ticker)
 
+    # Put here an enum and a case with the enum
+    def __init__(self, tickers=None, data_source=None):
 
-    def __init_(self, ticker, data_source): # Put here an enum and a case with the enum
-        print("Stock {} created".format(ticker))
-        self.ticker = ticker
+        if tickers is None:
+            raise ValueError
+
+        if data_source is None:
+            data_source = YahooAPIDataSource()
+
+        print("Stock {} created".format(tickers))
+        self.tickers = tickers
+        self.fundamentals = {}
         self.data_source = data_source
 
+
+
     def set_data_source(self, data_source_type):
-        if data_source_type == YahooAPIDataSource.DataSourceType.YAHOOFINANCIALS:
-            self.data_source = YahooFinancialsDataSource(ticker=self.ticker)
+        if data_source_type == YahooAPIDataSource.DATASOURCETYPE.YAHOOFINANCIALS:
+            self.data_source = YahooFinancialsDataSource()
+
+        if data_source_type == YahooAPIDataSource.DATASOURCETYPE.YAHOOAPI:
+            self.data_source = YahooAPIDataSource()
+
 
 
     def get_fundamentals(self):
-        self.fundamentals = Fundamentals(self.ticker)
-        self.fundamentals.get_data()
+        for ticker in self.tickers:
+            self.fundamentals[ticker] = Fundamentals(ticker)
+            self.fundamentals[ticker].get_data()
 
 
     def get_historical_data(self):
-        self.data_source.extract_historical_data()
-
-
-
-
-
-
-
+        self.data_source.extract_historical_data(self.tickers)

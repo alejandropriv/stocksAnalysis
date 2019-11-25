@@ -1,6 +1,6 @@
 from fundamentals.Fundamentals import Fundamentals
-from data.YahooAPIDataSource import YahooAPIDataSource
-from data.YahooFinancialsDataSource import YahooFinancialsDataSource
+from data.YahooAPIHistoricalData import YahooAPIHistoricalData
+from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
 
 
 
@@ -26,7 +26,7 @@ class Stock:
             raise ValueError
 
         if data_source is None:
-            data_source = YahooAPIDataSource()
+            data_source = YahooAPIHistoricalData()
 
         print("Stock {} created".format(tickers))
         self.tickers = tickers
@@ -36,11 +36,11 @@ class Stock:
 
 
     def set_data_source(self, data_source_type):
-        if data_source_type == YahooAPIDataSource.DATASOURCETYPE.YAHOOFINANCIALS:
-            self.data_source = YahooFinancialsDataSource()
+        if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOFINANCIALS:
+            self.data_source = YahooFinancialsHistoricalData()
 
-        if data_source_type == YahooAPIDataSource.DATASOURCETYPE.YAHOOAPI:
-            self.data_source = YahooAPIDataSource()
+        if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOAPI:
+            self.data_source = YahooAPIHistoricalData()
 
 
 

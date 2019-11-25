@@ -1,15 +1,15 @@
-from data import DataSource
+from data import HistoricalData
 import datetime
 
 
-class AlphaAPIDataSource(DataSource):
+class AlphaAPIDataSource(HistoricalData):
 
 
     def __init__(self,
                  ticker,
                  start_date=(datetime.date.today() - datetime.timedelta(1825)).strftime('%Y-%m-%d'),
                  end_date=(datetime.date.today()).strftime('%Y-%m-%d'),
-                 time_series=DataSource.TIMESERIES.DAILY,
+                 time_series=HistoricalData.TIMESERIES.DAILY,
                  data_columns=None):
 
         if data_columns is None:

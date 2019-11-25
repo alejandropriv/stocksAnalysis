@@ -1,7 +1,7 @@
 import unittest
 from PlotData import PlotData
 from Stock import Stock
-from data.DataSource import DataSource
+from data.HistoricalData import HistoricalData
 
 import pprint
 
@@ -16,17 +16,23 @@ class TestBasics(unittest.TestCase):
     fundamentals = True
     historical_data = True
 
+    stock = None
+
     def test_datasources_yahoo_api(self):
 
-        data_source_type = DataSource.DATASOURCETYPE.YAHOOAPI
+        data_source_type = HistoricalData.DATASOURCETYPE.YAHOOAPI
 
         self.tickers = ["FB", "TSLA", "UBER"]
+
+
         self.run_analysis(data_source_type)
+
+        print("Analysis has been run")
 
 
     def test_datasources_yahoo_financials(self):
 
-        data_source_type = DataSource.DATASOURCETYPE.YAHOOFINANCIALS
+        data_source_type = HistoricalData.DATASOURCETYPE.YAHOOFINANCIALS
 
         self.tickers = ["FB", "TSLA", "UBER"]
         self.run_analysis(data_source_type)
@@ -36,24 +42,24 @@ class TestBasics(unittest.TestCase):
 
     def run_analysis(self, data_source_type):
 
-        stock = Stock(self.tickers)
-        stock.set_data_source(data_source_type=data_source_type)
+        self.stock = Stock(self.tickers)
+        self.stock.set_data_source(data_source_type=data_source_type)
 
-        # self.get_fundamentals(stock)
+        # self.get_fundamentals()
 
-        self.get_historical_data(stock)
+        self.get_historical_data()
 
 
 
-    def get_fundamentals(self, stock):
+    def get_fundamentals(self):
 
         if self.fundamentals:
-            stock.get_fundamentals()
+            self.stock.get_fundamentals()
 
             pp = pprint.PrettyPrinter(indent=4)
 
 
-            for ticker, data in stock.fundamentals.items():
+            for ticker, data in self.stock.fundamentals.items():
 
                 print("--------- TICKER: {} ----------------".format(ticker))
                 print("--------- INCOME STATEMENT: {} ----------------".format(ticker))
@@ -69,9 +75,9 @@ class TestBasics(unittest.TestCase):
 
 
 
-    def get_historical_data(self, stock):
+    def get_historical_data(self):
         if self.historical_data:
-            stock.get_historical_data()
+            self.stock.get_historical_data()
 
 
 if __name__ == '__main__':

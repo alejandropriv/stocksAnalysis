@@ -1,4 +1,4 @@
-from data.DataSource import DataSource
+from data.HistoricalData import HistoricalData
 import pandas as pd
 import pandas_datareader.data as pdr
 
@@ -7,7 +7,7 @@ import sys
 import datetime
 
 
-class YahooAPIDataSource(DataSource):
+class YahooAPIHistoricalData(HistoricalData):
 
     def __init__(self):
         super().__init__()
@@ -23,7 +23,7 @@ class YahooAPIDataSource(DataSource):
                                 tickers,
                                 start_date=datetime.date.today() - datetime.timedelta(365),
                                 end_date=(datetime.date.today()),
-                                time_series=DataSource.TIMESERIES.DAILY,
+                                time_series=HistoricalData.TIMESERIES.DAILY,
                                 data_columns=None):
 
         self.tickers = tickers
@@ -41,13 +41,13 @@ class YahooAPIDataSource(DataSource):
     def extract_data(self):
 
         interval = ""
-        if self.time_series == DataSource.TIMESERIES.DAILY:
+        if self.time_series == HistoricalData.TIMESERIES.DAILY:
             interval = 'd'
 
-        elif self.time_series == DataSource.TIMESERIES.WEEKLY:
+        elif self.time_series == HistoricalData.TIMESERIES.WEEKLY:
             interval = 'w'
 
-        elif self.time_series == DataSource.TIMESERIES.MONTHLY:
+        elif self.time_series == HistoricalData.TIMESERIES.MONTHLY:
             interval = 'm'
 
         # extracting stock data (historical close price) for the stocks identified

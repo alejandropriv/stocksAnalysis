@@ -6,7 +6,7 @@ import datetime
 
 
 
-class DataSource(metaclass=abc.ABCMeta):
+class HistoricalData(metaclass=abc.ABCMeta):
 
     class DATASOURCETYPE(Enum):
 

@@ -9,7 +9,7 @@ class Statistics:
     def __init__(self, ticker):
 
         self.ticker = ticker
-        print("\n\n--- Scrapping the Statisitics - Ticker: "+self.ticker+" ---")
+        print("\n\n--- Scrapping the Statistics - Ticker: "+self.ticker+" ---")
         self.webpage = "https://finance.yahoo.com/quote/" + self.ticker + "/key-statistics?p=" + self.ticker
 
         request_handler = RequestHandler()

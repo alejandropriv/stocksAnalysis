@@ -1,5 +1,5 @@
 from yahoofinancials import YahooFinancials
-from data.DataSource import DataSource
+from data.HistoricalData import HistoricalData
 
 import pandas as pd
 
@@ -7,7 +7,7 @@ import datetime
 import sys
 
 
-class YahooFinancialsDataSource(DataSource):
+class YahooFinancialsHistoricalData(HistoricalData):
 
     def __init__(self):
         super().__init__()
@@ -21,9 +21,9 @@ class YahooFinancialsDataSource(DataSource):
     # all_tickers = ["AAPL", "MSFT", "CSCO", "AMZN", "INTC"]
     def extract_historical_data(self,
                                 tickers,
-                                start_date=datetime.date.today() - datetime.timedelta(1825),
-                                end_date=datetime.date.today(),
-                                time_series=DataSource.TIMESERIES.DAILY,
+                                start_date=(datetime.date.today() - datetime.timedelta(1825)).strftime('%Y-%m-%d'),
+                                end_date=datetime.date.today().strftime('%Y-%m-%d'),
+                                time_series=HistoricalData.TIMESERIES.DAILY,
                                 data_columns=None):
 
         self.tickers = tickers
@@ -47,9 +47,9 @@ class YahooFinancialsDataSource(DataSource):
             attempt = 0
 
             while attempt <= 5:
-                print("-----------------")
-                print("attempt number ", attempt)
-                print("-----------------")
+                print("-------------------------------------")
+                print("Ticker: {0} - attempt number:{1} ".format(ticker, attempt))
+                print("-------------------------------------")
 
                 try:
                     yahoo_financials = YahooFinancials(ticker)
@@ -116,3 +116,13 @@ class YahooFinancialsDataSource(DataSource):
                     attempt += 1
 
                     continue
+
+
+
+    def clear_data(self):
+        self.adj_close.bfill(axis=0, inplace=True)
+        self.high[ticker] = temp_high2["high"]
+        self.low[ticker] = temp_low2["low"]
+        self.open[ticker] = temp_open2["open"]
+        self.close[ticker] = temp_close2["close"]
+        self.volume[ticker] = temp_volume2["volume"]

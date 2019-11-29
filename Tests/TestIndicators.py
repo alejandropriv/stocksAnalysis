@@ -36,7 +36,7 @@ class TestBasics(unittest.TestCase):
 
         self.get_historical_data()
 
-        macd_ind = MACD(stock=self.stock)
+        macd_ind = MACD(price=self.stock.get_prices_close_adj())
         macd_ind.calculate()
         macd_ind.plot()
 

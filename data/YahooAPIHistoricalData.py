@@ -73,9 +73,9 @@ class YahooAPIHistoricalData(HistoricalData):
                         self.close[ticker] = temp["Close"]
                         self.adj_close[ticker] = temp["Adj Close"]
 
-                    print("prices were added for {}".format(ticker))
 
                     break
+
 
                 except Exception as why:
                     print("Unexpected error:{}, Why:{}".format(sys.exc_info(), why))
@@ -83,3 +83,17 @@ class YahooAPIHistoricalData(HistoricalData):
                     attempt += 1
 
                     continue
+
+
+        print("prices were added for {}".format(ticker))
+        self.high[ticker].bfill(axis=0, inplace=True)
+        self.low[ticker].bfill(axis=0, inplace=True)
+        self.open[ticker].bfill(axis=0, inplace=True)
+        self.close[ticker].bfill(axis=0, inplace=True)
+        self.adj_close[ticker].bfill(axis=0, inplace=True)
+
+        # print(self.high[ticker])
+        # print(self.low[ticker])
+        # print(self.open[ticker])
+        # print(self.close[ticker])
+        # print(self.adj_close[ticker])

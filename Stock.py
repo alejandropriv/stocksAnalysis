@@ -1,6 +1,7 @@
 from fundamentals.Fundamentals import Fundamentals
 from data.YahooAPIHistoricalData import YahooAPIHistoricalData
 from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
+from data_analysis.DailyReturn import DailyReturn
 
 
 
@@ -17,6 +18,7 @@ class Stock:
 
     time_series = None
 
+    daily_return = None
 
 
     # Put here an enum and a case with the enum
@@ -30,7 +32,6 @@ class Stock:
 
         print("Stock {} created".format(tickers))
         self.tickers = tickers
-        self.fundamentals = {}
         self.data_source = data_source
 
 
@@ -45,6 +46,7 @@ class Stock:
 
 
     def get_fundamentals(self):
+        self.fundamentals = {}
         for ticker in self.tickers:
             self.fundamentals[ticker] = Fundamentals(ticker)
             self.fundamentals[ticker].get_data()
@@ -52,3 +54,38 @@ class Stock:
 
     def get_historical_data(self):
         self.data_source.extract_historical_data(self.tickers)
+
+
+    def get_statistical_data(self, period):
+
+        if self.data_source.adj_close is None:
+            print("Unable to get statistical data because there is no data, calling 'self.get_historical_data()' first")
+            self.get_historical_data()
+
+
+        self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
+        self.daily_return.get_statistical_data()
+
+
+
+    def get_prices_close_adj(self):
+
+        method_tag = "get_prices_close_adj"
+
+        if self.data_source is not None:
+            if self.data_source.adj_close is not None:
+                prices = self.data_source.adj_close
+
+            else:
+                print("Getting Historical data first")
+                self.get_historical_data()
+                prices = self.data_source.adj_close
+
+        else:
+            print("There has been an error in {}".format(method_tag))
+            raise ValueError
+
+        return prices
+
+
+

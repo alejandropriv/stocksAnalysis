@@ -26,8 +26,6 @@ class DailyReturn():
         self.period = period
 
 
-
-
     def get_statistical_data(self):
         # Handling NaN Values
         self.prices.fillna(method='bfill', axis=0,

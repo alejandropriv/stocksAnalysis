@@ -4,8 +4,6 @@ from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
 from data_analysis.DailyReturn import DailyReturn
 
 
-
-
 class Stock:
 
     error = None
@@ -42,7 +40,6 @@ class Stock:
 
         if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOAPI:
             self.data_source = YahooAPIHistoricalData()
-
 
 
     def get_fundamentals(self):
@@ -85,7 +82,33 @@ class Stock:
             print("There has been an error in {}".format(method_tag))
             raise ValueError
 
+        if prices.empty == True:
+            print("There has been an error in {}".format(method_tag))
+            raise ValueError
+
         return prices
 
 
+    def get_volume(self):
 
+        method_tag = "get_volume"
+
+        if self.data_source is not None:
+            if self.data_source.volume is not None:
+                volume = self.data_source.volume
+
+            else:
+                print("Getting Historical data first")
+                self.get_historical_data()
+                volume = self.data_source.volume
+
+        else:
+            print("There has been an error in {}".format(method_tag))
+            raise ValueError
+
+        if volume.empty == True:
+            print("There has been an error in {}".format(method_tag))
+            raise ValueError
+
+
+        return volume

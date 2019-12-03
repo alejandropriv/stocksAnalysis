@@ -1,13 +1,9 @@
 import unittest
-from PlotData import PlotData
 from Stock import Stock
-from data.HistoricalData import HistoricalData
 from indicators.MACD import MACD
+from plotter.Plotter import Plotter
 
 import pprint
-
-
-from StockPlot import StockPlot
 
 
 class TestBasics(unittest.TestCase):
@@ -36,9 +32,22 @@ class TestBasics(unittest.TestCase):
 
         self.get_historical_data()
 
-        macd_ind = MACD(price=self.stock.get_prices_close_adj())
-        macd_ind.calculate()
-        macd_ind.plot()
+        price_close_adj = self.stock.get_prices_close_adj().iloc[:, [0]]
+        volume = self.stock.get_volume()
+
+        macd_ind = MACD(price=price_close_adj)
+
+        df = macd_ind.calculate()
+
+        df["Volume"] = volume.iloc[:, [0]]
+
+
+
+        # The period is determined by the TIMESERIES chosen
+        Plotter.plot_macd(df, 200)
+
+
+
 
 
 

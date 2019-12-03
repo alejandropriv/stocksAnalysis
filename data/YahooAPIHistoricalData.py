@@ -72,6 +72,7 @@ class YahooAPIHistoricalData(HistoricalData):
                         self.open[ticker] = temp["Open"]
                         self.close[ticker] = temp["Close"]
                         self.adj_close[ticker] = temp["Adj Close"]
+                        self.volume[ticker] = temp["Volume"]
 
 
                     break

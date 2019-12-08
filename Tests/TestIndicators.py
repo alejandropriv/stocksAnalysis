@@ -1,7 +1,12 @@
 import unittest
+
+import matplotlib.pyplot as plt
+
+
 from Stock import Stock
+from indicators.ATR import ATR
 from indicators.MACD import MACD
-from plotter.Plotter import Plotter
+
 
 import pprint
 
@@ -27,25 +32,83 @@ class TestBasics(unittest.TestCase):
         print("Analysis has been run")
 
 
+    def test_ATR(self):
 
-    def calculate_macd(self):
+        self.tickers = ["FB", "TSLA", "UBER"]
+
+        self.stock = Stock(self.tickers)
+
+
+        self.calculate_atr()
+
+        print("Analysis has been run")
+
+
+
+
+
+
+    def test_MACD_ATR(self):
+        self.tickers = ["FB", "TSLA", "UBER"]
+
+        self.stock = Stock(self.tickers)
+
+        plotter = self.calculate_macd()
+
+        self.calculate_atr(plotter=plotter)
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
+
+    def calculate_macd(self, plotter=None):
+
+        ticker = "FB"
 
         self.get_historical_data()
 
         price_close_adj = self.stock.get_prices_close_adj().iloc[:, [0]]
-        volume = self.stock.get_volume()
 
-        macd_ind = MACD(price=price_close_adj)
+        macd_ind = MACD(price=price_close_adj, plotter=plotter)
 
         df = macd_ind.calculate()
 
-        df["Volume"] = volume.iloc[:, [0]]
+        volume_key = "{}_{}".format(ticker, "Volume")
 
 
+        df[volume_key] = self.stock.get_volume().iloc[:, [0]]
 
         # The period is determined by the TIMESERIES chosen
-        Plotter.plot_macd(df, 200)
+        macd_ind.plot_macd(df=df, period=200, ticker=ticker)
 
+        return macd_ind.plotter
+
+
+
+    def calculate_atr(self, plotter=None):
+
+        ticker = "FB"
+
+        self.get_historical_data()
+
+        price_close_adj = self.stock.get_prices_close_adj().iloc[:, [0]]
+        price_high = self.stock.get_prices_high().iloc[:, [0]]
+        price_low = self.stock.get_prices_low().iloc[:, [0]]
+
+
+        atr_ind = ATR(low=price_low, high=price_high, adj_close=price_close_adj, n=14, plotter=plotter)
+        df = atr_ind.calculate()
+
+        volume_key = "{}_{}".format(ticker, "Volume")
+
+
+        df[volume_key] = self.stock.get_volume().iloc[:, [0]]
+        # The period is determined by the TIMESERIES chosen
+        atr_ind.plot_atr(df=df, period=200, ticker=ticker)
+
+        return atr_ind.plotter
 
 
 

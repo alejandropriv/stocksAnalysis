@@ -62,6 +62,7 @@ class YahooAPIHistoricalData(HistoricalData):
 
                 try:
                     temp = pdr.get_data_yahoo(ticker, self.start_date, self.end_date, interval=interval)
+
                     temp.dropna(inplace=True)
 
                     # TODO: Validate and put the code to handle different columns

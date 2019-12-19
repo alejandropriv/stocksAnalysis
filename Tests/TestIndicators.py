@@ -55,7 +55,14 @@ class TestBasics(unittest.TestCase):
 
         plotter = self.calculate_macd()
 
-        self.calculate_atr(plotter=plotter)
+        plotter = self.calculate_atr(plotter=plotter)
+
+        # added these three lines
+        #lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
+
+        #lns = lns1 + lns2 + lns3
+        #labs = [l.get_label() for l in lns]
+        #ax.legend(lns, labs, loc=0)
 
         print("Analysis has been run")
 
@@ -106,7 +113,8 @@ class TestBasics(unittest.TestCase):
 
         df[volume_key] = self.stock.get_volume().iloc[:, [0]]
         # The period is determined by the TIMESERIES chosen
-        atr_ind.plot_atr(df=df, period=200, ticker=ticker)
+        atr_ind.plot_atr(df=df, period=200, ticker=ticker, color="tab:red")
+
 
         return atr_ind.plotter
 

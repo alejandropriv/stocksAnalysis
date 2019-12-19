@@ -1,9 +1,8 @@
 from plotter.Plotter import Plotter
+from utilities.Constants import Constants
 
 
 class MACD:
-
-
 
     # price is Dataframe, = adj_close
     def __init__(self, price, fast_period=12, slow_period=26, signal_period=9, plotter=None):
@@ -16,13 +15,10 @@ class MACD:
         self.macd_key = None
         self.signal_key = None
 
-
         if plotter is None:
             self.plotter = Plotter()
         else:
             self.plotter = plotter
-
-
 
 
     def calculate(self):
@@ -49,7 +45,7 @@ class MACD:
         df_macd[self.macd_key] = df_macd[fast_key] - df_macd[slow_key]
 
         df_macd[self.signal_key] = df_macd[self.macd_key].ewm(span=self.signal_period,
-                                                    min_periods=self.signal_period).mean()
+                                                              min_periods=self.signal_period).mean()
 
         df_macd.drop(columns=[fast_key, slow_key], inplace=True)
 
@@ -57,12 +53,35 @@ class MACD:
 
         return df_macd
 
-
-
     def plot_macd(self, df, period=100, ticker=""):
 
         self.plotter.plot_main(df=df, period=period, ticker=ticker)
 
         df_macd = df[[self.macd_key]]
+        df_macd_signal = df[[self.signal_key]]
+        max_value = df_macd[self.macd_key].max()
+        min_value = df_macd[self.macd_key].min()
+
+
+        if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
+            print("First Indicator MACD")
+            self.plotter.ax_indicators[self.macd_key] = self.plotter.ax_indicators[Constants.main]
+
+        else:
+            # instantiate a second axes that shares the same x-axis
+            self.plotter.ax_indicators[self.macd_key] = self.plotter.ax_indicators[Constants.main].twinx()
+
+
+        self.plotter.ax_indicators[self.macd_key].set_ylim(max_value+1, min_value-1)
+
+
+
         self.plotter.plot_indicator(df=df_macd, period=period)
+        self.plotter.plot_indicator(df=df_macd_signal, period=period, color="tab:orange")
+
+
+        self.plotter.ax_indicators[self.macd_key].legend(loc="best")
+
+
+
 

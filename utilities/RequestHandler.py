@@ -3,9 +3,6 @@ import requests
 
 class RequestHandler:
 
-    error = None
-
-
     def __init__(self):
         print("Request Handler created")
 
@@ -22,7 +19,7 @@ class RequestHandler:
 
 
             if status_code == 200:
-                print("webpage: " +webpage+" loaded successfully")
+                print("webpage: " + webpage + " loaded successfully")
                 return src
 
             else:

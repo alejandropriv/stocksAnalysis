@@ -2,23 +2,22 @@ from fundamentals.Fundamentals import Fundamentals
 from data.YahooAPIHistoricalData import YahooAPIHistoricalData
 from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
 from data_analysis.DailyReturn import DailyReturn
+from plotter.Plotter import Plotter
 
 
 class Stock:
-    error = None
 
-    fundamentals = None
-
-    tickers = None
-
-    data_source = None
-
-    time_series = None
-
-    daily_return = None
 
     # Put here an enum and a case with the enum
-    def __init__(self, tickers=None, data_source=None):
+    def __init__(self, tickers=None, data_source=None, plotter=None):
+
+        self.error = None
+        self.fundamentals = None
+        self.tickers = None
+        self.data_source = None
+        self.time_series = None
+        self.daily_return = None
+
 
         if tickers is None:
             raise ValueError
@@ -29,6 +28,7 @@ class Stock:
         print("Stock {} created".format(tickers))
         self.tickers = tickers
         self.data_source = data_source
+        self.plotter = plotter
 
     def set_data_source(self, data_source_type):
         if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOFINANCIALS:
@@ -60,7 +60,7 @@ class Stock:
         method_tag = "get_prices_close_adj"
 
         if self.data_source is not None:
-            if self.data_source.adj_close is not None:
+            if self.data_source.adj_close is not None and self.data_source.adj_close.empty is False:
                 prices = self.data_source.adj_close
 
             else:
@@ -146,3 +146,25 @@ class Stock:
             raise ValueError
 
         return volume
+
+
+    def plot(self, ticker=None, price_types=None, period=100,):
+        if price_types is None:
+            price_types = ["adj_close"]
+
+        if ticker is None:
+            ticker = self.tickers[0]
+
+        if self.plotter is None:
+            self.plotter = Plotter()
+
+
+        for priceType in price_types:
+            if priceType == "adj_close":
+                price_key = "{}_{}".format(ticker, "Adj_Close")
+
+                price_info = self.get_prices_close_adj().loc[:, [price_key]]
+                volume_key = "{}_{}".format(ticker, "Volume")
+                price_info[volume_key] = self.get_volume().iloc[:, [volume_key]]
+
+                self.plotter.plot_main(df=price_info, period=period, ticker=ticker)

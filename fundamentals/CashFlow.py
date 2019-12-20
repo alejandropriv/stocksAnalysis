@@ -5,12 +5,11 @@ from utilities.RequestHandler import RequestHandler
 
 class CashFlow:
 
-    ticker = None
-    data = {}
-
     def __init__(self, ticker):
 
         self.ticker = ticker
+        self.data = {}
+
 
         print("\n\n--- Scrapping the Cash Flow - Ticker: "+self.ticker+" ---")
         self.webpage = "https://finance.yahoo.com/quote/"+self.ticker+"/cash-flow?p="+self.ticker

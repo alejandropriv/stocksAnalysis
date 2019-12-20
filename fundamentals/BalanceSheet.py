@@ -4,13 +4,11 @@ from utilities.RequestHandler import RequestHandler
 
 class BalanceSheet:
 
-    ticker = None
-    data = {}
-
-
     def __init__(self, ticker):
 
         self.ticker = ticker
+        self.data = {}
+
         print("\n\n--- Scrapping the Balance Sheet - Ticker: "+self.ticker+" ---")
 
         self.webpage = "https://finance.yahoo.com/quote/" + self.ticker + "/balance-sheet?p=" + self.ticker

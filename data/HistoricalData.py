@@ -21,21 +21,16 @@ class HistoricalData(metaclass=abc.ABCMeta):
         MONTHLY = 'monthly'
 
 
-
-    tickers = None
-    start_date = None
-    end_date = None
-    time_series = None
-    data_columns = None
-
-    adj_close = None
-    daily_return = None
-
-
-
     @abc.abstractmethod
     def __init__(self):
-        pass
+        self.tickers = None
+        self.start_date = None
+        self.end_date = None
+        self.time_series = None
+        self.data_columns = None
+
+        self.adj_close = None
+        self.daily_return = None
 
 
     @abc.abstractmethod

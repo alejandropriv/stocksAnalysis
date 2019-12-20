@@ -6,12 +6,14 @@ import matplotlib.pyplot as plt
 from Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
+from indicators.BollingerBands import BollingerBands
 
 
 import pprint
 
 
 class TestBasics(unittest.TestCase):
+
     apikey = "86VFFOKUNB1M9YQ8"
     data_source_type = None
     tickers = None
@@ -20,21 +22,22 @@ class TestBasics(unittest.TestCase):
 
     stock = None
 
-    def test_MACD(self):
+    def test_macd(self):
 
-        self.tickers = ["FB", "TSLA", "UBER"]
+        self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
         self.stock = Stock(self.tickers)
 
+        self.stock.plot()
 
         self.calculate_macd()
 
         print("Analysis has been run")
 
 
-    def test_ATR(self):
+    def test_atr(self):
 
-        self.tickers = ["FB", "TSLA", "UBER"]
+        self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
         self.stock = Stock(self.tickers)
 
@@ -48,8 +51,8 @@ class TestBasics(unittest.TestCase):
 
 
 
-    def test_MACD_ATR(self):
-        self.tickers = ["FB", "TSLA", "UBER"]
+    def test_macd_atr(self):
+        self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
         self.stock = Stock(self.tickers)
 
@@ -69,8 +72,30 @@ class TestBasics(unittest.TestCase):
         plt.show()
 
 
+    def test_macd_bollinger_bands(self):
+        self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
-    def calculate_macd(self, plotter=None):
+        period = 150;
+        self.stock = Stock(self.tickers)
+
+        plotter = self.calculate_macd(period=period)
+
+        plotter = self.calculate_bollinger_bands(period=period, plotter=plotter)
+
+        # added these three lines
+        #lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
+
+        #lns = lns1 + lns2 + lns3
+        #labs = [l.get_label() for l in lns]
+        #ax.legend(lns, labs, loc=0)
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
+
+    def calculate_macd(self, period=100, plotter=None):
 
         ticker = "FB"
 
@@ -88,13 +113,13 @@ class TestBasics(unittest.TestCase):
         df[volume_key] = self.stock.get_volume().iloc[:, [0]]
 
         # The period is determined by the TIMESERIES chosen
-        macd_ind.plot_macd(df=df, period=200, ticker=ticker)
+        macd_ind.plot_macd(df=df, period=period, ticker=ticker)
 
         return macd_ind.plotter
 
 
 
-    def calculate_atr(self, plotter=None):
+    def calculate_atr(self, period=100, plotter=None):
 
         ticker = "FB"
 
@@ -117,6 +142,30 @@ class TestBasics(unittest.TestCase):
 
 
         return atr_ind.plotter
+
+
+    def calculate_bollinger_bands(self, period=100, plotter=None):
+
+        ticker = "FB"
+
+        self.get_historical_data()
+
+        price_close_adj = self.stock.get_prices_close_adj().iloc[:, [0]]
+
+
+
+        bb_ind = BollingerBands(adj_close=price_close_adj, n=20, plotter=plotter)
+        df = bb_ind.calculate()
+
+        volume_key = "{}_{}".format(ticker, "Volume")
+
+
+        df[volume_key] = self.stock.get_volume().iloc[:, [0]]
+        # The period is determined by the TIMESERIES chosen
+        bb_ind.plot_bollinger_bands(df=df, period=period, color="tab:red")
+
+
+        return bb_ind.plotter
 
 
 

@@ -3,10 +3,10 @@ from utilities.RequestHandler import RequestHandler
 
 class Statistics:
 
-    data = {}
-    ticker = None
 
     def __init__(self, ticker):
+
+        self.data = {}
 
         self.ticker = ticker
         print("\n\n--- Scrapping the Statistics - Ticker: "+self.ticker+" ---")

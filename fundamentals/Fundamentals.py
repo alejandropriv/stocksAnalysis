@@ -10,19 +10,17 @@ import pandas as pd
 
 class Fundamentals:
 
-    error = None
-
-    financial_dir = {}
-    income_statement = None
-    cash_flow = None
-    balance_sheet = None
-    statistics = None
-    ticker = None
-
-
 
     def __init__(self, ticker):
         self.ticker = ticker
+        self.error = None
+
+        self.financial_dir = {}
+        self.income_statement = None
+        self.cash_flow = None
+        self.balance_sheet = None
+        self.statistics = None
+        self.ticker = None
 
     def get_data(self):
 

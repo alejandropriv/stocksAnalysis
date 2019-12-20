@@ -1,10 +1,9 @@
-from plotter.Plotter import Plotter
 from utilities.Constants import Constants
 
 
 class ATR:
 
-    ### price is Dataframe
+    # price is Dataframe
     def __init__(self, high, low, adj_close, n, plotter=None):
         self.n = n
         self.high = high
@@ -12,13 +11,8 @@ class ATR:
         self.adj_close = adj_close
 
         self.atr_key = None
-        self.signal_key = None
 
-
-        if plotter is None:
-            self.plotter = Plotter()
-        else:
-            self.plotter = plotter
+        self.plotter = plotter
 
     def calculate(self):
         """function to calculate True Range and Average True Range"""
@@ -55,7 +49,10 @@ class ATR:
     # expect Stock, volume, Indicator
     def plot_atr(self, df, period=100, ticker="", color="tab:green"):
 
-        self.plotter.plot_main(df=df, period=period, ticker=ticker)
+        if self.plotter is None:
+            print("Please Select the main stock first.")
+            return
+
 
         df_atr = df[[self.atr_key]]
         max_value = df_atr[self.atr_key].max()
@@ -63,16 +60,18 @@ class ATR:
 
 
         if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
-            print("First Indicator MACD")
+            print("First Indicator ATR")
             self.plotter.ax_indicators[self.atr_key] = self.plotter.ax_indicators[Constants.main]
         else:
             # instantiate a second axes that shares the same x-axis
             self.plotter.ax_indicators[self.atr_key] = self.plotter.ax_indicators[Constants.main].twinx()
 
 
-        self.plotter.ax_indicators[self.atr_key].set_ylim(max_value+1, min_value-1)
+        self.plotter.ax_indicators[self.atr_key].set_ylim(min_value-1, max_value+1)
+
+        self.plotter.ax_indicators[self.atr_key].legend(loc="best")
+
+        self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.atr_key]
 
         self.plotter.plot_indicator(df=df_atr, period=period, color=color)
-
-        self.plotter.ax_indicators[self.atr_key].legend(loc="upper left")
 

@@ -12,11 +12,8 @@ class DailyReturn():
         ALPHAAPI = 3
 
 
-    period = None
 
 
-    prices = None
-    daily_return = None
 
 
 
@@ -24,6 +21,8 @@ class DailyReturn():
 
         self.prices = prices
         self.period = period
+        self.daily_return = None
+
 
 
     def get_statistical_data(self):

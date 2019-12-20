@@ -1,4 +1,3 @@
-from plotter.Plotter import Plotter
 from utilities.Constants import Constants
 
 
@@ -15,10 +14,7 @@ class MACD:
         self.macd_key = None
         self.signal_key = None
 
-        if plotter is None:
-            self.plotter = Plotter()
-        else:
-            self.plotter = plotter
+        self.plotter = plotter
 
 
     def calculate(self):
@@ -53,9 +49,12 @@ class MACD:
 
         return df_macd
 
-    def plot_macd(self, df, period=100, ticker=""):
+    def plot_macd(self, df, period=100):
 
-        self.plotter.plot_main(df=df, period=period, ticker=ticker)
+        if self.plotter is None:
+            print("Please Select the main stock first.")
+            return
+
 
         df_macd = df[[self.macd_key]]
         df_macd_signal = df[[self.signal_key]]
@@ -72,15 +71,13 @@ class MACD:
             self.plotter.ax_indicators[self.macd_key] = self.plotter.ax_indicators[Constants.main].twinx()
 
 
-        self.plotter.ax_indicators[self.macd_key].set_ylim(max_value+1, min_value-1)
+        self.plotter.ax_indicators[self.macd_key].set_ylim(min_value-1, max_value+1)
 
-
-
+        self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.macd_key]
         self.plotter.plot_indicator(df=df_macd, period=period)
         self.plotter.plot_indicator(df=df_macd_signal, period=period, color="tab:orange")
 
 
-        self.plotter.ax_indicators[self.macd_key].legend(loc="best")
 
 
 

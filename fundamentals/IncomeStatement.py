@@ -4,12 +4,11 @@ from utilities.RequestHandler import RequestHandler
 
 class IncomeStatement:
 
-    ticker = None
-    data = {}
-
     def __init__(self, ticker):
 
         self.ticker = ticker
+        self.data = {}
+
         print("\n\n--- Scrapping the Income Statement - Ticker: "+self.ticker+" ---")
 
         webpage = "https://finance.yahoo.com/quote/"+ticker+"/financials?p="+ticker

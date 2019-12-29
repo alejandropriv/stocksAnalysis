@@ -2,6 +2,7 @@ from yahoofinancials import YahooFinancials
 from data.HistoricalData import HistoricalData
 
 import pandas as pd
+from utilities.Constants import Constants
 
 import datetime
 import sys
@@ -23,7 +24,7 @@ class YahooFinancialsHistoricalData(HistoricalData):
                                 tickers,
                                 start_date=(datetime.date.today() - datetime.timedelta(1825)).strftime('%Y-%m-%d'),
                                 end_date=datetime.date.today().strftime('%Y-%m-%d'),
-                                time_series=HistoricalData.TIMESERIES.DAILY,
+                                time_series=Constants.TIMESERIES.DAILY,
                                 data_columns=None):
 
         self.tickers = tickers

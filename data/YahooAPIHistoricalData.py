@@ -1,6 +1,7 @@
 from data.HistoricalData import HistoricalData
 import pandas as pd
 import pandas_datareader.data as pdr
+from utilities.Constants import Constants
 
 import sys
 
@@ -11,19 +12,14 @@ class YahooAPIHistoricalData(HistoricalData):
 
     def __init__(self):
         super().__init__()
-        self.high = pd.DataFrame()
-        self.low = pd.DataFrame()
-        self.open = pd.DataFrame()
-        self.close = pd.DataFrame()
-        self.volume = pd.DataFrame()
-        self.adj_close = pd.DataFrame()
+        self.prices = pd.DataFrame()
 
 
     def extract_historical_data(self,
                                 tickers,
                                 start_date=datetime.date.today() - datetime.timedelta(365),
                                 end_date=(datetime.date.today()),
-                                time_series=HistoricalData.TIMESERIES.DAILY,
+                                time_series=Constants.TIMESERIES.DAILY,
                                 data_columns=None):
 
         self.tickers = tickers
@@ -38,22 +34,32 @@ class YahooAPIHistoricalData(HistoricalData):
 
         self.extract_data()
 
+
+
+
     def extract_data(self):
 
         interval = ""
-        if self.time_series == HistoricalData.TIMESERIES.DAILY:
+        if self.time_series == Constants.TIMESERIES.DAILY:
             interval = 'd'
 
-        elif self.time_series == HistoricalData.TIMESERIES.WEEKLY:
+        elif self.time_series == Constants.TIMESERIES.WEEKLY:
             interval = 'w'
 
-        elif self.time_series == HistoricalData.TIMESERIES.MONTHLY:
+        elif self.time_series == Constants.TIMESERIES.MONTHLY:
             interval = 'm'
 
         # extracting stock data (historical close price) for the stocks identified
         for ticker in self.tickers:
 
             attempt = 0
+
+            high_key = Constants.get_high_key(ticker)
+            low_key = Constants.get_low_key(ticker)
+            open_key = Constants.get_open_key(ticker)
+            close_key = Constants.get_close_key(ticker)
+            adj_close_key = Constants.get_adj_close_key(ticker)
+            volume_key = Constants.get_volume_key(ticker)
 
             while attempt <= 5:
                 print("-------------------------------------")
@@ -65,16 +71,16 @@ class YahooAPIHistoricalData(HistoricalData):
 
                     temp.dropna(inplace=True)
 
+
                     # TODO: Validate and put the code to handle different columns
                     if self.data_columns[0] == "all":
 
-                        self.high[ticker] = temp["High"]
-                        self.low[ticker] = temp["Low"]
-                        self.open[ticker] = temp["Open"]
-                        self.close[ticker] = temp["Close"]
-                        self.adj_close[ticker] = temp["Adj Close"]
-                        self.volume[ticker] = temp["Volume"]
-
+                        self.prices[high_key] = temp["High"]
+                        self.prices[low_key] = temp["Low"]
+                        self.prices[open_key] = temp["Open"]
+                        self.prices[close_key] = temp["Close"]
+                        self.prices[adj_close_key] = temp["Adj Close"]
+                        self.prices[volume_key] = temp["Volume"]
 
                     break
 
@@ -87,15 +93,4 @@ class YahooAPIHistoricalData(HistoricalData):
                     continue
 
 
-        print("prices were added for {}".format(ticker))
-        self.high[ticker].bfill(axis=0, inplace=True)
-        self.low[ticker].bfill(axis=0, inplace=True)
-        self.open[ticker].bfill(axis=0, inplace=True)
-        self.close[ticker].bfill(axis=0, inplace=True)
-        self.adj_close[ticker].bfill(axis=0, inplace=True)
-
-        # print(self.high[ticker])
-        # print(self.low[ticker])
-        # print(self.open[ticker])
-        # print(self.close[ticker])
-        # print(self.adj_close[ticker])
+        self.prices.bfill(axis=0, inplace=True)

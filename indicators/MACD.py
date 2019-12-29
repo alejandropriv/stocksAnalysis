@@ -22,15 +22,12 @@ class MACD:
            typical values a = 12; b =26, c =9"""
 
         df_macd = self.price.iloc[:, [0]].copy()
-        ticker = df_macd.columns[0]
+        price_key = df_macd.ticker
 
-        price_key = "{}_{}".format(ticker, "Adj_Close")
-        fast_key = "{}_{}".format(ticker, "MA_Fast")
-        slow_key = "{}_{}".format(ticker, "MA_Slow")
-        self.macd_key = "{}_{}".format(ticker, "MACD")
-        self.signal_key = "{}_{}".format(ticker, "Signal")
-
-        df_macd.rename(columns={ticker: price_key}, inplace=True)
+        fast_key = "{}_{}".format(price_key, "MA_Fast")
+        slow_key = "{}_{}".format(price_key, "MA_Slow")
+        self.macd_key = "{}_{}".format(price_key, "MACD")
+        self.signal_key = "{}_{}".format(price_key, "Signal")
 
         df_macd[fast_key] = df_macd[price_key].ewm(span=self.fast_period,
                                                    min_periods=self.fast_period).mean()
@@ -49,7 +46,7 @@ class MACD:
 
         return df_macd
 
-    def plot_macd(self, df, period=100):
+    def plot_macd(self, df, period=100, color="tab:green"):
 
         if self.plotter is None:
             print("Please Select the main stock first.")
@@ -74,11 +71,6 @@ class MACD:
         self.plotter.ax_indicators[self.macd_key].set_ylim(min_value-1, max_value+1)
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.macd_key]
-        self.plotter.plot_indicator(df=df_macd, period=period)
+        self.plotter.plot_indicator(df=df_macd, period=period, color=color)
         self.plotter.plot_indicator(df=df_macd_signal, period=period, color="tab:orange")
-
-
-
-
-
 

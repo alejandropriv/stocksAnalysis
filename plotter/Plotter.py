@@ -11,6 +11,7 @@ class Plotter:
         self.ax_indicators = None
         self.main_ax_indicator = None
         self.ticker = None
+        self.index = None
 
 
 
@@ -20,19 +21,16 @@ class Plotter:
             print("There is no ticker Information, nothing to be plot")
             return
 
-        if self.ticker is None or self.ticker is "":
-            self.ticker = ticker
-
-
+        self.ticker = ticker[0]
 
         x = df.iloc[:, [0]]
-        index = x.iloc[-period:, :].index
+        self.index = x.iloc[-period:, :].index
 
         if self.fig is None or self.ax_main is None or self.ax_indicators is None:
 
-            adj_close_key = "{}_{}".format(self.ticker, Constants.adj_close)
+            adj_close_key = Constants.get_adj_close_key(ticker=self.ticker)
 
-            volume_key = "{}_{}".format(self.ticker, Constants.volume)
+            volume_key = Constants.get_volume_key(ticker=self.ticker)
 
             time_series_adj_close = df.iloc[-period:, :][adj_close_key]
 
@@ -49,22 +47,17 @@ class Plotter:
                                                                                sharex=True,
                                                                                gridspec_kw={'height_ratios': [2, 1]})
 
-            self.set_volume(index, time_series_volume)
+            self.set_volume(time_series_volume)
 
-            self.set_stock_price(index, time_series_adj_close, color)
+            self.set_stock_price(time_series_adj_close, color)
 
 
         else:  # here goes code for i.e bollinger bands
             print("Main stock data has already been set.")
 
 
-    def set_indicator_in_main_plot(self, index, time_series, color="green"):
-        self.ax_main[Constants.adj_close].plot(index, time_series, color=color)
-        self.ax_main[Constants.adj_close].legend()
 
-
-
-    def set_volume(self, index, time_series_volume):
+    def set_volume(self, time_series_volume):
         self.ax_main[Constants.volume].set_ylim(0, 100000000)
         self.ax_main[Constants.volume].tick_params(axis='y', rotation=0, labelcolor='tab:blue')
 
@@ -73,11 +66,11 @@ class Plotter:
         self.ax_main[Constants.volume].spines["right"].set_alpha(0.0)
         self.ax_main[Constants.volume].spines["left"].set_alpha(1)
 
-        self.ax_main[Constants.volume].bar(index, time_series_volume, color='tab:blue', alpha=0.5)
+        self.ax_main[Constants.volume].bar(self.index, time_series_volume, color='tab:blue', alpha=0.5)
         self.ax_main[Constants.volume].legend()
 
 
-    def set_stock_price(self, index, time_series_adj_close, color="black"):
+    def set_stock_price(self, time_series_adj_close, color="black"):
 
         # Decorations
         # ax1 (left Y axis)
@@ -97,7 +90,7 @@ class Plotter:
         self.ax_main[Constants.adj_close].spines["right"].set_alpha(0.0)
         self.ax_main[Constants.adj_close].spines["left"].set_alpha(1)
 
-        self.ax_main[Constants.adj_close].plot(index, time_series_adj_close, color=color)
+        self.ax_main[Constants.adj_close].plot(self.index, time_series_adj_close, color=color)
         self.ax_main[Constants.adj_close].legend()
 
         #  Set the layout of the indicators plot
@@ -122,15 +115,13 @@ class Plotter:
 
         indicator_key = df.columns[0]
 
-        x = df.iloc[:, [0]]
-        x = x.iloc[-period:, :].index
         time_series_indicator = df.iloc[-period:, :][indicator_key]
 
         # Plot Line2 (Right Y Axis)
         self.fig.tight_layout()
 
 
-        self.main_ax_indicator.plot(x, time_series_indicator, color=color)
+        self.main_ax_indicator.plot(self.index, time_series_indicator, color=color)
 
         self.main_ax_indicator.legend(loc="best")
 

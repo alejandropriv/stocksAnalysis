@@ -47,7 +47,7 @@ class ATR:
         return df_atr2
 
     # expect Stock, volume, Indicator
-    def plot_atr(self, df, period=100, ticker="", color="tab:green"):
+    def plot_atr(self, df, period=100, color="tab:green"):
 
         if self.plotter is None:
             print("Please Select the main stock first.")

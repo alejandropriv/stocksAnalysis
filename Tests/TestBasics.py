@@ -1,12 +1,8 @@
 import unittest
-from PlotData import PlotData
 from Stock import Stock
 from data.HistoricalData import HistoricalData
 
 import pprint
-
-
-from StockPlot import StockPlot
 
 
 class TestBasics(unittest.TestCase):

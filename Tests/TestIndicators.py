@@ -102,7 +102,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-        self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        #self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
         self.calculate_rsi(period=period, plotter=self.stock.plotter)
 
         print("Analysis has been run")
@@ -150,10 +150,10 @@ class TestBasics(unittest.TestCase):
 
         macd_ind = MACD(df=price_close_adj, plotter=plotter)
 
-        df = macd_ind.calculate()
+        macd_ind.calculate()
 
         # The period is determined by the TIMESERIES chosen
-        macd_ind.plot(df=df, period=period)
+        macd_ind.plot(period=period)
 
         return macd_ind.plotter
 
@@ -173,10 +173,10 @@ class TestBasics(unittest.TestCase):
         prices.ticker = self.tickers[0]
 
         atr_ind = ATR(df=prices, n=14, plotter=plotter)
-        df = atr_ind.calculate()
+        atr_ind.calculate()
 
         # The period is determined by the TIMESERIES chosen
-        atr_ind.plot(df=df, period=period, color="tab:red")
+        atr_ind.plot(period=period, color="tab:red")
 
         return atr_ind.plotter
 
@@ -194,10 +194,10 @@ class TestBasics(unittest.TestCase):
         prices.ticker = self.tickers[0]
 
         rsi_ind = RSI(df=prices, n=14, plotter=plotter)
-        df = rsi_ind.calculate
+        rsi_ind.calculate()
 
         # The period is determined by the TIMESERIES chosen
-        rsi_ind.plot(df=df, period=period, color="tab:red")
+        rsi_ind.plot(period=period, color="tab:red")
 
         return rsi_ind.plotter
 
@@ -216,9 +216,9 @@ class TestBasics(unittest.TestCase):
         price_close_adj.ticker = self.tickers[0]
 
         bb_ind = BollingerBands(df=price_close_adj, n=20, plotter=plotter)
-        df = bb_ind.calculate()
+        bb_ind.calculate()
 
-        bb_ind.plot(df=df, period=period, color="tab:red")
+        bb_ind.plot(period=period, color="tab:red")
 
         return bb_ind.plotter
 

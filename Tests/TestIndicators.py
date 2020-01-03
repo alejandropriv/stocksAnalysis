@@ -205,8 +205,6 @@ class TestBasics(unittest.TestCase):
 
     def calculate_bollinger_bands(self, period=100, plotter=None):
 
-        ticker = "FB"
-
         self.get_historical_data()
 
         price_close_adj = self.stock.get_prices_data(tickers=self.tickers,
@@ -217,7 +215,7 @@ class TestBasics(unittest.TestCase):
 
         price_close_adj.ticker = self.tickers[0]
 
-        bb_ind = BollingerBands(adj_close=price_close_adj, n=20, plotter=plotter)
+        bb_ind = BollingerBands(df=price_close_adj, n=20, plotter=plotter)
         df = bb_ind.calculate()
 
         bb_ind.plot(df=df, period=period, color="tab:red")

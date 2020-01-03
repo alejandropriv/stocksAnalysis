@@ -69,6 +69,8 @@ class YahooAPIHistoricalData(HistoricalData):
                 try:
                     temp = pdr.get_data_yahoo(ticker, self.start_date, self.end_date, interval=interval)
 
+                    print("Ticker: {0} - data received! ".format(ticker))
+
                     temp.dropna(inplace=True)
 
 

@@ -5,13 +5,23 @@ from utilities.Constants import Constants
 class BollingerBands:
 
     # price is Dataframe
-    def __init__(self, adj_close, n=20, plotter=None):
-        self.n = n
-        self.adj_close = adj_close
+    def __init__(self, df=None, n=20, plotter=None):
 
-        self.bb_up_key = None
-        self.bb_down_key = None
-        self.bb_width_key = None
+        if df is None:
+            print("Error: data not found")
+            raise IOError
+
+        # Set dataframe keys
+        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
+        self.bb_up_key = Constants.get_key(self.ticker, "BB_up")
+        self.bb_down_key = Constants.get_key(self.ticker, "BB_down")
+        self.bb_width_key = Constants.get_key(self.ticker, "BB_width")
+
+        self.n = n
+        self.df_bb = df[[self.adj_close_key]]
+
+        self.ticker = df.ticker
+
 
         if plotter is None:
             self.plotter = Plotter()
@@ -22,35 +32,32 @@ class BollingerBands:
     def calculate(self):
         """function to calculate Bollinger Bands"""
 
-        df_bb = self.adj_close.iloc[:, [0]].copy()
+        # Set temp dataframe keys
+        adj_close_key = "{}_{}".format(self.ticker, "Adj_Close")
+        ma_key = "{}_{}".format(self.ticker, "MA")
 
-        ticker = df_bb.columns[0]
 
+        self.df_bb.rename(columns={self.ticker: adj_close_key}, inplace=True)
 
-        adj_close_key = "{}_{}".format(ticker, "Adj_Close")
-        ma_key = "{}_{}".format(ticker, "MA")
-        self.bb_up_key = "{}_{}".format(ticker, "BB_up")
-        self.bb_down_key = "{}_{}".format(ticker, "BB_down")
-        self.bb_width_key = "{}_{}".format(ticker, "BB_width")
-
-        df_bb.rename(columns={ticker: adj_close_key}, inplace=True)
-
-        df_bb[ma_key] = df_bb[adj_close_key].rolling(self.n).mean()
+        self.df_bb[ma_key] = \
+            self.df_bb[adj_close_key].rolling(self.n).mean()
 
         # ddof=0 is required since we want to take the standard deviation of the population and not sample
-        df_bb[self.bb_up_key] = df_bb[ma_key] + 2 * df_bb[adj_close_key].rolling(self.n).std(ddof=0)
+        self.df_bb[self.bb_up_key] = \
+            self.df_bb[ma_key] + 2 * self.df_bb[adj_close_key].rolling(self.n).std(ddof=0)
 
         # ddof=0 is required since we want to take the standard deviation of the population and not sample
-        df_bb[self.bb_down_key] = df_bb[ma_key] - 2 * df_bb[adj_close_key].rolling(self.n).std(
+        self.df_bb[self.bb_down_key] = \
+            self.df_bb[ma_key] - 2 * self.df_bb[adj_close_key].rolling(self.n).std(
             ddof=0)
-        df_bb[self.bb_width_key] = df_bb[self.bb_up_key] - df_bb[self.bb_down_key]
-        df_bb.dropna(inplace=True)
+        self.df_bb[self.bb_width_key] = self.df_bb[self.bb_up_key] - self.df_bb[self.bb_down_key]
+        self.df_bb.dropna(inplace=True)
 
-        return df_bb
+        return self.df_bb
 
 
     # expect Stock, volume, Indicator
-    def plot_bollinger_bands(self, df, period=100, color="tab:green"):
+    def plot(self, df, period=100, color="tab:green"):
 
 
 

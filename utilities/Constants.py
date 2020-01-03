@@ -3,7 +3,7 @@ from enum import Enum
 
 class Constants:
 
-    main = "Template_indicator_axis"
+    main_indicator_axis = "Template_indicator_axis"
     adj_close = "Adj_Close"
     volume = "Volume"
 
@@ -44,5 +44,10 @@ class Constants:
     @staticmethod
     def get_volume_key(ticker):
         key = "{}_{}".format(ticker, "Volume")
+        return key
+
+    @staticmethod
+    def get_key(ticker, base_key):
+        key = "{}_{}".format(ticker, base_key)
         return key
 

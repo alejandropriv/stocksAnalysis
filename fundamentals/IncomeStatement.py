@@ -14,7 +14,9 @@ class IncomeStatement:
         webpage = "https://finance.yahoo.com/quote/"+ticker+"/financials?p="+ticker
 
         request_handler = RequestHandler()
+
         src = request_handler.load_webpage(webpage)
+
 
         self.set_income_statement_data(src.content)
 

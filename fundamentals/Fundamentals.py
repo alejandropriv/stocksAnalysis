@@ -20,7 +20,7 @@ class Fundamentals:
         self.cash_flow = None
         self.balance_sheet = None
         self.statistics = None
-        self.ticker = None
+
 
     def get_data(self):
 

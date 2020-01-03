@@ -40,12 +40,12 @@ class Plotter:
             self.ax_indicators = dict()
 
             # Plot Line1 (Left Y Axis)
-            self.fig, (self.ax_main[Constants.volume], self.ax_indicators[Constants.main]) = plt.subplots(2,
-                                                                               1,
-                                                                               figsize=(16, 9),
-                                                                               dpi=80,
-                                                                               sharex=True,
-                                                                               gridspec_kw={'height_ratios': [2, 1]})
+            self.fig, (self.ax_main[Constants.volume], self.ax_indicators[Constants.main_indicator_axis]) = plt.subplots(2,
+                                                                                                                         1,
+                                                                                                                         figsize=(16, 9),
+                                                                                                                         dpi=80,
+                                                                                                                         sharex=True,
+                                                                                                                         gridspec_kw={'height_ratios': [2, 1]})
 
             self.set_volume(time_series_volume)
 
@@ -95,12 +95,12 @@ class Plotter:
 
         #  Set the layout of the indicators plot
         #  Indicator plot layout
-        self.ax_indicators[Constants.main].tick_params(axis='y', labelcolor='tab:green', size=20)
-        self.ax_indicators[Constants.main].grid(alpha=.4)
-        self.ax_indicators[Constants.main].spines["top"].set_alpha(0.0)
-        self.ax_indicators[Constants.main].spines["bottom"].set_alpha(1)
-        self.ax_indicators[Constants.main].spines["right"].set_alpha(0.0)
-        self.ax_indicators[Constants.main].spines["left"].set_alpha(1)
+        self.ax_indicators[Constants.main_indicator_axis].tick_params(axis='y', labelcolor='tab:green', size=20)
+        self.ax_indicators[Constants.main_indicator_axis].grid(alpha=.4)
+        self.ax_indicators[Constants.main_indicator_axis].spines["top"].set_alpha(0.0)
+        self.ax_indicators[Constants.main_indicator_axis].spines["bottom"].set_alpha(1)
+        self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
+        self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
 
 
     # this has to be called after calling plot_main

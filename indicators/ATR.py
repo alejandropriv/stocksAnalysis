@@ -48,16 +48,15 @@ class ATR:
         return df_atr2
 
     # expect Stock, volume, Indicator
-    def plot(self, df, period=100, color="tab:green"):
+    def plot(self, period=100, color="tab:green"):
 
         if self.plotter is None:
             print("Please Select the main stock first.")
             raise IOError
 
 
-        df_atr = df[[self.atr_key]]
-        max_value = df_atr[self.atr_key].max()
-        min_value = df_atr[self.atr_key].min()
+        max_value = self.df_atr[self.atr_key].max()
+        min_value = self.df_atr[self.atr_key].min()
 
 
         if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
@@ -76,5 +75,5 @@ class ATR:
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.atr_key]
 
-        self.plotter.plot_indicator(df=df_atr, period=period, color=color)
+        self.plotter.plot_indicator(df=self.df_atr[[self.atr_key]], period=period, color=color)
 

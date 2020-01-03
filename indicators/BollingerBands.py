@@ -36,22 +36,21 @@ class BollingerBands:
         """function to calculate Bollinger Bands"""
 
         # Set temp dataframe keys
-        adj_close_key = "{}_{}".format(self.ticker, "Adj_Close")
-        ma_key = "{}_{}".format(self.ticker, "MA")
+        ma_key = Constants.get_key(self.ticker, "MA")
 
 
-        self.df_bb.rename(columns={self.ticker: adj_close_key}, inplace=True)
+        self.df_bb.rename(columns={self.ticker: self.adj_close_key}, inplace=True)
 
         self.df_bb[ma_key] = \
-            self.df_bb[adj_close_key].rolling(self.n).mean()
+            self.df_bb[self.adj_close_key].rolling(self.n).mean()
 
         # ddof=0 is required since we want to take the standard deviation of the population and not sample
         self.df_bb[self.bb_up_key] = \
-            self.df_bb[ma_key] + 2 * self.df_bb[adj_close_key].rolling(self.n).std(ddof=0)
+            self.df_bb[ma_key] + 2 * self.df_bb[self.adj_close_key].rolling(self.n).std(ddof=0)
 
         # ddof=0 is required since we want to take the standard deviation of the population and not sample
         self.df_bb[self.bb_down_key] = \
-            self.df_bb[ma_key] - 2 * self.df_bb[adj_close_key].rolling(self.n).std(
+            self.df_bb[ma_key] - 2 * self.df_bb[self.adj_close_key].rolling(self.n).std(
             ddof=0)
         self.df_bb[self.bb_width_key] = self.df_bb[self.bb_up_key] - self.df_bb[self.bb_down_key]
         self.df_bb.dropna(inplace=True)
@@ -60,15 +59,15 @@ class BollingerBands:
 
 
     # expect Stock, volume, Indicator
-    def plot(self, df, period=100, color="tab:green"):
+    def plot(self, period=100, color="tab:green"):
 
 
 
-        x = df.iloc[:, [0]]
+        x = self.df_bb.iloc[:, [0]]
         index = x.iloc[-period:, :].index
 
         # put period for the data also
-        df = df.iloc[-period:, :]
+        df = self.df_bb.iloc[-period:, :]
 
         self.plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_down_key], color=color)
         self.plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_up_key], color=color)

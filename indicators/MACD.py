@@ -49,16 +49,15 @@ class MACD:
 
         return self.df_macd
 
-    def plot(self, df, period=100, color="tab:green"):
+    def plot(self, period=100, color="tab:green"):
 
         if self.plotter is None:
             print("Please Select the main stock first.")
             raise IOError
 
-        df_macd = df[[self.macd_key]]
-        df_macd_signal = df[[self.signal_key]]
-        max_value = df_macd[self.macd_key].max()
-        min_value = df_macd[self.macd_key].min()
+
+        max_value = self.df_macd[self.macd_key].max()
+        min_value = self.df_macd[self.macd_key].min()
 
         if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
             print("First Indicator MACD")
@@ -72,5 +71,5 @@ class MACD:
         self.plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.macd_key]
-        self.plotter.plot_indicator(df=df_macd, period=period, color=color)
-        self.plotter.plot_indicator(df=df_macd_signal, period=period, color="tab:orange")
+        self.plotter.plot_indicator(df=self.df_macd[[self.macd_key]], period=period, color=color)
+        self.plotter.plot_indicator(df=self.df_macd[[self.signal_key]], period=period, color="tab:orange")

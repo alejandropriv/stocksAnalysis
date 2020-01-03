@@ -85,6 +85,8 @@ class RSI:
         self.plotter.ax_indicators[self.rsi_key].legend(loc="best")
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.rsi_key]
+        self.plotter.ax_indicators[self.rsi_key].tick_params(axis='y', labelcolor=color, size=20)
+
 
         self.plotter.plot_indicator(df=self.df_rsi[[self.rsi_key]], period=period, color=color)
 

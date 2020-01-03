@@ -74,6 +74,8 @@ class ATR:
         self.plotter.ax_indicators[self.atr_key].legend(loc="best")
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.atr_key]
+        self.plotter.ax_indicators[self.atr_key].tick_params(axis='y', labelcolor=color, size=20)
+
 
         self.plotter.plot_indicator(df=self.df_atr[[self.atr_key]], period=period, color=color)
 

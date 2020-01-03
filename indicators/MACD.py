@@ -71,5 +71,6 @@ class MACD:
         self.plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.macd_key]
+        self.plotter.ax_indicators[self.macd_key].tick_params(axis='y', labelcolor=color, size=20)
         self.plotter.plot_indicator(df=self.df_macd[[self.macd_key]], period=period, color=color)
         self.plotter.plot_indicator(df=self.df_macd[[self.signal_key]], period=period, color="tab:orange")

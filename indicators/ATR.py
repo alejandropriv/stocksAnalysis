@@ -20,9 +20,9 @@ class ATR:
 
 
         self.n = n
-        self.df_atr = df[[self.low_key]]
-        self.df_atr[self.high_key] = df[self.high_key]
-        self.df_atr[self.adj_close_key] = df[self.adj_close_key]
+        self.df_atr = df[[self.low_key]].copy()
+        self.df_atr[self.high_key] = df[[self.high_key]]
+        self.df_atr[self.adj_close_key] = df[[self.adj_close_key]]
 
         self.plotter = plotter
 

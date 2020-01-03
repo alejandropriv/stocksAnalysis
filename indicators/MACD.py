@@ -20,7 +20,7 @@ class MACD:
         self.slow_period = slow_period
         self.signal_period = signal_period
 
-        self.df_macd = df[[self.adj_close_key]]
+        self.df_macd = df[[self.adj_close_key]].copy()
 
         self.plotter = plotter
 

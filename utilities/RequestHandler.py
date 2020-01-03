@@ -1,33 +1,37 @@
 import requests
+import time
 
 
 class RequestHandler:
 
-    def __init__(self):
+    def __init__(self, retries=5):
         print("Request Handler created")
-
+        self.retries = retries
 
     def load_webpage(self, webpage):
         if webpage is not None:
 
-            src = requests.get(webpage)
+            for retry in range(0, self.retries):
+                time_to_sleep = retry * .5+1
 
-            status_code = src.status_code
+                src = requests.get(webpage)
 
-            #headers = result.headers
-            #print(headers)
+                status_code = src.status_code
+
+                # headers = result.headers
+                # print(headers)
+
+                if status_code == 200:
+                    print("webpage: {0} loaded successfully, Retry: {1}".format(webpage, retry))
+                    return src
+
+                else:
+                    print("webpage: {0} not loaded with Status Code: {1} sleeping: {2}".format(webpage, status_code, time_to_sleep))
+                    time.sleep(time_to_sleep)
+
+            raise TimeoutError  # TODO: change this to a specific error
 
 
-            if status_code == 200:
-                print("webpage: " + webpage + " loaded successfully")
-                return src
-
-            else:
-                #set error and return
-                return None
         else:
             #  Set error and return
             raise Exception("Errror Error")
-
-
-

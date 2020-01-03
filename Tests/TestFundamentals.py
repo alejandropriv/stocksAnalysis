@@ -1,7 +1,16 @@
 import unittest
-from Stock import Stock
-from data.HistoricalData import HistoricalData
 
+import matplotlib.pyplot as plt
+
+from Stock import Stock
+from indicators.ATR import ATR
+from indicators.MACD import MACD
+from indicators.RSI import RSI
+
+from indicators.BollingerBands import BollingerBands
+from utilities.Constants import Constants
+
+import datetime
 import pprint
 
 
@@ -14,49 +23,15 @@ class TestBasics(unittest.TestCase):
 
     stock = None
 
-    def test_datasources_yahoo_api(self):
 
-        data_source_type = HistoricalData.DATASOURCETYPE.YAHOOAPI
-
-        self.tickers = ["FB", "TSLA", "UBER"]
-
-
-        self.run_analysis(data_source_type)
-
-        print("Analysis has been run")
-
-
-    def test_datasources_yahoo_financials(self):
-
-        data_source_type = HistoricalData.DATASOURCETYPE.YAHOOFINANCIALS
-
-        self.tickers = ["FB", "TSLA", "UBER"]
-        self.run_analysis(data_source_type)
-
-
-
-
-    def run_analysis(self, data_source_type):
-
-        self.stock = Stock(self.tickers)
-        self.stock.set_data_source(data_source_type=data_source_type)
-
-        # self.get_fundamentals()
-
-        self.get_historical_data()
-
-
-
-    def get_fundamentals(self):
+    def test_fundamentals(self):
 
         if self.fundamentals:
             self.stock.get_fundamentals()
 
             pp = pprint.PrettyPrinter(indent=4)
 
-
             for ticker, data in self.stock.fundamentals.items():
-
                 print("--------- TICKER: {} ----------------".format(ticker))
                 print("--------- INCOME STATEMENT: {} ----------------".format(ticker))
                 pp.pprint(data.income_statement.get_data())
@@ -66,10 +41,6 @@ class TestBasics(unittest.TestCase):
 
                 print("--------- CASH FLOW: {} ----------------".format(ticker))
                 pp.pprint(data.cash_flow.get_data())
-
-
-
-
 
     def get_historical_data(self):
         if self.historical_data:

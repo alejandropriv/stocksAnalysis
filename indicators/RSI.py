@@ -16,15 +16,13 @@ class RSI:
         self.adj_close_key = Constants.get_adj_close_key(self.ticker)
         self.rsi_key = Constants.get_key(self.ticker, "RSI")
 
-
         self.n = n
-        self.adj_close = df[[self.adj_close_key]]
+        self.df_rsi = df[[self.adj_close_key]].copy()
 
         self.plotter = plotter
 
 
 
-    @property
     def calculate(self):
         """"function to calculate RSI"""
 
@@ -36,44 +34,42 @@ class RSI:
         rs_key = Constants.get_key(self.ticker, "RS")
 
 
-        df_rsi = self.adj_close.iloc[:, [0]].copy()
-        df_rsi[delta_key] = self.adj_close - self.adj_close.shift(1)
-        df_rsi[gain_key] = np.where(df_rsi[delta_key] >= 0, df_rsi[delta_key], 0)
-        df_rsi[loss_key] = np.where(df_rsi[delta_key] < 0, abs(df_rsi[delta_key]), 0)
+        self.df_rsi[delta_key] = self.df_rsi[self.adj_close_key] - self.df_rsi[self.adj_close_key].shift(1)
+        self.df_rsi[gain_key] = np.where(self.df_rsi[delta_key] >= 0, self.df_rsi[delta_key], 0)
+        self.df_rsi[loss_key] = np.where(self.df_rsi[delta_key] < 0, abs(self.df_rsi[delta_key]), 0)
         avg_gain = []
         avg_loss = []
-        gain = df_rsi[gain_key].tolist()
-        loss = df_rsi[loss_key].tolist()
-        for i in range(len(df_rsi)):
+        gain = self.df_rsi[gain_key].tolist()
+        loss = self.df_rsi[loss_key].tolist()
+        for i in range(len(self.df_rsi)):
             if i < self.n:
                 avg_gain.append(np.NaN)
                 avg_loss.append(np.NaN)
             elif i == self.n:
-                avg_gain.append(df_rsi[gain_key].rolling(self.n).mean().tolist()[self.n])
-                avg_loss.append(df_rsi[loss_key].rolling(self.n).mean().tolist()[self.n])
+                avg_gain.append(self.df_rsi[gain_key].rolling(self.n).mean().tolist()[self.n])
+                avg_loss.append(self.df_rsi[loss_key].rolling(self.n).mean().tolist()[self.n])
             elif i > self.n:
                 avg_gain.append(((self.n - 1) * avg_gain[i - 1] + gain[i]) / self.n)
                 avg_loss.append(((self.n - 1) * avg_loss[i - 1] + loss[i]) / self.n)
 
 
-        df_rsi[avg_gain_key] = np.array(avg_gain)
-        df_rsi[avg_loss_key] = np.array(avg_loss)
-        df_rsi[rs_key] = df_rsi[avg_gain_key] / df_rsi[avg_loss_key]
-        df_rsi[self.rsi_key] = 100 - (100 / (1 + df_rsi[rs_key]))
-        return df_rsi[self.rsi_key]
+        self.df_rsi[avg_gain_key] = np.array(avg_gain)
+        self.df_rsi[avg_loss_key] = np.array(avg_loss)
+        self.df_rsi[rs_key] = self.df_rsi[avg_gain_key] / self.df_rsi[avg_loss_key]
+        self.df_rsi[self.rsi_key] = 100 - (100 / (1 + self.df_rsi[rs_key]))
+        return self.df_rsi[self.rsi_key]
 
 
     # expect Stock, volume, Indicator
-    def plot(self, df, period=100, color="tab:green"):
+    def plot(self, period=100, color="tab:green"):
 
         if self.plotter is None:
             print("Please Select the main stock first.")
             raise IOError
 
 
-        df_rsi = df[[self.rsi_key]]
-        max_value = df_rsi[self.rsi_key].max()
-        min_value = df_rsi[self.rsi_key].min()
+        max_value = self.df_rsi[self.rsi_key].max()
+        min_value = self.df_rsi[self.rsi_key].min()
 
 
         if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
@@ -90,5 +86,5 @@ class RSI:
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.rsi_key]
 
-        self.plotter.plot_indicator(df=df_atr, period=period, color=color)
+        self.plotter.plot_indicator(df=self.df_rsi[[self.rsi_key]], period=period, color=color)
 

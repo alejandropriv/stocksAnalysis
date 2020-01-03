@@ -11,6 +11,9 @@ class BollingerBands:
             print("Error: data not found")
             raise IOError
 
+        self.ticker = df.ticker
+
+
         # Set dataframe keys
         self.adj_close_key = Constants.get_adj_close_key(self.ticker)
         self.bb_up_key = Constants.get_key(self.ticker, "BB_up")
@@ -18,7 +21,7 @@ class BollingerBands:
         self.bb_width_key = Constants.get_key(self.ticker, "BB_width")
 
         self.n = n
-        self.df_bb = df[[self.adj_close_key]]
+        self.df_bb = df[[self.adj_close_key]].copy()
 
         self.ticker = df.ticker
 

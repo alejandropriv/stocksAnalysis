@@ -141,6 +141,43 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
+
+
+    def test_macd_atr_rsi_bollinger_bands(self):
+        self.tickers = ["TSLA"]  # , "FB", "UBER"]
+
+        past_date_interval = 365
+        period = 200
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+        self.stock.plot(period=period)
+
+        self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        self.stock.plotter = self.calculate_atr(period=period, plotter=self.stock.plotter)
+
+
+        self.stock.plotter = self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
+
+
+        #todo put this in a different subplot
+        self.stock.plotter = self.calculate_rsi(period=period, plotter=self.stock.plotter)
+
+        # added these three lines
+        # lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
+
+        # lns = lns1 + lns2 + lns3
+        # labs = [l.get_label() for l in lns]
+        # ax.legend(lns, labs, loc=0)
+
+        print("Analysis has been run")
+
+        plt.show()
+
     def calculate_macd(self, period=100, plotter=None):
 
         self.get_historical_data()
@@ -197,7 +234,7 @@ class TestBasics(unittest.TestCase):
         rsi_ind.calculate()
 
         # The period is determined by the TIMESERIES chosen
-        rsi_ind.plot(period=period, color="tab:red")
+        rsi_ind.plot(period=period, color="tab:purple")
 
         return rsi_ind.plotter
 

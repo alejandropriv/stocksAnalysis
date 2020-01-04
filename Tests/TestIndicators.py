@@ -7,6 +7,7 @@ from indicators.ATR import ATR
 from indicators.MACD import MACD
 from indicators.RSI import RSI
 
+
 from indicators.BollingerBands import BollingerBands
 from utilities.Constants import Constants
 
@@ -60,6 +61,28 @@ class TestBasics(unittest.TestCase):
         self.stock.plot(period=period)
 
         self.calculate_atr(period=period, plotter=self.stock.plotter)
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
+    def test_adx(self):
+
+        self.tickers = ["FB"]  # , "TSLA", "UBER"]
+
+        past_date_interval = 365
+        period = 200
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+        self.stock.plot(period=period)
+
+        self.calculate_adx(period=period, plotter=self.stock.plotter)
 
         print("Analysis has been run")
 
@@ -238,6 +261,27 @@ class TestBasics(unittest.TestCase):
 
         return rsi_ind.plotter
 
+
+
+    def calculate_adx(self, period=100, plotter=None):
+
+        self.get_historical_data()
+
+        prices = self.stock.get_prices_data(tickers=self.tickers,
+                                            has_high_key=True,
+                                            has_low_key=True,
+                                            has_adj_close_key=True,
+                                            has_volume_key=False)
+
+        prices.ticker = self.tickers[0]
+
+        ind = ADX(df=prices, n=14, plotter=plotter)
+        ind.calculate()
+
+        # The period is determined by the TIMESERIES chosen
+        ind.plot(period=period, color="tab:pink")
+
+        return ind.plotter
 
 
     def calculate_bollinger_bands(self, period=100, plotter=None):

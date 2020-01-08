@@ -6,6 +6,8 @@ from Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
 from indicators.RSI import RSI
+from indicators.ADX import ADX
+from indicators.OBV import OBV
 
 
 from indicators.BollingerBands import BollingerBands
@@ -69,7 +71,7 @@ class TestBasics(unittest.TestCase):
 
     def test_adx(self):
 
-        self.tickers = ["FB"]  # , "TSLA", "UBER"]
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
         period = 200
@@ -88,6 +90,30 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
+
+    def test_obv(self):
+
+        self.tickers = ["TSLA"]  # "FB", "TSLA", "UBER"]
+
+        past_date_interval = 365
+        period = 200
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+        self.stock.plot(period=period)
+
+        #self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        self.calculate_obv(period=period, plotter=self.stock.plotter)
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
     def test_macd_atr(self):
 
         self.tickers = ["FB"]  # , "TSLA", "UBER"]
@@ -105,28 +131,6 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
         self.calculate_atr(period=period, plotter=self.stock.plotter)
-
-        print("Analysis has been run")
-
-        plt.show()
-
-    def test_rsi(self):
-
-        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
-
-        past_date_interval = 365
-        period = 200
-
-        self.stock = Stock(self.tickers)
-
-        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
-                                       end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
-
-        self.stock.plot(period=period)
-
-        #self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
-        self.calculate_rsi(period=period, plotter=self.stock.plotter)
 
         print("Analysis has been run")
 
@@ -208,14 +212,14 @@ class TestBasics(unittest.TestCase):
         price_close_adj = self.stock.get_prices_data(tickers=self.tickers, has_adj_close_key=True, has_volume_key=False)
         price_close_adj.ticker = self.tickers[0]
 
-        macd_ind = MACD(df=price_close_adj, plotter=plotter)
+        macd_ind = MACD(df=price_close_adj)
 
         macd_ind.calculate()
 
         # The period is determined by the TIMESERIES chosen
-        macd_ind.plot(period=period)
+        plotter = macd_ind.plot(plotter=plotter, period=period)
 
-        return macd_ind.plotter
+        return plotter
 
 
 
@@ -280,6 +284,27 @@ class TestBasics(unittest.TestCase):
 
         # The period is determined by the TIMESERIES chosen
         ind.plot(period=period, color="tab:pink")
+
+        return ind.plotter
+
+
+    def calculate_obv(self, period=100, plotter=None):
+
+        self.get_historical_data()
+
+        prices = self.stock.get_prices_data(tickers=self.tickers,
+                                            has_high_key=False,
+                                            has_low_key=False,
+                                            has_adj_close_key=True,
+                                            has_volume_key=True)
+
+        prices.ticker = self.tickers[0]
+
+        ind = OBV(df=prices, n=14, plotter=plotter)
+        ind.calculate()
+
+        # The period is determined by the TIMESERIES chosen
+        ind.plot(period=period, color="tab:purple")
 
         return ind.plotter
 

@@ -42,10 +42,10 @@ class ATR:
         self.df_atr[self.atr_key] = self.df_atr[tr_key].rolling(self.n).mean()
         # df[atr_key] = df[tr_key].ewm(span=n,adjust=False,min_periods=n).mean()
 
-        self.df_atr.dropna(inplace=True)
+        #self.df_atr.dropna(inplace=True, axis=0)
 
-        df_atr2 = self.df_atr.drop([h_l_key, h_pc_key, l_pc_key], axis=1)
-        return df_atr2
+        self.df_atr.drop([h_l_key, h_pc_key, l_pc_key], axis=1, inplace=True)
+        return self.df_atr
 
     # expect Stock, volume, Indicator
     def plot(self, period=100, color="tab:green"):

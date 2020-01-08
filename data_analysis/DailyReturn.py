@@ -13,10 +13,6 @@ class DailyReturn():
 
 
 
-
-
-
-
     def __init__(self, prices, period):
 
         self.prices = prices

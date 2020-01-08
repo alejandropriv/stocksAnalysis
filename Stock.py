@@ -135,90 +135,92 @@ class Stock:
         for priceType in price_types:
             if priceType == "adj_close":
 
-                # TODO check the ticker type, as it is decomposing FB into "F" "B"
                 price_info = self.get_prices_data(ticker, has_adj_close_key=True, has_volume_key=True)
 
                 self.plotter.plot_main(df=price_info, period=period, ticker=ticker)
 
 
-def get_prices_high(self):
-    method_tag = "get_prices_high"
-
-    if self.data_source is not None:
-        if self.data_source.high is not None:
-            prices = self.data_source.high
-
-        else:
-            print("Getting Historical data first")
-            self.get_historical_data()
-            prices = self.data_source.high
-
-    else:
-        print("There has been an error in {}".format(method_tag))
-        raise ValueError
-
-    if prices.empty == True:
-        print("There has been an error in {}".format(method_tag))
-        raise ValueError
-
-    return prices
 
 
-def get_prices_low(self):
-    method_tag = "get_prices_close_adj"
 
-    if self.data_source is not None:
-        if self.data_source.low is not None:
-            prices = self.data_source.low
-
-        else:
-            print("Getting Historical data first")
-            self.get_historical_data()
-            prices = self.data_source.low
-
-    else:
-        print("There has been an error in {}".format(method_tag))
-        raise ValueError
-
-    if prices.empty == True:
-        print("There has been an error in {}".format(method_tag))
-        raise ValueError
-
-    return prices
-
-
-def get_volume(self, tickers=None):
-    method_tag = "get_volume"
-
-    if tickers is None:
-        print("Default Tickers = ", self.tickers)
-        tickers = self.tickers
-
-    if self.data_source is not None:
-        if self.data_source.prices is None or self.data_source.prices.empty is True:
-            print("No historical data available, call method self.get_historical_data() first")
-            raise NotImplementedError  # here there should be an error object
-
-        volume_keys = []
-
-        for ticker in tickers:
-            volume_keys.append(Constants.get_volume_key(ticker))
-
-        if len(volume_keys) > 0:
-
-            volume = self.data_source.prices.loc[:, volume_keys]
-
-
-        else:
-            print("{} - There are no adj_close prices, for ticker:{}".format(method_tag, self.tickers))
-            raise ValueError
-
-    else:
-        print("There has been an error in {}".format(method_tag))
-        raise ValueError
-
-    if volume.empty == True:
-        print("There has been an error in {}".format(method_tag))
-        raise ValueError
-
-    return volume
+# def get_prices_high(self):
+#     method_tag = "get_prices_high"
+#
+#     if self.data_source is not None:
+#         if self.data_source.high is not None:
+#             prices = self.data_source.high
+#
+#         else:
+#             print("Getting Historical data first")
+#             self.get_historical_data()
+#             prices = self.data_source.high
+#
+#     else:
+#         print("There has been an error in {}".format(method_tag))
+#         raise ValueError
+#
+#     if prices.empty == True:
+#         print("There has been an error in {}".format(method_tag))
+#         raise ValueError
+#
+#     return prices
+#
+#
+# def get_prices_low(self):
+#     method_tag = "get_prices_close_adj"
+#
+#     if self.data_source is not None:
+#         if self.data_source.low is not None:
+#             prices = self.data_source.low
+#
+#         else:
+#             print("Getting Historical data first")
+#             self.get_historical_data()
+#             prices = self.data_source.low
+#
+#     else:
+#         print("There has been an error in {}".format(method_tag))
+#         raise ValueError
+#
+#     if prices.empty == True:
+#         print("There has been an error in {}".format(method_tag))
+#         raise ValueError
+#
+#     return prices
+#
+#
+# def get_volume(self, tickers=None):
+#     method_tag = "get_volume"
+#
+#     if tickers is None:
+#         print("Default Tickers = ", self.tickers)
+#         tickers = self.tickers
+#
+#     if self.data_source is not None:
+#         if self.data_source.prices is None or self.data_source.prices.empty is True:
+#             print("No historical data available, call method self.get_historical_data() first")
+#             raise NotImplementedError  # here there should be an error object
+#
+#         volume_keys = []
+#
+#         for ticker in tickers:
+#             volume_keys.append(Constants.get_volume_key(ticker))
+#
+#         if len(volume_keys) > 0:
+#
+#             volume = self.data_source.prices.loc[:, volume_keys]
+#
+#
+#         else:
+#             print("{} - There are no adj_close prices, for ticker:{}".format(method_tag, self.tickers))
+#             raise ValueError
+#
+#     else:
+#         print("There has been an error in {}".format(method_tag))
+#         raise ValueError
+#
+#     if volume.empty == True:
+#         print("There has been an error in {}".format(method_tag))
+#         raise ValueError
+#
+#     return volume

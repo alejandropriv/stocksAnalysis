@@ -4,7 +4,7 @@ from utilities.Constants import Constants
 class MACD:
 
     # price is Dataframe, = adj_close
-    def __init__(self, df=None, fast_period=12, slow_period=26, signal_period=9, plotter=None):
+    def __init__(self, df=None, fast_period=12, slow_period=26, signal_period=9):
         if df is None:
             print("Error: data not found")
             raise IOError
@@ -22,7 +22,6 @@ class MACD:
 
         self.df_macd = df[[self.adj_close_key]].copy()
 
-        self.plotter = plotter
 
     def calculate(self):
         """function to calculate MACD
@@ -49,9 +48,10 @@ class MACD:
 
         return self.df_macd
 
-    def plot(self, period=100, color="tab:green"):
+    def plot(self, period=100, plotter=None, color="tab:green"):
 
-        if self.plotter is None:
+        print("Plotting MACD")
+        if plotter is None:
             print("Please Select the main stock first.")
             raise IOError
 
@@ -59,18 +59,22 @@ class MACD:
         max_value = self.df_macd[self.macd_key].max()
         min_value = self.df_macd[self.macd_key].min()
 
-        if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
-            print("First Indicator MACD")
-            self.plotter.ax_indicators[self.macd_key] = self.plotter.ax_indicators[Constants.main_indicator_axis]
+        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
+
+            plotter.ax_indicators[self.macd_key] = plotter.fig.add_subplot(212)
+                #plotter.ax_indicators[Constants.main_indicator_axis]
 
         else:
+
             # instantiate a second axes that shares the same x-axis
-            self.plotter.ax_indicators[self.macd_key] = \
-                self.plotter.ax_indicators[Constants.main_indicator_axis].twinx()
+            plotter.ax_indicators[self.macd_key] = \
+                plotter.ax_indicators[Constants.main_indicator_axis].twinx()
 
-        self.plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
+        plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
 
-        self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.macd_key]
-        self.plotter.ax_indicators[self.macd_key].tick_params(axis='y', labelcolor=color, size=20)
-        self.plotter.plot_indicator(df=self.df_macd[[self.macd_key]], period=period, color=color)
-        self.plotter.plot_indicator(df=self.df_macd[[self.signal_key]], period=period, color="tab:orange")
+        plotter.main_ax_indicator = plotter.ax_indicators[self.macd_key]
+        plotter.ax_indicators[self.macd_key].tick_params(axis='y', labelcolor=color, size=20)
+        plotter.plot_indicator(df=self.df_macd[[self.macd_key]], period=period, color=color)
+        plotter.plot_indicator(df=self.df_macd[[self.signal_key]], period=period, color="tab:orange")
+
+        return plotter

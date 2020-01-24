@@ -9,7 +9,6 @@ from indicators.RSI import RSI
 from indicators.ADX import ADX
 from indicators.OBV import OBV
 
-
 from indicators.BollingerBands import BollingerBands
 from utilities.Constants import Constants
 
@@ -27,7 +26,6 @@ class TestBasics(unittest.TestCase):
     stock = None
 
     def test_macd(self):
-
         self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
@@ -39,16 +37,16 @@ class TestBasics(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        time_series=Constants.TIMESERIES.DAILY)
 
-        self.stock.plot(period=period)
+        macd_ind = MACD()
+        self.stock.append_indicator(macd_ind)
 
-        self.calculate_macd(period=period, plotter=self.stock.plotter)
+        self.stock.plot(period=period)
 
         print("Analysis has been run")
 
         plt.show()
 
     def test_atr(self):
-
         self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
@@ -68,9 +66,7 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
-
     def test_adx(self):
-
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
@@ -90,9 +86,7 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
-
     def test_obv(self):
-
         self.tickers = ["TSLA"]  # "FB", "TSLA", "UBER"]
 
         past_date_interval = 365
@@ -106,16 +100,14 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-        #self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        # self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
         self.calculate_obv(period=period, plotter=self.stock.plotter)
 
         print("Analysis has been run")
 
         plt.show()
 
-
     def test_macd_atr(self):
-
         self.tickers = ["FB"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
@@ -129,13 +121,12 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-        self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        self.calculate_macd()
         self.calculate_atr(period=period, plotter=self.stock.plotter)
 
         print("Analysis has been run")
 
         plt.show()
-
 
     def test_macd_atr_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "FB", "UBER"]
@@ -151,9 +142,8 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-        self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        self.calculate_macd()
         self.stock.plotter = self.calculate_atr(period=period, plotter=self.stock.plotter)
-
 
         self.stock.plotter = self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
 
@@ -167,8 +157,6 @@ class TestBasics(unittest.TestCase):
         print("Analysis has been run")
 
         plt.show()
-
-
 
     def test_macd_atr_rsi_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "FB", "UBER"]
@@ -184,14 +172,12 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-        self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
+        self.calculate_macd(period=period)
         self.stock.plotter = self.calculate_atr(period=period, plotter=self.stock.plotter)
-
 
         self.stock.plotter = self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
 
-
-        #todo put this in a different subplot
+        # todo put this in a different subplot
         self.stock.plotter = self.calculate_rsi(period=period, plotter=self.stock.plotter)
 
         # added these three lines
@@ -205,27 +191,28 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
-    def calculate_macd(self, period=100, plotter=None):
-
+    ###################################################################
+    #  CALCULATIONS
+    ###################################################################
+    def calculate_macd(self):
         self.get_historical_data()
 
-        price_close_adj = self.stock.get_prices_data(tickers=self.tickers, has_adj_close_key=True, has_volume_key=False)
-        price_close_adj.ticker = self.tickers[0]
+        # price_close_adj = self.stock.get_prices_data(tickers=self.tickers,
+        #                                              has_high_key=False,
+        #                                              has_low_key=False,
+        #                                              has_adj_close_key=True,
+        #                                              has_volume_key=False)
+        #
+        # price_close_adj.ticker = self.tickers[0]
+        #
+        # macd_ind = MACD(df=price_close_adj)
 
-        macd_ind = MACD(df=price_close_adj)
-
-        macd_ind.calculate()
-
-        # The period is determined by the TIMESERIES chosen
-        plotter = macd_ind.plot(plotter=plotter, period=period)
-
-        return plotter
-
+        macd_ind = MACD()
+        self.stock.append_indicator(macd_ind)
 
 
 
     def calculate_atr(self, period=100, plotter=None):
-
         self.get_historical_data()
 
         prices = self.stock.get_prices_data(tickers=self.tickers,
@@ -244,9 +231,7 @@ class TestBasics(unittest.TestCase):
 
         return atr_ind.plotter
 
-
     def calculate_rsi(self, period=100, plotter=None):
-
         self.get_historical_data()
 
         prices = self.stock.get_prices_data(tickers=self.tickers,
@@ -265,10 +250,7 @@ class TestBasics(unittest.TestCase):
 
         return rsi_ind.plotter
 
-
-
     def calculate_adx(self, period=100, plotter=None):
-
         self.get_historical_data()
 
         prices = self.stock.get_prices_data(tickers=self.tickers,
@@ -287,9 +269,7 @@ class TestBasics(unittest.TestCase):
 
         return ind.plotter
 
-
     def calculate_obv(self, period=100, plotter=None):
-
         self.get_historical_data()
 
         prices = self.stock.get_prices_data(tickers=self.tickers,
@@ -308,9 +288,7 @@ class TestBasics(unittest.TestCase):
 
         return ind.plotter
 
-
     def calculate_bollinger_bands(self, period=100, plotter=None):
-
         self.get_historical_data()
 
         price_close_adj = self.stock.get_prices_data(tickers=self.tickers,
@@ -327,7 +305,6 @@ class TestBasics(unittest.TestCase):
         bb_ind.plot(period=period, color="tab:red")
 
         return bb_ind.plotter
-
 
     def get_historical_data(self):
         if self.historical_data:

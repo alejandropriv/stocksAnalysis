@@ -9,7 +9,6 @@ import datetime
 
 class Stock:
 
-
     # Put here an enum and a case with the enum
     def __init__(self, tickers=None, data_source=None, plotter=None):
 
@@ -20,12 +19,15 @@ class Stock:
         self.time_series = None
         self.daily_return = None
 
+        self.indicators = []
 
         if tickers is None:
             raise ValueError
 
         if data_source is None:
             data_source = YahooAPIHistoricalData()
+
+        self.price_info = None
 
         print("Stock {} created".format(tickers))
         self.tickers = tickers
@@ -53,7 +55,6 @@ class Stock:
         if self.data_source.prices is None or self.data_source.prices.empty == True:
             self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)
 
-
     def get_statistical_data(self, period):
 
         if self.data_source.adj_close is None:
@@ -62,7 +63,6 @@ class Stock:
 
         self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
         self.daily_return.get_statistical_data()
-
 
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,
@@ -119,8 +119,33 @@ class Stock:
 
         return prices
 
+    def append_indicator(self, new_indicator=None, ticker=None):
 
-    def plot(self, ticker=None, price_types=None, period=100,):
+        # TODO: put a check here not to request if the data is up to date
+        self.get_historical_data()
+
+        # TODO: put a check here not to request if the data is up to date, rules according to the timeseries
+        self.price_info = self.get_prices_data(tickers=self.tickers,
+                                               has_high_key=True,
+                                               has_low_key=True,
+                                               has_adj_close_key=True,
+                                               has_volume_key=True)
+
+
+        if ticker is None:
+            self.price_info.ticker = self.tickers[0]
+        else:
+            # todo:put here a validation for multiple tickers
+            pass
+
+        new_indicator.set_input_data(self.price_info)
+        new_indicator.calculate()
+
+        self.indicators.append(new_indicator)
+
+
+
+    def plot(self, ticker=None, price_types=None, period=100, ):
         if price_types is None:
             price_types = ["adj_close"]
 
@@ -130,11 +155,13 @@ class Stock:
         if self.plotter is None:
             self.plotter = Plotter()
 
-
         for priceType in price_types:
             if priceType == "adj_close":
+                self.price_info = self.get_prices_data(ticker, has_adj_close_key=True, has_volume_key=True)
 
-                price_info = self.get_prices_data(ticker, has_adj_close_key=True, has_volume_key=True)
+                self.price_info.ticker = ticker
+                self.plotter.plot_main(df=self.price_info, period=period) #count how many graphics there will be
+                
 
-                self.plotter.plot_main(df=price_info, period=period, ticker=ticker)
-
+        for indicator in self.indicators:
+            indicator.plot(plotter=self.plotter, period=period)

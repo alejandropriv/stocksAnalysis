@@ -1,26 +1,36 @@
 from utilities.Constants import Constants
+from indicators.Indicator import Indicator
 
 
-class MACD:
+class MACD(Indicator):
 
     # price is Dataframe, = adj_close
     def __init__(self, df=None, fast_period=12, slow_period=26, signal_period=9):
-        if df is None:
-            print("Error: data not found")
-            raise IOError
-
-        self.ticker = df.ticker
-
-        # Set dataframe keys
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.macd_key = Constants.get_key(self.ticker, "MACD")
-        self.signal_key = Constants.get_key(self.ticker, "Signal")
+        super().__init__()
 
         self.fast_period = fast_period
         self.slow_period = slow_period
         self.signal_period = signal_period
 
+        #Todo put an alternative initialization with df
+        self.adj_close_key = None
+        self.macd_key = None
+        self.signal_key = None
+        self.df_macd = None
+
+
+    def set_input_data(self, df):
+
+        super().set_input_data(df)
+
+
+        # Set dataframe keys
+        self.adj_close_key = Constants.get_adj_close_key(df.ticker)
+        self.macd_key = Constants.get_key(self.ticker, "MACD")
+        self.signal_key = Constants.get_key(self.ticker, "Signal")
         self.df_macd = df[[self.adj_close_key]].copy()
+
+
 
 
     def calculate(self):
@@ -47,6 +57,7 @@ class MACD:
         self.df_macd.dropna(inplace=True)
 
         return self.df_macd
+
 
     def plot(self, period=100, plotter=None, color="tab:green"):
 

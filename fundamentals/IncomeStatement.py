@@ -8,6 +8,9 @@ class IncomeStatement:
 
         self.ticker = ticker
         self.data = {}
+        self.datapy = {}
+        self.datapy2 = {}
+
 
         print("\n\n--- Scrapping the Income Statement - Ticker: "+self.ticker+" ---")
 
@@ -30,6 +33,7 @@ class IncomeStatement:
             for row in rows:
                 self.data[row.get_text(separator='|').split("|")[0]] = row.get_text(separator='|').split("|")[1:6]
 
+        print("Finished")
 
 
     def get_data(self):

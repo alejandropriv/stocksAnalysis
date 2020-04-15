@@ -161,7 +161,7 @@ class Stock:
 
                 self.price_info.ticker = ticker
                 self.plotter.plot_main(df=self.price_info, period=period) #count how many graphics there will be
-                
+
 
         for indicator in self.indicators:
             indicator.plot(plotter=self.plotter, period=period)

@@ -18,7 +18,7 @@ class TestFundamentals(unittest.TestCase):
 
         data_source_type = HistoricalData.DATASOURCETYPE.YAHOOAPI
 
-        self.tickers = ["FB", "TSLA", "UBER"]
+        self.tickers = ["TSLA"]#, "TSLA", "UBER"]
 
 
         self.run_analysis(data_source_type)

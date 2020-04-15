@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup
+import pandas as pd
+
 from utilities.RequestHandler import RequestHandler
 
 
@@ -7,7 +9,12 @@ class BalanceSheet:
     def __init__(self, ticker):
 
         self.ticker = ticker
-        self.data = {}
+        self.datadf = {}
+        self.datapydf = {}
+        self.datapy2df = {}
+
+        self.filter = ["Cash And Cash Equivalents", "Short Term Investments"]
+
 
         print("\n\n--- Scrapping the Balance Sheet - Ticker: "+self.ticker+" ---")
 
@@ -20,17 +27,37 @@ class BalanceSheet:
 
 
 
+
     def set_balance_sheet_data(self, page_content):
 
+        data = {}
+        datapy = {}
+        datapy2 = {}
         # getting balance sheet data from yahoo finance for the given ticker
 
         soup = BeautifulSoup(page_content, 'html.parser')
+        #    tabl = soup.find_all("table", {"class" : "Lh(1.7) W(100%) M(0)"})
+
         tabl = soup.find_all("div", {"class": "M(0) Mb(10px) Whs(n) BdEnd Bdc($seperatorColor) D(itb)"})
         for t in tabl:
             rows = t.find_all("div", {"class": "rw-expnded"})
             for row in rows:
-                self.data[row.get_text(separator='|').split("|")[0]] = row.get_text(separator='|').split("|")[1]
+                indexName = row.get_text(separator='|').split("|")[0]
+
+                if indexName in self.filter:
+                    data[indexName] = row.get_text(separator='|').split("|")[1]
+                    datapy[indexName] = row.get_text(separator='|').split("|")[2]
+                    datapy2[indexName] = row.get_text(separator='|').split("|")[3]
+
+
+        self.datadf = pd.DataFrame.from_dict(data, orient='index')
+        self.datapydf = pd.DataFrame.from_dict(datapy, orient='index')
+        self.datapy2df = pd.DataFrame.from_dict(datapy2, orient='index')
+
+
+
+        print("")
 
 
     def get_data(self):
-        return self.data
+        return self.datadf

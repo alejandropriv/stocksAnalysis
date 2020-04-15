@@ -26,7 +26,7 @@ class TestBasics(unittest.TestCase):
     stock = None
 
     def test_macd(self):
-        self.tickers = ["FB"]  # , "TSLA", "UBER"]
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
         period = 200
@@ -47,7 +47,7 @@ class TestBasics(unittest.TestCase):
         plt.show()
 
     def test_atr(self):
-        self.tickers = ["FB"]  # , "TSLA", "UBER"]
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
         period = 200
@@ -108,7 +108,7 @@ class TestBasics(unittest.TestCase):
         plt.show()
 
     def test_macd_atr(self):
-        self.tickers = ["FB"]  # , "TSLA", "UBER"]
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
         period = 200
@@ -129,7 +129,7 @@ class TestBasics(unittest.TestCase):
         plt.show()
 
     def test_macd_atr_bollinger_bands(self):
-        self.tickers = ["TSLA"]  # , "FB", "UBER"]
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365
         period = 200

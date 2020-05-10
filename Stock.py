@@ -34,6 +34,7 @@ class Stock:
         self.data_source = data_source
         self.plotter = plotter
 
+
     def set_data_source(self, data_source_type):
         if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOFINANCIALS:
             self.data_source = YahooFinancialsHistoricalData()
@@ -121,22 +122,22 @@ class Stock:
 
     def append_indicator(self, new_indicator=None, ticker=None):
 
-        # TODO: put a check here not to request if the data is up to date
+
+        # if get_historical_data has already been called it returns the cached data
         self.get_historical_data()
 
-        # TODO: put a check here not to request if the data is up to date, rules according to the timeseries
         self.price_info = self.get_prices_data(tickers=self.tickers,
-                                               has_high_key=True,
-                                               has_low_key=True,
-                                               has_adj_close_key=True,
-                                               has_volume_key=True)
+                                                has_high_key=True,
+                                                has_low_key=True,
+                                                has_adj_close_key=True,
+                                                has_volume_key=True)
 
 
         if ticker is None:
             self.price_info.ticker = self.tickers[0]
         else:
-            # todo:put here a validation for multiple tickers
-            pass
+            #TODO check here for multiple tickers
+            self.price_info.ticker = self.tickers[0]
 
         new_indicator.set_input_data(self.price_info)
         new_indicator.calculate()
@@ -145,7 +146,7 @@ class Stock:
 
 
 
-    def plot(self, ticker=None, price_types=None, period=100, ):
+    def plot(self, ticker=None, price_types=None, period=100):
         if price_types is None:
             price_types = ["adj_close"]
 
@@ -159,7 +160,7 @@ class Stock:
             if priceType == "adj_close":
                 self.price_info = self.get_prices_data(ticker, has_adj_close_key=True, has_volume_key=True)
 
-                self.price_info.ticker = ticker
+                self.price_info.ticker = ticker[0]
                 self.plotter.plot_main(df=self.price_info, period=period) #count how many graphics there will be
 
 

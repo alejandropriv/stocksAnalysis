@@ -1,6 +1,6 @@
 from data.HistoricalData import HistoricalData
 import pandas as pd
-import pandas_datareader.data as pdr
+from pandas_datareader import data as pdr
 from utilities.Constants import Constants
 
 import sys
@@ -13,6 +13,8 @@ class YahooAPIHistoricalData(HistoricalData):
     def __init__(self):
         super().__init__()
         self.prices = pd.DataFrame()
+
+
 
 
     def extract_historical_data(self,
@@ -74,7 +76,7 @@ class YahooAPIHistoricalData(HistoricalData):
                     temp.dropna(inplace=True)
 
 
-                    # TODO: Validate and put the code to handle different columns
+                    # TODO: Validate and put the code to handle a sub-set of columns
                     if self.data_columns[0] == "all":
 
                         self.prices[high_key] = temp["High"]

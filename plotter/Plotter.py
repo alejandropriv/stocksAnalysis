@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from pandas.plotting import register_matplotlib_converters
 from utilities.Constants import Constants
 
 
@@ -12,6 +13,7 @@ class Plotter:
         self.main_ax_indicator = None
         self.ticker = None
         self.index = None
+        register_matplotlib_converters()
 
 
 
@@ -21,7 +23,7 @@ class Plotter:
             print("There is no ticker Information, nothing to be plot")
             return
 
-        self.ticker = df.ticker[0]
+        self.ticker = df.ticker
 
         x = df.iloc[:, [0]]
         self.index = x.iloc[-period:, :].index
@@ -67,7 +69,7 @@ class Plotter:
         self.ax_main[Constants.volume].spines["left"].set_alpha(1)
 
         self.ax_main[Constants.volume].bar(self.index, time_series_volume, color='tab:blue', alpha=0.5)
-        self.ax_main[Constants.volume].legend()
+        self.ax_main[Constants.volume].legend("volume")
 
 
     def set_stock_price(self, time_series_adj_close, color="black"):

@@ -7,8 +7,7 @@ class Indicator(metaclass=abc.ABCMeta):
         @abc.abstractmethod
         def __init__(self):
             self.ticker = None
-            self.df_macd = None
-
+            self.df = None
 
 
         @abc.abstractmethod
@@ -17,17 +16,19 @@ class Indicator(metaclass=abc.ABCMeta):
                 print("Error: data not found")
                 raise IOError
 
-            self.df_macd = df
-
-
             self.ticker = df.ticker
+
 
 
         @abc.abstractmethod
         def calculate(self):
             """function to calculate the indicator"""
-            pass
+            if self.df is None:
+                print("Error: data not found")
+                raise IOError
 
         @abc.abstractmethod
-        def plot(self, period=100, color="tab:green"):
-            pass
+        def plot(self, plotter=None, period=100, color="tab:green"):
+            if plotter is None:
+                print("Please Select the main stock first.")
+                raise IOError

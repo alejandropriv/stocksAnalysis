@@ -1,16 +1,34 @@
 from utilities.Constants import Constants
+from indicators.Indicator import Indicator
 
 
-class ATR:
+class ATR(Indicator):
 
     # price is Dataframe
-    def __init__(self, df=None, n=14, plotter=None):
+    def __init__(self, df=None, n=14):
+        super().__init__()
+
+        self.n = n
+        
+        # Set dataframe keys
+        self.low_key = None
+        self.high_key = None
+        self.adj_close_key = None
+        self.atr_key = None
+
+        self.df = df
+
+
+
+
+
+    def set_input_data(self, df):
 
         if df is None:
             print("Error: data not found")
             raise IOError
 
-        self.ticker = df.ticker
+        super().set_input_data(df)
 
         # Set dataframe keys
         self.low_key = Constants.get_low_key(df.ticker)
@@ -18,13 +36,10 @@ class ATR:
         self.adj_close_key = Constants.get_adj_close_key(self.ticker)
         self.atr_key = Constants.get_key(self.ticker, "ATR")
 
-
-        self.n = n
         self.df_atr = df[[self.low_key]].copy()
         self.df_atr[self.high_key] = df[[self.high_key]]
         self.df_atr[self.adj_close_key] = df[[self.adj_close_key]]
 
-        self.plotter = plotter
 
     def calculate(self):
         """function to calculate True Range and Average True Range"""
@@ -48,9 +63,10 @@ class ATR:
         return self.df_atr
 
     # expect Stock, volume, Indicator
-    def plot(self, period=100, color="tab:green"):
+    def plot(self, plotter=None, period=100, color="tab:green"):
 
-        if self.plotter is None:
+        print("Plotting MACD")
+        if plotter is None:
             print("Please Select the main stock first.")
             raise IOError
 
@@ -59,23 +75,23 @@ class ATR:
         min_value = self.df_atr[self.atr_key].min()
 
 
-        if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
+        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
             print("First Indicator ATR")
-            self.plotter.ax_indicators[self.atr_key] = self.plotter.ax_indicators[Constants.main_indicator_axis]
+            plotter.ax_indicators[self.atr_key] = plotter.ax_indicators[Constants.main_indicator_axis]
 
         else:
             # instantiate a second axes that shares the same x-axis
-            self.plotter.ax_indicators[self.atr_key] = \
-                self.plotter.ax_indicators[Constants.main_indicator_axis].twinx()
+            plotter.ax_indicators[self.atr_key] = \
+                plotter.ax_indicators[Constants.main_indicator_axis].twinx()
 
 
-        self.plotter.ax_indicators[self.atr_key].set_ylim(min_value-1, max_value+1)
+        plotter.ax_indicators[self.atr_key].set_ylim(min_value-1, max_value+1)
 
-        self.plotter.ax_indicators[self.atr_key].legend(loc="best")
+        plotter.ax_indicators[self.atr_key].legend(loc="best")
 
-        self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.atr_key]
-        self.plotter.ax_indicators[self.atr_key].tick_params(axis='y', labelcolor=color, size=20)
+        plotter.main_ax_indicator = plotter.ax_indicators[self.atr_key]
+        plotter.ax_indicators[self.atr_key].tick_params(axis='y', labelcolor=color, size=20)
 
 
-        self.plotter.plot_indicator(df=self.df_atr[[self.atr_key]], period=period, color=color)
+        plotter.plot_indicator(df=self.df_atr[[self.atr_key]], period=period, color=color)
 

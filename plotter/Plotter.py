@@ -2,6 +2,24 @@ import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 from utilities.Constants import Constants
 
+from enum import Enum
+
+
+
+
+class Position(Enum):
+    Best = 0
+    UpperRight = 1
+    UpperLeft = 2
+    LowerLeft = 3
+    LowerRight = 4
+    Right = 5
+    CenterLeft = 6
+    CenterRight = 7
+    LowerCenter = 8
+    UpperCenter = 9
+    Center = 10
+
 
 class Plotter:
 
@@ -68,8 +86,8 @@ class Plotter:
         self.ax_main[Constants.volume].spines["right"].set_alpha(0.0)
         self.ax_main[Constants.volume].spines["left"].set_alpha(1)
 
-        self.ax_main[Constants.volume].bar(self.index, time_series_volume, color='tab:blue', alpha=0.5)
-        self.ax_main[Constants.volume].legend("volume")
+        self.ax_main[Constants.volume].bar(self.index, time_series_volume, color='tab:blue', alpha=0.5, label='Volume')
+        self.ax_main[Constants.volume].legend()
 
 
     def set_stock_price(self, time_series_adj_close, color="black"):
@@ -113,8 +131,6 @@ class Plotter:
             print("Please call first method plot_main")
             return
 
-        # title = "{}".format(self.ticker)
-
         indicator_key = df.columns[0]
 
         time_series_indicator = df.iloc[-period:, :][indicator_key]
@@ -122,7 +138,5 @@ class Plotter:
         # Plot Line2 (Right Y Axis)
         self.fig.tight_layout()
 
-
         self.main_ax_indicator.plot(self.index, time_series_indicator, color=color)
 
-        self.main_ax_indicator.legend(loc="best")

@@ -16,12 +16,13 @@ class Slope(Indicator):
 
         super().__init__()
 
-        self.df_slope = df
         self.n = n
         self.ser = None
 
         self.plotter = plotter
 
+        self.adj_close_key = None
+        self.slope_key = None
 
 
     def set_input_data(self, df):
@@ -33,6 +34,7 @@ class Slope(Indicator):
         self.adj_close_key = Constants.get_adj_close_key(self.ticker)
         self.slope_key = Constants.get_key(self.ticker, "SLOPE")
         self.ser = df[self.adj_close_key]
+        self.ser.ticker = self.ticker
 
     def calculate(self):
         "function to calculate the slope of n consecutive points on a plot"
@@ -57,10 +59,9 @@ class Slope(Indicator):
     # expect Stock, volume, Indicator
     def plot(self, plotter=None, period=100, color="tab:green"):
 
+        super().plot(plotter=plotter, period=period, color=color)
+
         print("Plotting SLOPE")
-        if plotter is None:
-            print("Please Select the main stock first.")
-            raise IOError
 
 
         max_value = self.df_slope[self.slope_key].max()

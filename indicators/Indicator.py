@@ -28,7 +28,7 @@ class Indicator(metaclass=abc.ABCMeta):
                 raise IOError
 
         @abc.abstractmethod
-        def plot(self, plotter=None, period=100, color="tab:green"):
+        def plot(self, plotter=None, period=100, color="tab:green", legend_position="upper right"):
             if plotter is None:
                 print("Please Select the main stock first.")
                 raise IOError

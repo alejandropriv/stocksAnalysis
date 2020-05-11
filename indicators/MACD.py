@@ -8,6 +8,7 @@ class MACD(Indicator):
     def __init__(self, df=None, fast_period=12, slow_period=26, signal_period=9):
         super().__init__()
 
+
         self.fast_period = fast_period
         self.slow_period = slow_period
         self.signal_period = signal_period
@@ -16,11 +17,11 @@ class MACD(Indicator):
         self.adj_close_key = None
         self.macd_key = None
         self.signal_key = None
+
         self.df = df
 
         if self.df is not None:
             df.set_input_data(self.df)
-            self.ticker = self.df.ticker
 
 
     def set_input_data(self, df):
@@ -32,6 +33,8 @@ class MACD(Indicator):
         self.signal_key = Constants.get_key(self.ticker, "Signal")
 
         self.df = df[[self.adj_close_key]].copy()
+        self.df.ticker = self.ticker
+
 
 
     def calculate(self):
@@ -60,9 +63,9 @@ class MACD(Indicator):
         return self.df
 
 
-    def plot(self, plotter=None, period=100, color="tab:green"):
+    def plot(self, plotter=None, period=100, color="tab:green", legend_position="upper right"):
 
-        super().plot(plotter=plotter, period=period, color=color)
+        super().plot(plotter=plotter, period=period, color=color, legend_position= legend_position)
 
         print("Plotting MACD")
 
@@ -81,8 +84,10 @@ class MACD(Indicator):
         plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
 
         plotter.main_ax_indicator = plotter.ax_indicators[self.macd_key]
-        plotter.ax_indicators[self.macd_key].tick_params(axis='y', labelcolor=color, size=20)
+        plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
         plotter.plot_indicator(df=self.df[[self.macd_key]], period=period, color=color)
         plotter.plot_indicator(df=self.df[[self.signal_key]], period=period, color="tab:orange")
+
+        plotter.ax_indicators[self.macd_key].legend(loc="best")
 
         return plotter

@@ -49,27 +49,6 @@ class TestBasics(unittest.TestCase):
         plt.show()
 
 
-    def test_slope(self):
-        self.tickers = ["AAPL"]
-
-        past_date_interval = 365
-        period = 50
-
-        self.stock = Stock(self.tickers)
-
-        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
-                                       end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
-
-        slope = Slope()
-
-        self.stock.append_indicator(slope)
-
-        self.stock.plot(period=period)
-
-        print("Analysis has been run")
-
-        plt.show()
 
 
     def test_atr(self):
@@ -121,7 +100,7 @@ class TestBasics(unittest.TestCase):
         self.tickers = ["TSLA"]  # "FB", "TSLA", "UBER"]
 
         past_date_interval = 365
-        period = 200
+        period = 300
 
         self.stock = Stock(self.tickers)
 
@@ -129,14 +108,38 @@ class TestBasics(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        time_series=Constants.TIMESERIES.DAILY)
 
-        self.stock.plot(period=period)
 
-        # self.stock.plotter = self.calculate_macd(period=period, plotter=self.stock.plotter)
-        self.calculate_obv(period=period, plotter=self.stock.plotter)
+        obv = OBV()
+        self.stock.append_indicator(obv)
+        self.stock.plot(period=period)
 
         print("Analysis has been run")
 
         plt.show()
+
+
+    def test_slope(self):
+        self.tickers = ["AAPL"]
+
+        past_date_interval = 365
+        period = 50
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+        slope = Slope()
+
+        self.stock.append_indicator(slope)
+
+        self.stock.plot(period=period)
+
+        print("Analysis has been run")
+
+        plt.show()
+
 
     def test_macd_atr(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -150,10 +153,13 @@ class TestBasics(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        time_series=Constants.TIMESERIES.DAILY)
 
-        self.stock.plot(period=period)
+        macd_ind = MACD()
+        self.stock.append_indicator(macd_ind)
 
-        self.calculate_macd()
-        self.calculate_atr(period=period, plotter=self.stock.plotter)
+        atr = ATR()
+        self.stock.append_indicator(atr)
+
+        self.stock.plot(period=period)
 
         print("Analysis has been run")
 
@@ -222,6 +228,10 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
+
+
+
+
     ###################################################################
     #  CALCULATIONS
     ###################################################################
@@ -256,23 +266,7 @@ class TestBasics(unittest.TestCase):
         pass
 
     def calculate_obv(self, period=100, plotter=None):
-        self.get_historical_data()
-
-        prices = self.stock.get_prices_data(tickers=self.tickers,
-                                            has_high_key=False,
-                                            has_low_key=False,
-                                            has_adj_close_key=True,
-                                            has_volume_key=True)
-
-        prices.ticker = self.tickers[0]
-
-        ind = OBV(df=prices, n=14, plotter=plotter)
-        ind.calculate()
-
-        # The period is determined by the TIMESERIES chosen
-        ind.plot(period=period, color="tab:purple")
-
-        return ind.plotter
+        pass
 
     def calculate_bollinger_bands(self, period=100, plotter=None):
         self.get_historical_data()

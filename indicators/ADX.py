@@ -37,6 +37,7 @@ class ADX(Indicator):
         self.df = df[[self.low_key]].copy()
         self.df[self.high_key] = df[[self.high_key]]
         self.df[self.adj_close_key] = df[[self.adj_close_key]]
+        self.df.ticker = self.ticker
 
 
     def calculate(self):
@@ -123,27 +124,28 @@ class ADX(Indicator):
         self.df[self.adx_key] = np.array(ADX)
         return self.df[self.adx_key]
 
+
     # expect Stock, volume, Indicator
-    def plot(self, period=100, color="tab:green"):
+    def plot(self, plotter=None, period=100, color="tab:brown"):
 
-        if self.plotter is None:
-            print("Please Select the main stock first.")
-            raise IOError
+        super().plot(plotter=plotter, period=period, color=color)
 
-        max_value = self.df_adx[self.adx_key].max()
-        min_value = self.df_adx[self.adx_key].min()
+        print("Plotting ADX")
 
-        if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
-            print("First Indicator RSI")
-            self.plotter.ax_indicators[self.adx_key] = self.plotter.ax_indicators[Constants.main_indicator_axis]
+        max_value = self.df[self.adx_key].max()
+        min_value = self.df[self.adx_key].min()
+
+        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
+            print("First Indicator ADX")
+            plotter.ax_indicators[self.adx_key] = plotter.ax_indicators[Constants.main_indicator_axis]
         else:
             # instantiate a second axes that shares the same x-axis
-            self.plotter.ax_indicators[self.adx_key] = self.plotter.ax_indicators[Constants.main_indicator_axis].twinx()
+            plotter.ax_indicators[self.adx_key] = plotter.ax_indicators[Constants.main_indicator_axis].twinx()
 
-        self.plotter.ax_indicators[self.adx_key].set_ylim(min_value - 1, max_value + 1)
+        plotter.ax_indicators[self.adx_key].set_ylim(min_value - 1, max_value + 1)
 
-        self.plotter.ax_indicators[self.adx_key].legend(loc="best")
+        plotter.ax_indicators[self.adx_key].legend(loc="best")
 
-        self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.adx_key]
+        plotter.main_ax_indicator = plotter.ax_indicators[self.adx_key]
 
-        self.plotter.plot_indicator(df=self.df_adx[[self.adx_key]], period=period, color=color)
+        plotter.plot_indicator(df=self.df[[self.adx_key]], period=period, color=color)

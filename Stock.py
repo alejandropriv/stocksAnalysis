@@ -4,7 +4,11 @@ from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
 from data_analysis.DailyReturn import DailyReturn
 from plotter.Plotter import Plotter
 from utilities.Constants import Constants
+
+
 import datetime
+
+
 
 
 class Stock:
@@ -57,13 +61,13 @@ class Stock:
             self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)
 
     def get_statistical_data(self, period):
-
-        if self.data_source.adj_close is None:
-            print("Unable to get statistical data because there is no data, calling 'self.get_historical_data()' first")
-            self.get_historical_data()
-
-        self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
-        self.daily_return.get_statistical_data()
+        pass
+        # if self.data_source.adj_close is None:
+        #     print("Unable to get statistical data because there is no data, calling 'self.get_historical_data()' first")
+        #     self.get_historical_data()
+        #
+        # self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
+        # self.daily_return.get_statistical_data()
 
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,

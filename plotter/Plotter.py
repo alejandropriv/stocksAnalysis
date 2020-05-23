@@ -2,26 +2,21 @@ import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 from utilities.Constants import Constants
 
-from enum import Enum
-
-
-
-
-class Position(Enum):
-    Best = 0
-    UpperRight = 1
-    UpperLeft = 2
-    LowerLeft = 3
-    LowerRight = 4
-    Right = 5
-    CenterLeft = 6
-    CenterRight = 7
-    LowerCenter = 8
-    UpperCenter = 9
-    Center = 10
-
 
 class Plotter:
+
+
+
+
+    def get_legend_position(self):
+        legend = ["upper right", "upper left", "lower left",
+                  "lower right", "right", "center left",
+                  "center right", "lower center", "upper center", "center"]
+
+        legend_name = legend[self.legend_id % 10]
+        self.legend_id += 1
+        return legend_name
+
 
     def __init__(self):
 
@@ -31,6 +26,8 @@ class Plotter:
         self.main_ax_indicator = None
         self.ticker = None
         self.index = None
+        self.legend_id = 0
+
         register_matplotlib_converters()
 
 

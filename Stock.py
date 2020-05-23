@@ -5,10 +5,7 @@ from data_analysis.DailyReturn import DailyReturn
 from plotter.Plotter import Plotter
 from utilities.Constants import Constants
 
-
 import datetime
-
-
 
 
 class Stock:
@@ -37,7 +34,6 @@ class Stock:
         self.tickers = tickers
         self.data_source = data_source
         self.plotter = plotter
-
 
     def set_data_source(self, data_source_type):
         if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOFINANCIALS:
@@ -126,29 +122,25 @@ class Stock:
 
     def append_indicator(self, new_indicator=None, ticker=None):
 
-
         # if get_historical_data has already been called it returns the cached data
         self.get_historical_data()
 
         self.price_info = self.get_prices_data(tickers=self.tickers,
-                                                has_high_key=True,
-                                                has_low_key=True,
-                                                has_adj_close_key=True,
-                                                has_volume_key=True)
-
+                                               has_high_key=True,
+                                               has_low_key=True,
+                                               has_adj_close_key=True,
+                                               has_volume_key=True)
 
         if ticker is None:
             self.price_info.ticker = self.tickers[0]
         else:
-            #TODO check here for multiple tickers
+            # TODO check here for multiple tickers
             self.price_info.ticker = self.tickers[0]
 
         new_indicator.set_input_data(self.price_info)
         new_indicator.calculate()
 
         self.indicators.append(new_indicator)
-
-
 
     def plot(self, ticker=None, price_types=None, period=100):
         if price_types is None:
@@ -165,8 +157,7 @@ class Stock:
                 self.price_info = self.get_prices_data(ticker, has_adj_close_key=True, has_volume_key=True)
 
                 self.price_info.ticker = ticker[0]
-                self.plotter.plot_main(df=self.price_info, period=period) #count how many graphics there will be
-
+                self.plotter.plot_main(df=self.price_info, period=period)  # count how many graphics there will be
 
         for indicator in self.indicators:
             indicator.plot(plotter=self.plotter, period=period)

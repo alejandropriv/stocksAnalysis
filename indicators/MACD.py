@@ -65,7 +65,7 @@ class MACD(Indicator):
 
     def plot(self, plotter=None, period=100, color="tab:green", legend_position="upper right"):
 
-        super().plot(plotter=plotter, period=period, color=color, legend_position= legend_position)
+        super().plot(plotter=plotter, period=period, color=color, legend_position=legend_position)
 
         print("Plotting MACD")
 

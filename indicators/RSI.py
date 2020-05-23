@@ -1,29 +1,32 @@
 from utilities.Constants import Constants
 import numpy as np
+from indicators.Indicator import Indicator
 
 
-class RSI:
+class RSI(Indicator):
 
     # price is Dataframe
-    def __init__(self, df=None, n=14, plotter=None):
-
-        if df is None:
-            print("Error: data not found")
-            raise IOError
-
-        self.ticker = df.ticker
-
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.rsi_key = Constants.get_key(self.ticker, "RSI")
+    def __init__(self, df=None, n=14):
+        super().__init__()
 
         self.n = n
-        self.df_rsi = df[[self.adj_close_key]].copy()
 
-        self.plotter = plotter
+        # Set dataframe keys
+        self.adj_close_key = None
+        self.rsi_key = None
+
+        self.df = df
+
+        if self.df is not None:
+            df.set_input_data(self.df)
 
 
 
     def calculate(self):
+
+        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
+        self.rsi_key = Constants.get_key(self.ticker, "RSI")
+
         """"function to calculate RSI"""
 
         delta_key = Constants.get_key(self.ticker, "delta")

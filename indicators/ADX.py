@@ -19,10 +19,9 @@ class ADX(Indicator):
         self.high_key = None
         self.adj_close_key = None
         self.adx_key = None
-        self.df = df
 
-        if self.df is not None:
-            df.set_input_data(self.df)
+        if df is not None:
+            self.set_input_data(df)
 
 
     def set_input_data(self, df):
@@ -42,6 +41,11 @@ class ADX(Indicator):
 
     def calculate(self):
         """"function to calculate ADX"""
+
+        if self.df is None:
+            print("DF has not been set, there is no data to calculate the indicator")
+            return
+
 
         tr_key = Constants.get_key(self.ticker, "TR")
         trn_key = Constants.get_key(self.ticker, "TRn")
@@ -127,8 +131,15 @@ class ADX(Indicator):
 
     # expect Stock, volume, Indicator
     def plot(self, plotter=None, period=100, color="tab:brown"):
-
-        super().plot(plotter=plotter, period=period, color=color)
+        super.
+        self.plot_indicator(
+            plotter=plotter,
+            period=period,
+            key=self.adx_key,
+            color=color,
+            legend_position=None
+        )
+        #self.plot(plotter=plotter, period=period, key=self.adx_key, color=color)
 
         print("Plotting ADX")
 
@@ -138,6 +149,7 @@ class ADX(Indicator):
         if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
             print("First Indicator ADX")
             plotter.ax_indicators[self.adx_key] = plotter.ax_indicators[Constants.main_indicator_axis]
+
         else:
             # instantiate a second axes that shares the same x-axis
             plotter.ax_indicators[self.adx_key] = plotter.ax_indicators[Constants.main_indicator_axis].twinx()

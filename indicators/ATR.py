@@ -16,15 +16,12 @@ class ATR(Indicator):
         self.adj_close_key = None
         self.atr_key = None
 
-        self.df = df
-
-        if self.df is not None:
-            self.set_input_data(self.df)
+        if df is not None:
+            self.set_input_data(df)
 
 
     def set_input_data(self, df):
         super().set_input_data(df)
-
 
         # Set dataframe keys
         self.low_key = Constants.get_low_key(df.ticker)
@@ -40,6 +37,10 @@ class ATR(Indicator):
 
     def calculate(self):
         """function to calculate True Range and Average True Range"""
+
+        if self.df is None:
+            print("DF has not been set, there is no data to calculate the indicator")
+            return
 
         # Set temp dataframe keys
         h_l_key = Constants.get_key(self.ticker, "H-L")

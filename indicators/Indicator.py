@@ -24,7 +24,7 @@ class Indicator(metaclass=abc.ABCMeta):
         def calculate(self):
             """function to calculate the indicator"""
             if self.df is None:
-                print("Error: data not found")
+                print("Error: DF has not been set Data not found to calculate the requested operation")
                 raise IOError
 
 

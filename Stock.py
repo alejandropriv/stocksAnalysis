@@ -142,6 +142,11 @@ class Stock:
 
         self.indicators.append(new_indicator)
 
+
+
+
+
+
     def plot(self, ticker=None, price_types=None, period=100):
         if price_types is None:
             price_types = ["adj_close"]

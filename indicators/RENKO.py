@@ -3,7 +3,7 @@ import numpy as np
 from indicators.Indicator import Indicator
 
 
-class RSI(Indicator):
+class RENKO(Indicator):
 
     # price is Dataframe
     def __init__(self, df=None, n=14):
@@ -24,7 +24,7 @@ class RSI(Indicator):
 
         # Set dataframe keys
         self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.rsi_key = Constants.get_key(self.ticker, "RSI")
+        self.rsi_key = Constants.get_key(self.ticker, "OBV")
 
         self.df = df[[self.adj_close_key]].copy()
         self.df.ticker = df.ticker
@@ -79,7 +79,7 @@ class RSI(Indicator):
         self.plot_indicator(
             plotter=plotter,
             period=period,
-            key=self.rsi_key,
+            key=self.obv_key,
             color=color,
             legend_position=None
         )

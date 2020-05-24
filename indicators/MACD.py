@@ -72,3 +72,9 @@ class MACD(Indicator):
             color=color,
             legend_position=None
         )
+
+        # TODO: put this inside stock class as a dependency of the indicator
+        #plotter.plot_indicator(df=self.df[[self.signal_key]], period=period, color="tab:orange")
+
+
+

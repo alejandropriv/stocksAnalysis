@@ -28,7 +28,7 @@ class TestBasics(unittest.TestCase):
     stock = None
 
     def test_macd(self):
-        self.tickers = ["CCL"]  # , "TSLA", "UBER"]
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 1825
         period = 50
@@ -176,10 +176,13 @@ class TestBasics(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        time_series=Constants.TIMESERIES.DAILY)
 
+
+        bb = BollingerBands()
+        self.stock.append_indicator(bb)
+
+
         self.stock.plot(period=period)
 
-
-        self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
 
 
         print("Analysis has been run")
@@ -205,12 +208,6 @@ class TestBasics(unittest.TestCase):
 
         self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
 
-        # added these three lines
-        # lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
-
-        # lns = lns1 + lns2 + lns3
-        # labs = [l.get_label() for l in lns]
-        # ax.legend(lns, labs, loc=0)
 
         print("Analysis has been run")
 
@@ -256,15 +253,16 @@ class TestBasics(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        time_series=Constants.TIMESERIES.DAILY)
 
-        self.stock.plot(period=period)
 
-        self.calculate_macd(period=period)
-        self.stock.plotter = self.calculate_atr(period=period, plotter=self.stock.plotter)
+        self.stock.append_indicator(MACD())
 
-        self.stock.plotter = self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
+        self.stock.append_indicator(ATR())
+
+        self.stock.append_indicator(BollingerBands())
 
         # todo put this in a different subplot
-        self.stock.plotter = self.calculate_rsi(period=period, plotter=self.stock.plotter)
+        self.stock.append_indicator(RSI())
+        self.stock.plot(period=period)
 
         # added these three lines
         # lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
@@ -284,43 +282,8 @@ class TestBasics(unittest.TestCase):
     ###################################################################
     #  CALCULATIONS
     ###################################################################
-    def calculate_rsi(self, period=100, plotter=None):
-        self.get_historical_data()
-
-        prices = self.stock.get_prices_data(tickers=self.tickers,
-                                            has_high_key=False,
-                                            has_low_key=False,
-                                            has_adj_close_key=True,
-                                            has_volume_key=False)
-
-        prices.ticker = self.tickers[0]
-
-        rsi_ind = RSI(df=prices, n=14, plotter=plotter)
-        rsi_ind.calculate()
-
-        # The period is determined by the TIMESERIES chosen
-        rsi_ind.plot(period=period, color="tab:purple")
-
-        return rsi_ind.plotter
 
 
-    def calculate_bollinger_bands(self, period=100, plotter=None):
-        self.get_historical_data()
-
-        price_close_adj = self.stock.get_prices_data(tickers=self.tickers,
-                                                     has_high_key=False,
-                                                     has_low_key=False,
-                                                     has_adj_close_key=True,
-                                                     has_volume_key=False)
-
-        price_close_adj.ticker = self.tickers[0]
-
-        bb_ind = BollingerBands(df=price_close_adj, n=20)
-        bb_ind.calculate()
-
-        bb_ind.plot(plotter=plotter, period=period, color="tab:red")
-
-        return plotter
 
     def get_historical_data(self):
         if self.historical_data:

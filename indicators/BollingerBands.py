@@ -1,4 +1,3 @@
-from plotter.Plotter import Plotter
 from utilities.Constants import Constants
 from indicators.Indicator import Indicator
 
@@ -11,13 +10,6 @@ class BollingerBands(Indicator):
         super().__init__()
 
         self.n = n
-
-        if df is None:
-            print("Error: data not found")
-            raise IOError
-
-        self.ticker = df.ticker
-
 
         # Set dataframe keys
         self.adj_close_key = None
@@ -39,10 +31,7 @@ class BollingerBands(Indicator):
         self.bb_width_key = Constants.get_key(self.ticker, "BB_width")
 
         self.df = df[[self.adj_close_key]].copy()
-
         self.df.ticker = df.ticker
-
-
 
 
     def calculate(self):
@@ -72,7 +61,7 @@ class BollingerBands(Indicator):
 
 
     # expect Stock, volume, Indicator
-    def plot(self,  plotter=None, period=100, color="tab:green"):
+    def plot(self,  plotter=None, period=100, color="tab:red"):
         super().plot(plotter=plotter, period=period, color=color)
 
         x = self.df.iloc[:, [0]]
@@ -80,6 +69,11 @@ class BollingerBands(Indicator):
 
         # put period for the data also
         df = self.df.iloc[-period:, :]
+
+        if plotter.ax_main is None:
+            print("Error: Main Stock has not been plotted, "
+                  "plot a stock and then plot the associated bollinger bands")
+            raise IOError
 
         plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_down_key], color=color)
         plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_up_key], color=color)

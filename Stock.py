@@ -145,16 +145,17 @@ class Stock:
 
 
 
-
-
     def plot(self, ticker=None, price_types=None, period=100):
         if price_types is None:
+            # Initialize price types if no value has been provided
             price_types = ["adj_close"]
 
         if ticker is None:
+            # Initialize ticker value if it has not been provided
             ticker = [self.tickers[0]]
 
         if self.plotter is None:
+            # Initialize Plotter if it has not been already initialized
             self.plotter = Plotter()
 
         for priceType in price_types:

@@ -16,6 +16,7 @@ class Slope(Indicator):
 
         super().__init__()
 
+
         self.n = n
         self.ser = None
 
@@ -23,6 +24,9 @@ class Slope(Indicator):
 
         self.adj_close_key = None
         self.slope_key = None
+
+        if df is not None:
+            self.set_input_data(df)
 
 
     def set_input_data(self, df):
@@ -36,8 +40,13 @@ class Slope(Indicator):
         self.ser = df[self.adj_close_key]
         self.ser.ticker = self.ticker
 
+
+
+        self.df = df[[self.adj_close_key]].copy()
+        self.df.ticker = df.ticker
+
     def calculate(self):
-        "function to calculate the slope of n consecutive points on a plot"
+        """function to calculate the slope of n consecutive points on a plot"""
         slopes = [i * 0 for i in range(self.n - 1)]
         for i in range(self.n, len(self.ser) + 1):
             y = self.ser[i - self.n:i]
@@ -51,52 +60,34 @@ class Slope(Indicator):
 
         slope_angle = (np.rad2deg(np.arctan(np.array(slopes))))
 
-        self.df_slope = pd.DataFrame()
-        self.df_slope[self.slope_key] = np.array(slope_angle)
-        #return np.array(slope_angle)
+        # self.df = pd.DataFrame()
+        self.df[self.slope_key] = np.array(slope_angle) # +300
+        # return np.array(slope_angle)
 
 
     # expect Stock, volume, Indicator
     def plot(self, plotter=None, period=100, color="tab:green"):
+
         super().plot(plotter=plotter, period=period, color=color)
 
-        x = self.df.iloc[:, [0]]
-        index = x.iloc[-period:, :].index
-
-        # put period for the data also
-        df = self.df.iloc[-period:, :]
-
-        if plotter.ax_main is None:
-            print("Error: Main Stock has not been plotted, "
-                  "plot a stock and then plot the associated bollinger bands")
-            raise IOError
-
-        plotter.ax_main[Constants.adj_close].plot(index, df[self.slope_key], color=color)
+        self.plot_indicator(
+            plotter=plotter,
+            period=period,
+            key=self.slope_key,
+            color=color,
+            legend_position=None
+        )
         # super().plot(plotter=plotter, period=period, color=color)
         #
-        # print("Plotting SLOPE")
+        # x = self.df.iloc[:, [0]]
+        # index = x.iloc[-period:, :].index
         #
+        # # put period for the data also
+        # df = self.df.iloc[-period:, :]
         #
-        # max_value = self.df_slope[self.slope_key].max()
-        # min_value = self.df_slope[self.slope_key].min()
+        # if plotter.ax_main is None:
+        #     print("Error: Main Stock has not been plotted, "
+        #           "plot a stock and then plot the associated bollinger bands")
+        #     raise IOError
         #
-        # if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
-        #
-        #     plotter.ax_indicators[self.slope_key] = plotter.ax_indicators[Constants.main_indicator_axis]
-        #     #plotter.ax_indicators[Constants.main_indicator_axis]
-        #
-        # else:
-        #
-        #     # instantiate a second axes that shares the same x-axis
-        #     plotter.ax_indicators[self.slope_key] = \
-        #         plotter.ax_indicators[Constants.main_indicator_axis].twinx()
-        #
-        # plotter.ax_indicators[self.slope_key].set_ylim(min_value - 1, max_value + 1)
-        #
-        # plotter.main_ax_indicator = plotter.ax_indicators[self.slope_key]
-        # plotter.ax_indicators[self.slope_key].tick_params(axis='y', labelcolor=color, size=20)
-        # plotter.plot_indicator(df=self.df_slope[[self.slope_key]], period=period, color=color)
-        #
-        # return plotter
-
-
+        # plotter.ax_main[Constants.adj_close].plot(index, df[self.slope_key]+250, color=color)

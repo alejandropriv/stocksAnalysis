@@ -65,16 +65,32 @@ class MACD(Indicator):
 
         super().plot(plotter=plotter, period=period, color=color)
 
-        self.plot_indicator(
-            plotter=plotter,
-            period=period,
-            key=self.macd_key,
-            color=color,
-            legend_position=None
-        )
+        print("Plotting MACD")
 
-        # TODO: put this inside stock class as a dependency of the indicator
-        #plotter.plot_indicator(df=self.df[[self.signal_key]], period=period, color="tab:orange")
+        max_value = self.df[self.macd_key].max()
+        min_value = self.df[self.macd_key].min()
+
+        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
+            plotter.ax_indicators[self.macd_key] = plotter.ax_indicators[Constants.main_indicator_axis]
+
+        else:
+            # instantiate a second axes that shares the same x-axis
+            plotter.ax_indicators[self.macd_key] = \
+                plotter.ax_indicators[Constants.main_indicator_axis].twinx()
+
+
+        plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
+
+        plotter.main_ax_indicator = plotter.ax_indicators[self.macd_key]
+        plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
+        plotter.plot_indicator(df=self.df[[self.macd_key]], period=period, color=color)
+        plotter.plot_indicator(df=self.df[[self.signal_key]], period=period, color="tab:orange")
+
+        legend_position = plotter.get_legend_position()
+        plotter.ax_indicators[self.macd_key].legend(loc=legend_position)
+
+        return plotter
+
 
 
 

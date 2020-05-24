@@ -158,12 +158,64 @@ class TestBasics(unittest.TestCase):
 
         atr = ATR()
         self.stock.append_indicator(atr)
-
         self.stock.plot(period=period)
 
         print("Analysis has been run")
 
         plt.show()
+
+    def test_bollinger_bands(self):
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
+
+        past_date_interval = 365
+        period = 200
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+        self.stock.plot(period=period)
+
+
+        self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
+
+
+        print("Analysis has been run")
+
+        plt.show()
+
+    def test_atr_bollinger_bands(self):
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
+
+        past_date_interval = 365
+        period = 200
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+
+        atr = ATR()
+        self.stock.append_indicator(atr)
+        self.stock.plot(period=period)
+
+        self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
+
+        # added these three lines
+        # lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
+
+        # lns = lns1 + lns2 + lns3
+        # labs = [l.get_label() for l in lns]
+        # ax.legend(lns, labs, loc=0)
+
+        print("Analysis has been run")
+
+        plt.show()
+
 
     def test_macd_atr_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -179,17 +231,14 @@ class TestBasics(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-        self.calculate_macd()
-        self.stock.plotter = self.calculate_atr(period=period, plotter=self.stock.plotter)
+        macd_ind = MACD()
+        self.stock.append_indicator(macd_ind)
+
+        atr = ATR()
+        self.stock.append_indicator(atr)
+        self.stock.plot(period=period)
 
         self.stock.plotter = self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
-
-        # added these three lines
-        # lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
-
-        # lns = lns1 + lns2 + lns3
-        # labs = [l.get_label() for l in lns]
-        # ax.legend(lns, labs, loc=0)
 
         print("Analysis has been run")
 
@@ -235,14 +284,6 @@ class TestBasics(unittest.TestCase):
     ###################################################################
     #  CALCULATIONS
     ###################################################################
-    def calculate_macd(self):
-        pass
-
-
-
-    def calculate_atr(self, period=100, plotter=None):
-        pass
-
     def calculate_rsi(self, period=100, plotter=None):
         self.get_historical_data()
 
@@ -262,11 +303,6 @@ class TestBasics(unittest.TestCase):
 
         return rsi_ind.plotter
 
-    def calculate_adx(self, period=100, plotter=None):
-        pass
-
-    def calculate_obv(self, period=100, plotter=None):
-        pass
 
     def calculate_bollinger_bands(self, period=100, plotter=None):
         self.get_historical_data()
@@ -279,12 +315,12 @@ class TestBasics(unittest.TestCase):
 
         price_close_adj.ticker = self.tickers[0]
 
-        bb_ind = BollingerBands(df=price_close_adj, n=20, plotter=plotter)
+        bb_ind = BollingerBands(df=price_close_adj, n=20)
         bb_ind.calculate()
 
-        bb_ind.plot(period=period, color="tab:red")
+        bb_ind.plot(plotter=plotter, period=period, color="tab:red")
 
-        return bb_ind.plotter
+        return plotter
 
     def get_historical_data(self):
         if self.historical_data:

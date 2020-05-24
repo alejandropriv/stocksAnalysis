@@ -18,10 +18,8 @@ class MACD(Indicator):
         self.macd_key = None
         self.signal_key = None
 
-        self.df = df
-
-        if self.df is not None:
-            df.set_input_data(self.df)
+        if df is not None:
+            self.set_input_data(df)
 
 
     def set_input_data(self, df):
@@ -33,7 +31,7 @@ class MACD(Indicator):
         self.signal_key = Constants.get_key(self.ticker, "Signal")
 
         self.df = df[[self.adj_close_key]].copy()
-        self.df.ticker = self.ticker
+        self.df.ticker = df.ticker
 
 
 
@@ -63,31 +61,14 @@ class MACD(Indicator):
         return self.df
 
 
-    def plot(self, plotter=None, period=100, color="tab:green", legend_position="upper right"):
+    def plot(self, plotter=None, period=100, color="tab:green"):
 
-        super().plot(plotter=plotter, period=period, color=color, legend_position=legend_position)
+        super().plot(plotter=plotter, period=period, color=color)
 
-        print("Plotting MACD")
-
-        max_value = self.df[self.macd_key].max()
-        min_value = self.df[self.macd_key].min()
-
-        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
-            plotter.ax_indicators[self.macd_key] = plotter.ax_indicators[Constants.main_indicator_axis]
-
-        else:
-            # instantiate a second axes that shares the same x-axis
-            plotter.ax_indicators[self.macd_key] = \
-                plotter.ax_indicators[Constants.main_indicator_axis].twinx()
-
-
-        plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
-
-        plotter.main_ax_indicator = plotter.ax_indicators[self.macd_key]
-        plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
-        plotter.plot_indicator(df=self.df[[self.macd_key]], period=period, color=color)
-        plotter.plot_indicator(df=self.df[[self.signal_key]], period=period, color="tab:orange")
-
-        plotter.ax_indicators[self.macd_key].legend(loc="best")
-
-        return plotter
+        self.plot_indicator(
+            plotter=plotter,
+            period=period,
+            key=self.macd_key,
+            color=color,
+            legend_position=None
+        )

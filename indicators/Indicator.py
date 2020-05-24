@@ -30,10 +30,15 @@ class Indicator(metaclass=abc.ABCMeta):
 
         @abc.abstractmethod
         def plot(self, plotter=None, period=100, color="tab:green"):
-            self.plot(plotter, period, key, color, None)
-
+            if plotter is None:
+                print("Error: plotter Object not found, please Select the main stock first.")
+                raise IOError
 
         def plot_indicator(self, plotter=None, period=100, key=None, color="tab:green", legend_position=None):
+
+            if plotter is None:
+                print("Error: plotter Object not found, please Select the main stock first.")
+                return
 
             if legend_position is None:
                 legend_position = plotter.get_legend_position()
@@ -48,15 +53,17 @@ class Indicator(metaclass=abc.ABCMeta):
                 plotter.ax_indicators[key] = plotter.ax_indicators[Constants.main_indicator_axis]
 
             else:
-                print("This indicator is added to the current plot")
+                print("This indicator is added to the current-existing plot")
                 # instantiate a second axes that shares the same x-axis
                 plotter.ax_indicators[key] = plotter.ax_indicators[Constants.main_indicator_axis].twinx()
 
             plotter.ax_indicators[key].set_ylim(min_value - 1, max_value + 1)
 
-            plotter.ax_indicators[key].legend(loc=legend_position)
-
             plotter.main_ax_indicator = plotter.ax_indicators[key]
+            plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
 
             plotter.plot_indicator(df=self.df[[key]], period=period, color=color)
+
+            plotter.ax_indicators[key].legend(loc=legend_position)
+
 

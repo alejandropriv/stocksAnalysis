@@ -19,10 +19,8 @@ class OBV(Indicator):
         self.volume_key = None
         self.obv_key = None
 
-        self.df = df
-
-        if self.df is not None:
-            df.set_input_data(self.df)
+        if df is not None:
+            self.set_input_data(df)
 
 
 
@@ -37,8 +35,6 @@ class OBV(Indicator):
         self.df = df[[self.adj_close_key]].copy()
         self.df[self.volume_key] = df[[self.volume_key]]
         self.df.ticker = df.ticker
-
-        self.df.ticker = self.ticker
 
 
 
@@ -64,22 +60,10 @@ class OBV(Indicator):
 
         super().plot(plotter=plotter, period=period, color=color)
 
-        print("Plotting OBV")
-
-        max_value = self.df[self.obv_key].max()
-        min_value = self.df[self.obv_key].min()
-
-        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
-            print("First Indicator OBV")
-            plotter.ax_indicators[self.obv_key] = plotter.ax_indicators[Constants.main_indicator_axis]
-        else:
-            # instantiate a second axes that shares the same x-axis
-            plotter.ax_indicators[self.obv_key] = plotter.ax_indicators[Constants.main_indicator_axis].twinx()
-
-        plotter.ax_indicators[self.obv_key].set_ylim(min_value - 1, max_value + 1)
-
-        plotter.ax_indicators[self.obv_key].legend(loc="best")
-
-        plotter.main_ax_indicator = plotter.ax_indicators[self.obv_key]
-
-        plotter.plot_indicator(df=self.df[[self.obv_key]], period=period, color=color)
+        self.plot_indicator(
+            plotter=plotter,
+            period=period,
+            key=self.obv_key,
+            color=color,
+            legend_position=None
+        )

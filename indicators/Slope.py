@@ -61,29 +61,10 @@ class Slope(Indicator):
 
         super().plot(plotter=plotter, period=period, color=color)
 
-        print("Plotting SLOPE")
-
-
-        max_value = self.df_slope[self.slope_key].max()
-        min_value = self.df_slope[self.slope_key].min()
-
-        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
-
-            plotter.ax_indicators[self.slope_key] = plotter.ax_indicators[Constants.main_indicator_axis]
-            #plotter.ax_indicators[Constants.main_indicator_axis]
-
-        else:
-
-            # instantiate a second axes that shares the same x-axis
-            plotter.ax_indicators[self.slope_key] = \
-                plotter.ax_indicators[Constants.main_indicator_axis].twinx()
-
-        plotter.ax_indicators[self.slope_key].set_ylim(min_value - 1, max_value + 1)
-
-        plotter.main_ax_indicator = plotter.ax_indicators[self.slope_key]
-        plotter.ax_indicators[self.slope_key].tick_params(axis='y', labelcolor=color, size=20)
-        plotter.plot_indicator(df=self.df_slope[[self.slope_key]], period=period, color=color)
-
-        return plotter
-
-
+        self.plot_indicator(
+            plotter=plotter,
+            period=period,
+            key=self.obv_key,
+            color=color,
+            legend_position=None
+        )

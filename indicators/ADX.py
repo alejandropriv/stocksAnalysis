@@ -36,7 +36,7 @@ class ADX(Indicator):
         self.df = df[[self.low_key]].copy()
         self.df[self.high_key] = df[[self.high_key]]
         self.df[self.adj_close_key] = df[[self.adj_close_key]]
-        self.df.ticker = self.ticker
+        self.df.ticker = df.ticker
 
 
     def calculate(self):
@@ -131,7 +131,9 @@ class ADX(Indicator):
 
     # expect Stock, volume, Indicator
     def plot(self, plotter=None, period=100, color="tab:brown"):
-        super.
+
+        super().plot(plotter=plotter, period=period, color=color)
+
         self.plot_indicator(
             plotter=plotter,
             period=period,
@@ -139,25 +141,3 @@ class ADX(Indicator):
             color=color,
             legend_position=None
         )
-        #self.plot(plotter=plotter, period=period, key=self.adx_key, color=color)
-
-        print("Plotting ADX")
-
-        max_value = self.df[self.adx_key].max()
-        min_value = self.df[self.adx_key].min()
-
-        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
-            print("First Indicator ADX")
-            plotter.ax_indicators[self.adx_key] = plotter.ax_indicators[Constants.main_indicator_axis]
-
-        else:
-            # instantiate a second axes that shares the same x-axis
-            plotter.ax_indicators[self.adx_key] = plotter.ax_indicators[Constants.main_indicator_axis].twinx()
-
-        plotter.ax_indicators[self.adx_key].set_ylim(min_value - 1, max_value + 1)
-
-        plotter.ax_indicators[self.adx_key].legend(loc="best")
-
-        plotter.main_ax_indicator = plotter.ax_indicators[self.adx_key]
-
-        plotter.plot_indicator(df=self.df[[self.adx_key]], period=period, color=color)

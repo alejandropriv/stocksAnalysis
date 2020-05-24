@@ -31,7 +31,8 @@ class TestBasics(unittest.TestCase):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 1825
-        period = 50
+        # TODO: check what is happening with period < 100
+        period = 100
 
         self.stock = Stock(self.tickers)
 

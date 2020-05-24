@@ -1,7 +1,5 @@
 from utilities.Constants import Constants
 from indicators.Indicator import Indicator
-import pandas as pd
-
 
 import numpy as np
 

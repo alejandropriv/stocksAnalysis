@@ -8,6 +8,7 @@ from indicators.MACD import MACD
 from indicators.RSI import RSI
 from indicators.ADX import ADX
 from indicators.OBV import OBV
+from indicators.RENKO import RENKOIND
 
 from indicators.Slope import Slope
 
@@ -205,14 +206,19 @@ class TestBasics(unittest.TestCase):
 
         atr = ATR()
         self.stock.append_indicator(atr)
+
+        bb = BollingerBands()
+        self.stock.append_indicator(bb)
+
+
         self.stock.plot(period=period)
 
-        self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
 
 
         print("Analysis has been run")
 
         plt.show()
+
 
 
     def test_macd_atr_bollinger_bands(self):
@@ -234,13 +240,21 @@ class TestBasics(unittest.TestCase):
 
         atr = ATR()
         self.stock.append_indicator(atr)
+
+        bb = BollingerBands()
+        self.stock.append_indicator(bb)
+
+
         self.stock.plot(period=period)
 
-        self.stock.plotter = self.calculate_bollinger_bands(period=period, plotter=self.stock.plotter)
+
 
         print("Analysis has been run")
 
         plt.show()
+
+
+
 
     def test_macd_atr_rsi_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "FB", "UBER"]
@@ -259,25 +273,45 @@ class TestBasics(unittest.TestCase):
 
         self.stock.append_indicator(ATR())
 
-        self.stock.append_indicator(BollingerBands())
+        bb = BollingerBands()
+        self.stock.append_indicator(bb)
 
-        # todo put this in a different subplot
-        self.stock.append_indicator(RSI())
+
         self.stock.plot(period=period)
 
-        # added these three lines
-        # lns1 = ax.plot(time, Swdown, '-', label = 'Swdown')
 
-        # lns = lns1 + lns2 + lns3
-        # labs = [l.get_label() for l in lns]
-        # ax.legend(lns, labs, loc=0)
 
         print("Analysis has been run")
 
         plt.show()
 
 
+    def test_renko(self):
+        self.tickers = ["TSLA"]  # , "FB", "UBER"]
 
+        past_date_interval = 365
+        period = 200
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+
+
+
+        renko = RENKOIND()
+        self.stock.append_indicator(renko)
+
+
+        self.stock.plot(period=period)
+
+
+
+        print("Analysis has been run")
+
+        plt.show()
 
 
     ###################################################################

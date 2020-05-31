@@ -68,10 +68,11 @@ class Stock:
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,
                         tickers=None,
-                        has_high_key=False,
-                        has_low_key=False,
-                        has_adj_close_key=False,
-                        has_volume_key=False):  # TODO: fix this to be prettier
+                        keys=None ):
+
+        if keys is None:
+            print ("No keys has been specified. ")
+            raise ValueError
 
         method_tag = "get_prices_data"
 
@@ -120,16 +121,22 @@ class Stock:
 
         return prices
 
-    def append_indicator(self, new_indicator=None, ticker=None):
+    def append_indicator(self, new_indicator=None, ticker=None, keys=None):
+
+        if keys is None:
+            keys = {'has_high_key': True,
+                    'has_low_key': True,
+                    'has_open_key': False,
+                    'has_close_key': False,
+                    'has_adj_close_key': True,
+                    'has_volume_key': True
+                    }
 
         # if get_historical_data has already been called it returns the cached data
         self.get_historical_data()
 
         self.price_info = self.get_prices_data(tickers=self.tickers,
-                                               has_high_key=True,
-                                               has_low_key=True,
-                                               has_adj_close_key=True,
-                                               has_volume_key=True)
+                                               keys=keys)
 
         if ticker is None:
             self.price_info.ticker = self.tickers[0]

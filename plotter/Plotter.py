@@ -5,9 +5,6 @@ from utilities.Constants import Constants
 
 class Plotter:
 
-
-
-
     def get_legend_position(self):
         legend = ["upper right", "upper left", "lower left",
                   "lower right", "right", "center left",

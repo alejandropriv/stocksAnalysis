@@ -1,11 +1,10 @@
 from utilities.Constants import Constants
-import numpy as np
 from indicators.Indicator import Indicator
+from indicators.ATR import ATR
+
 from stocktrends import Renko
 from stocktrends import indicators
 
-from matplotlib.patches import Rectangle
-import pandas as pd
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 
@@ -23,8 +22,9 @@ class RENKOIND(Indicator):
         self.close_key = None
         self.adj_close_key = None
 
-        self.renko_key = None
         self.brick_size = None
+
+        self.df_renko = None
 
         if df is not None:
             self.set_input_data(df)
@@ -42,10 +42,11 @@ class RENKOIND(Indicator):
         self.df = df.copy()
         self.df.reset_index(inplace=True)
 
+        self.df_renko = df.loc[:, [self.high_key, self.low_key, self.open_key, self.adj_close_key]]
 
-        self.df = df.loc[:, [self.low_key, self.high_key]]
-        self.df.rename(
+        self.df_renko.rename(
             columns={
+                "Date": "date",
                 self.high_key: "high",
                 self.low_key: "low",
                 self.open_key: "open",
@@ -54,15 +55,14 @@ class RENKOIND(Indicator):
 
 
         # Set dataframe keys
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.renko_key = Constants.get_key(self.ticker, "RENKO")
         self.df.ticker = df.ticker
+        self.df_renko.ticker = df.ticker
 
 
     def calculate(self):
         """function to convert ohlc data into renko bricks"""
 
-        df2 = Renko(self.df)
+        df2 = Renko(self.df_renko)
         df2.brick_size = round(ATR(self.df, 120)["ATR"][-1], 0)
         self.brick_size = df2.brick_size
 

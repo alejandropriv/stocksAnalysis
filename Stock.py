@@ -85,24 +85,32 @@ class Stock:
                 print("No historical data available, call method self.get_historical_data() first")
                 raise NotImplementedError  # here there should be an error object
 
-            keys = []
+            key_titles = []
 
             for ticker in tickers:
-                if has_adj_close_key == True:
-                    keys.append(Constants.get_adj_close_key(ticker))
 
-                if has_high_key == True:
-                    keys.append(Constants.get_high_key(ticker))
+                if keys["has_high_key"] == True:
+                    key_titles.append(Constants.get_high_key(ticker))
 
-                if has_low_key == True:
-                    keys.append(Constants.get_low_key(ticker))
+                if keys["has_low_key"] == True:
+                    key_titles.append(Constants.get_low_key(ticker))
 
-                if has_volume_key == True:
-                    keys.append(Constants.get_volume_key(ticker))
+                if keys["has_volume_key"] == True:
+                    key_titles.append(Constants.get_volume_key(ticker))
 
-            if len(keys) > 0:
+                if keys["has_open_key"] == True:
+                    key_titles.append(Constants.get_open_key(ticker))
 
-                prices = self.data_source.prices.loc[:, keys]
+                if keys["has_close_key"] == True:
+                    key_titles.append(Constants.get_close_key(ticker))
+
+                if keys["has_adj_close_key"] == True:
+                    key_titles.append(Constants.get_adj_close_key(ticker))
+
+
+            if len(key_titles) > 0:
+
+                prices = self.data_source.prices.loc[:, key_titles]
 
 
             else:
@@ -121,7 +129,7 @@ class Stock:
 
         return prices
 
-    def append_indicator(self, new_indicator=None, ticker=None, keys=None):
+    def append_indicator(self, new_indicator=None, keys=None):
 
         if keys is None:
             keys = {'has_high_key': True,
@@ -138,11 +146,8 @@ class Stock:
         self.price_info = self.get_prices_data(tickers=self.tickers,
                                                keys=keys)
 
-        if ticker is None:
-            self.price_info.ticker = self.tickers[0]
-        else:
-            # TODO check here for multiple tickers
-            self.price_info.ticker = self.tickers[0]
+        self.price_info.ticker = self.tickers[0]
+
 
         new_indicator.set_input_data(self.price_info)
         new_indicator.calculate()
@@ -167,7 +172,15 @@ class Stock:
 
         for priceType in price_types:
             if priceType == "adj_close":
-                self.price_info = self.get_prices_data(ticker, has_adj_close_key=True, has_volume_key=True)
+                keys = {'has_high_key': False,
+                        'has_low_key': False,
+                        'has_open_key': False,
+                        'has_close_key': False,
+                        'has_adj_close_key': True,
+                        'has_volume_key': True
+                        }
+
+                self.price_info = self.get_prices_data(ticker, keys=keys)
 
                 self.price_info.ticker = ticker[0]
                 self.plotter.plot_main(df=self.price_info, period=period)  # count how many graphics there will be

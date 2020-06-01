@@ -17,7 +17,12 @@ class RENKOIND(Indicator):
         self.n = n
 
         # Set dataframe keys
+        self.low_key = None
+        self.high_key = None
+        self.open_key = None
+        self.close_key = None
         self.adj_close_key = None
+
         self.renko_key = None
         self.brick_size = None
 
@@ -26,11 +31,25 @@ class RENKOIND(Indicator):
 
     def set_input_data(self, df):
         super().set_input_data(df)
+
+        self.low_key = Constants.get_low_key(self.ticker)
+        self.high_key = Constants.get_high_key(self.ticker)
+        self.open_key = Constants.get_open_key(self.ticker)
+        self.close_key = Constants.get_close_key(self.ticker)
+        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
+
+
         self.df = df.copy()
         self.df.reset_index(inplace=True)
-        self.df = df.iloc[:, [0, 1, 2, 3, 5, 6]]
-        self.df.rename(columns={"Date": "date", "High": "high", "Low": "low", "Open": "open", "Adj Close": "close",
-                           "Volume": "volume"}, inplace=True)
+
+
+        self.df = df.loc[:, [self.low_key, self.high_key]]
+        self.df.rename(
+            columns={
+                self.high_key: "high",
+                self.low_key: "low",
+                self.open_key: "open",
+                self.adj_close_key: "close"}, inplace=True)
 
 
 

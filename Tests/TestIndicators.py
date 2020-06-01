@@ -298,11 +298,16 @@ class TestBasics(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        time_series=Constants.TIMESERIES.DAILY)
 
-
-
+        keys = {'has_high_key': True,
+                'has_low_key': True,
+                'has_open_key': True,
+                'has_close_key': True,
+                'has_adj_close_key': True,
+                'has_volume_key': False
+                }
 
         renko = RENKOIND()
-        self.stock.append_indicator(renko)
+        self.stock.append_indicator(renko, keys=keys)
 
 
         self.stock.plot(period=period)

@@ -103,10 +103,15 @@ class RENKOIND(Indicator):
         lim_y_max = max(data.loc[:, "close"]) + 100
 
 
+
         prev_num = -1
         y0 = data.loc[0, "close"]
 
         uptrend = data.loc[:, ["uptrend"]]
+        date = data.loc[:, ["date"]]
+
+        
+
         fig = plt.figure(2)
         fig.clf()
         axes = fig.gca()
@@ -145,7 +150,7 @@ class RENKOIND(Indicator):
             )
 
 
-        plt.xticks()
+        plt.xticks(date.loc[:, "date"])
         axes.set_xlim(0, 100)
         axes.set_ylim(lim_y_min, lim_y_max)
 

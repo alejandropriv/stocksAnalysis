@@ -28,6 +28,27 @@ class TestBasics(unittest.TestCase):
 
     stock = None
 
+    def testplot_only_stock(self):
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
+
+        past_date_interval = 1825
+        # TODO: check what is happening with period < 100
+        period = 100
+
+        self.stock = Stock(self.tickers)
+
+        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
+                                       end_date=(datetime.date.today()),
+                                       time_series=Constants.TIMESERIES.DAILY)
+
+
+        self.stock.plot(period=period)
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
     def test_macd(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 

@@ -115,6 +115,10 @@ class Plotter:
         self.ax_indicators[Constants.main_indicator_axis].spines["bottom"].set_alpha(1)
         self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
         self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
+        self.ax_indicators[Constants.main_indicator_axis].set_xlim(
+            time_series_adj_close.iloc[[0]].index,
+            time_series_adj_close.iloc[[-1]].index
+        )
 
 
     # this has to be called after calling plot_main

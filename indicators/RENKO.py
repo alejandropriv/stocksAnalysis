@@ -3,9 +3,8 @@ from indicators.Indicator import Indicator
 from indicators.ATR import ATR
 
 from stocktrends import Renko
-from stocktrends import indicators
 
-from matplotlib.patches import Rectangle
+import matplotlib.patches as ppatches
 import matplotlib.pyplot as plt
 
 
@@ -21,13 +20,18 @@ class RENKOIND(Indicator):
         self.open_key = None
         self.close_key = None
         self.adj_close_key = None
+        self.date_key = "Date"
 
         self.brick_size = None
 
+        self.df_t = None
         self.df_renko = None
+        self.renko_data = None
 
         if df is not None:
             self.set_input_data(df)
+
+
 
     def set_input_data(self, df):
         super().set_input_data(df)
@@ -40,11 +44,12 @@ class RENKOIND(Indicator):
 
 
         self.df = df.copy()
-        self.df.reset_index(inplace=True)
+        self.df_t = df.copy()
+        self.df_t.reset_index(inplace=True)
 
-        self.df_renko = df.loc[:, [self.high_key, self.low_key, self.open_key, self.adj_close_key]]
+        self.df_t = self.df_t.loc[:, [self.date_key, self.high_key, self.low_key, self.open_key, self.adj_close_key]]
 
-        self.df_renko.rename(
+        self.df_t.rename(
             columns={
                 "Date": "date",
                 self.high_key: "high",
@@ -56,70 +61,67 @@ class RENKOIND(Indicator):
 
         # Set dataframe keys
         self.df.ticker = df.ticker
-        self.df_renko.ticker = df.ticker
+        self.df_t.ticker = df.ticker
 
 
     def calculate(self):
         """function to convert ohlc data into renko bricks"""
 
-        df2 = Renko(self.df_renko)
-        df2.brick_size = round(ATR(self.df, 120)["ATR"][-1], 0)
-        self.brick_size = df2.brick_size
+        self.df_renko = Renko(self.df_t)
+        self.df_renko.ticker = self.df_t.ticker
+
+
+        atr = ATR(self.df, 120)
+        df_atr = atr.calculate()
+
+        atr_key = Constants.get_key(self.ticker, "ATR")
+
+
+        self.df_renko.brick_size = round(df_atr[atr_key][-1], 0)
+        self.brick_size = self.df_renko.brick_size
+
 
         # renko_df = df2.get_bricks() #if get_bricks() does not work try using get_ohlc_data() instead
-        renko_df = df2.get_ohlc_data()
-        self.df = renko_df.copy()
-        return self.df
+        self.renko_data = self.df_renko.get_ohlc_data()
+        self.df = self.renko_data.copy()
+        return self.df # TODO: Check that this format is consistent through all the indicators
 
 
         # expect Stock, volume, Indicator
     def plot(self, plotter=None, period=100, color="tab:green"):
 
-        self.df.columns = [i.lower() for i in self.df.columns]
-        rows = period
 
-        renko = indicators.Renko(self.df)
-
-#        print('\n\nRenko box calculation based on periodic close')
-#        renko.brick_size = 2
-#        renko.chart_type = indicators.Renko.PERIOD_CLOSE
-#        data = renko.get_ohlc_data()
-#        print(data.tail(rows))
-
-        print('\n\nRenko box calculation based on price movement')
-        renko.chart_type = indicators.Renko.PRICE_MOVEMENT
-        data = renko.get_ohlc_data()
-        print(data.tail(rows))
-
-        data = data.copy()
-        data['cdiff'] = data['close'] - data['close'].shift(1)
-        data.dropna(inplace=True)
-        data['bricks'] = data.loc[:, ('cdiff',)] / self.brick_size
-
-        bricks = data[data['bricks'] != 0]['bricks'].values
-
-
-        self.plot_renko(self, bricks)
+        self.plot_renko(self.renko_data, self.brick_size)
 
 
 
 
+    #TODO. This is working partially
+    def plot_renko(self, data, brick_size):
 
-    def plot_renko(self, data):
-        fig = plt.figure(1)
+        lim_y_min = min(data.loc[:, "close"]) - 100
+        lim_y_max = max(data.loc[:, "close"]) + 100
+
+
+        prev_num = -1
+        y0 = data.loc[0, "close"]
+
+        uptrend = data.loc[:, ["uptrend"]]
+        fig = plt.figure(2)
         fig.clf()
         axes = fig.gca()
-        y_max = max(data)
 
-        prev_num = 0
+
+
 
         bricks = []
 
-        for delta in data:
-            if delta > 0:
-                bricks.extend([1] * delta)
+        for index, delta in uptrend.iterrows():
+            if delta.loc["uptrend"] == True:
+                bricks.extend([1] * 1)
             else:
-                bricks.extend([-1] * abs(delta))
+                bricks.extend([-1] * 1)
+
 
         for index, number in enumerate(bricks):
             if number == 1:
@@ -129,13 +131,25 @@ class RENKOIND(Indicator):
 
             prev_num += number
 
-            renko = Rectangle(
-                (index, prev_num * self.brick_size), 1, self.brick_size,
+
+
+            renko = ppatches.Rectangle(
+                (index, prev_num * self.brick_size + y0), 1, self.brick_size,
                 facecolor=facecolor, alpha=0.5
             )
             axes.add_patch(renko)
 
-        plt.show()
+
+            print ("x: {} y:{}, width:{}, height:{} ".format(
+                index, prev_num * brick_size, 1, brick_size)
+            )
+
+
+        plt.xticks()
+        axes.set_xlim(0, 100)
+        axes.set_ylim(lim_y_min, lim_y_max)
+
+        #plt.show()
 
 
 

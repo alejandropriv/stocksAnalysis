@@ -6,6 +6,7 @@ from stocktrends import Renko
 
 import matplotlib.patches as ppatches
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class RENKOIND(Indicator):
@@ -103,14 +104,12 @@ class RENKOIND(Indicator):
         lim_y_max = max(data.loc[:, "close"]) + 100
 
 
-
         prev_num = -1
         y0 = data.loc[0, "close"]
 
         uptrend = data.loc[:, ["uptrend"]]
-        date = data.loc[:, ["date"]]
+        date = data.loc[:, "date"]
 
-        
 
         fig = plt.figure(2)
         fig.clf()
@@ -149,10 +148,14 @@ class RENKOIND(Indicator):
                 index, prev_num * brick_size, 1, brick_size)
             )
 
-
-        plt.xticks(date.loc[:, "date"])
-        axes.set_xlim(0, 100)
+        plt.xticks(range(date.count()), date, rotation=90)
         axes.set_ylim(lim_y_min, lim_y_max)
+
+        lim_x_min = 0
+        lim_x_max = date.count()
+
+        axes.set_xlim(lim_x_min, lim_x_max)
+
 
         #plt.show()
 

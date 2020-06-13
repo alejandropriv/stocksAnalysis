@@ -187,6 +187,8 @@ class TestBasics(unittest.TestCase):
 
         plt.show()
 
+
+
     def test_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
@@ -211,6 +213,9 @@ class TestBasics(unittest.TestCase):
         print("Analysis has been run")
 
         plt.show()
+
+
+
 
     def test_atr_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -239,6 +244,7 @@ class TestBasics(unittest.TestCase):
         print("Analysis has been run")
 
         plt.show()
+
 
 
 
@@ -305,6 +311,7 @@ class TestBasics(unittest.TestCase):
         print("Analysis has been run")
 
         plt.show()
+
 
 
     def test_renko(self):

@@ -58,7 +58,7 @@ class Plotter:
                                                                                                                          1,
                                                                                                                          figsize=(16, 9),
                                                                                                                          dpi=80,
-                                                                                                                         sharex=True,
+                                                                                                                         sharex=False,
                                                                                                                          gridspec_kw={'height_ratios': [2, 1]})
 
             self.set_volume(time_series_volume)
@@ -82,6 +82,10 @@ class Plotter:
 
         self.ax_main[Constants.volume].bar(self.index, time_series_volume, color='tab:blue', alpha=0.5, label='Volume')
         self.ax_main[Constants.volume].legend()
+        self.ax_indicators[Constants.main_indicator_axis].set_xlim(
+            time_series_volume.iloc[[0]].index,
+            time_series_volume.iloc[[-1]].index
+        )
 
 
     def set_stock_price(self, time_series_adj_close, color="black"):
@@ -106,6 +110,10 @@ class Plotter:
 
         self.ax_main[Constants.adj_close].plot(self.index, time_series_adj_close, color=color)
         self.ax_main[Constants.adj_close].legend()
+        self.ax_main[Constants.adj_close].set_xlim(
+            time_series_adj_close.iloc[[0]].index,
+            time_series_adj_close.iloc[[-1]].index
+        )
 
         #  Set the layout of the indicators plot
         #  Indicator plot layout
@@ -115,10 +123,7 @@ class Plotter:
         self.ax_indicators[Constants.main_indicator_axis].spines["bottom"].set_alpha(1)
         self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
         self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
-        self.ax_indicators[Constants.main_indicator_axis].set_xlim(
-            time_series_adj_close.iloc[[0]].index,
-            time_series_adj_close.iloc[[-1]].index
-        )
+
 
 
     # this has to be called after calling plot_main

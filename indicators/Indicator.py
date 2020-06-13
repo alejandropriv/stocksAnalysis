@@ -34,6 +34,7 @@ class Indicator(metaclass=abc.ABCMeta):
                 print("Error: plotter Object not found, please Select the main stock first.")
                 raise IOError
 
+
         def plot_indicator(self, plotter=None, period=100, key=None, color="tab:green", legend_position=None):
 
             if plotter is None:

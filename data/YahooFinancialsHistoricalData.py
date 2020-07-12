@@ -1,5 +1,5 @@
 from yahoofinancials import YahooFinancials
-from data.HistoricalData import HistoricalData
+from data.DataSource import DataSource
 
 import pandas as pd
 from utilities.Constants import Constants
@@ -8,7 +8,7 @@ import datetime
 import sys
 
 
-class YahooFinancialsHistoricalData(HistoricalData):
+class YahooFinancialsHistoricalData(DataSource):
 
     def __init__(self):
         super().__init__()

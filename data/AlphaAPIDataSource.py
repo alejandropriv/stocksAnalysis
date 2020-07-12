@@ -1,4 +1,4 @@
-from data import HistoricalData
+from data.DataSource import DataSource
 import datetime
 
 

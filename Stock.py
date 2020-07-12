@@ -1,5 +1,5 @@
 from fundamentals.Fundamentals import Fundamentals
-from data.YahooAPIHistoricalData import YahooAPIHistoricalData
+from data.PandasDataReaderDataSource import PandasDataReaderDataSource
 from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
 from data_analysis.DailyReturn import DailyReturn
 from plotter.Plotter import Plotter
@@ -26,7 +26,7 @@ class Stock:
             raise ValueError
 
         if data_source is None:
-            data_source = YahooAPIHistoricalData()
+            data_source = PandasDataReaderDataSource()
 
         self.price_info = None
 
@@ -36,11 +36,11 @@ class Stock:
         self.plotter = plotter
 
     def set_data_source(self, data_source_type):
-        if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOFINANCIALS:
+        if data_source_type == PandasDataReaderDataSource.DATASOURCETYPE.YAHOOFINANCIALS:
             self.data_source = YahooFinancialsHistoricalData()
 
-        if data_source_type == YahooAPIHistoricalData.DATASOURCETYPE.YAHOOAPI:
-            self.data_source = YahooAPIHistoricalData()
+        if data_source_type == PandasDataReaderDataSource.DATASOURCETYPE.YAHOOAPI:
+            self.data_source = PandasDataReaderDataSource()
 
     def get_fundamentals(self):
         self.fundamentals = {}
@@ -56,14 +56,6 @@ class Stock:
         if self.data_source.prices is None or self.data_source.prices.empty == True:
             self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)
 
-    def get_statistical_data(self, period):
-        pass
-        # if self.data_source.adj_close is None:
-        #     print("Unable to get statistical data because there is no data, calling 'self.get_historical_data()' first")
-        #     self.get_historical_data()
-        #
-        # self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
-        # self.daily_return.get_statistical_data()
 
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,
@@ -187,3 +179,17 @@ class Stock:
 
         for indicator in self.indicators:
             indicator.plot(plotter=self.plotter, period=period)
+
+
+
+
+
+
+    def get_statistical_data(self, period):
+        pass
+        # if self.data_source.adj_close is None:
+        #     print("Unable to get statistical data because there is no data, calling 'self.get_historical_data()' first")
+        #     self.get_historical_data()
+        #
+        # self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
+        # self.daily_return.get_statistical_data()

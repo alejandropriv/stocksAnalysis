@@ -47,6 +47,11 @@ class Constants:
         return key
 
     @staticmethod
+    def get_daiy_ret_key(ticker):
+        key = "{}_{}".format(ticker, "Daily_Ret")
+        return key
+
+    @staticmethod
     def get_key(ticker, base_key):
         key = "{}_{}".format(ticker, base_key)
         return key

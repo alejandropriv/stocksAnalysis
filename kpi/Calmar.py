@@ -6,7 +6,7 @@ import numpy as np
 
 
 
-class Volatility(KPI):
+class Calmar(KPI):
     def __init__(self, df, negative=False):
         super().__init__()
 
@@ -27,12 +27,11 @@ class Volatility(KPI):
 
 
     def calculate(self):
-        super().calculate()
-
         """function to calculate annualized volatility of a trading strategy"""
         daily_ret_key = Constants.get_daiy_ret_key(self.ticker)
+        vol = None
 
-        # Whole volatility was calculated
+        #Whole volatility was calculated
         if self.negative is False:
             self.df[daily_ret_key] = self.df[self.adj_close_key].pct_change()
             vol = self.df[daily_ret_key].std() * np.sqrt(252)

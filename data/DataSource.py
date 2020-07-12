@@ -4,13 +4,14 @@ from enum import Enum
 
 
 
-class HistoricalData(metaclass=abc.ABCMeta):
+class DataSource(metaclass=abc.ABCMeta):
 
     class DATASOURCETYPE(Enum):
 
-        YAHOOFINANCIALS = 1
-        YAHOOAPI = 2
-        ALPHAAPI = 3
+        YFINANCE = 1
+        PANDASDATAREADER = 2
+        ALPHA = 3
+        YAHOOFINANCIALS = 4
 
 
 
@@ -37,6 +38,9 @@ class HistoricalData(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def extract_data(self):
         pass
+
+
+
 
 
     # def get_statistical_data(self):

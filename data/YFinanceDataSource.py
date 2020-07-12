@@ -1,14 +1,13 @@
-from data.HistoricalData import HistoricalData
+from data.DataSource import DataSource
 import pandas as pd
-from pandas_datareader import data as pdr
-from utilities.Constants import Constants
+import yfinance as yf
 
 import sys
 
 import datetime
 
 
-class YahooAPIHistoricalData(HistoricalData):
+class YFinanceDataSource(DataSource):
 
     def __init__(self):
         super().__init__()

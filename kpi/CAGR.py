@@ -9,9 +9,9 @@ class CAGR(KPI):
 
         self.adj_close_key = None
 
-
         if df is not None:
             self.set_input_data(df)
+
 
     def set_input_data(self, df):
         super().set_input_data(df)
@@ -22,12 +22,18 @@ class CAGR(KPI):
 
 
 
-    def calculate(self):
-        "function to calculate the Cumulative Annual Growth Rate of a trading strategy"
 
-        self.df["daily_ret"] = self.df["Adj Close"].pct_change()
-        self.df["cum_return"] = (1 + self.df["daily_ret"]).cumprod()
+
+    def calculate(self):
+        """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
+        super().calculate()
+
+        daily_ret_key = Constants.get_daiy_ret_key(self.ticker)
+        cum_ret_key = Constants.get_key(self.ticker, "cum_return")
+
+        self.df[daily_ret_key] = self.df[self.adj_close_key].pct_change()
+        self.df[cum_ret_key] = (1 + self.df[daily_ret_key]).cumprod()
         n = len(self.df) / 252
-        self.value = (self.df["cum_return"][-1]) ** (1 / n) - 1
+        self.value = (self.df[cum_ret_key][-1]) ** (1 / n) - 1
         return self.value
 

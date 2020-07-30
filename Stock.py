@@ -51,7 +51,7 @@ class Stock:
     def get_historical_data(self,
                             start_date=datetime.date.today() - datetime.timedelta(365),
                             end_date=(datetime.date.today()),
-                            time_series=Constants.TIMESERIES.DAILY):
+                            time_series=Constants.INTERVAL.DAY):
 
         if self.data_source.prices is None or self.data_source.prices.empty == True:
             self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)

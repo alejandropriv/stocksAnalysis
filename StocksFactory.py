@@ -16,10 +16,13 @@ class StocksFactory:
                  end_date=datetime.datetime.now(),
                  start_date=None,
                  time_delta= None,
-                 time_series=Constants.TIMESERIES.DAILY,
+                 time_series=Constants.INTERVAL.DAY,
                  data_source_type=DataSource.DATASOURCETYPE.YFINANCE,
                  bulk=False,
                  group=1):
+
+        self.bulk = bulk
+        self.group = group
 
         if tickers is None:
             print("Error: Define your tickers first !!!.")
@@ -65,10 +68,10 @@ class StocksFactory:
             self.data_source = YFinanceDataSource
 
         elif data_source_type is DataSource.DATASOURCETYPE.ALPHA:
-            self.data_source = None  # TODO
+            self.data_source = None  #TODO
 
         elif data_source_type is DataSource.DATASOURCETYPE.YAHOOFINANCIALS:
-            self.data_source = None  # TODO
+            self.data_source = None  #TODO
 
 
     def createStocks(self):
@@ -80,9 +83,22 @@ class StocksFactory:
             print("Error: Define a startDate or a timeDelta.")
             return
 
+        if self.bulk is False:
 
-        for ticker in self.tickers:
-            self
+            print("This option has not been already programmed! wait for next release")
+            self.data_source.extract_historical_data(ticker=self.tickers,
+                                                     start_date=self.start_date,
+                                                     end_date=self.end_date,
+                                                     interval=self.time_series,
+                                                     data_columns=None)
+
+        else:
+            for ticker in self.tickers:
+                self.data_source.extract_historical_data(ticker=ticker,
+                                                         start_date=self.start_date,
+                                                         end_date=self.end_date,
+                                                         interval=self.time_series,
+                                                         data_columns=None)
 
 
 
@@ -90,7 +106,7 @@ class StocksFactory:
     def get_historical_data(self,
                             start_date=datetime.date.today() - datetime.timedelta(365),
                             end_date=(datetime.date.today()),
-                            time_series=Constants.TIMESERIES.DAILY):
+                            time_series=Constants.INTERVAL.DAY):
 
         if self.data_source.prices is None or self.data_source.prices.empty == True:
             self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)

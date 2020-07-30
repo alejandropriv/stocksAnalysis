@@ -39,7 +39,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
 
         self.stock.plot(period=period)
@@ -60,7 +60,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         macd_ind = MACD()
         self.stock.append_indicator(macd_ind)
@@ -84,7 +84,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         atr = ATR()
         self.stock.append_indicator(atr)
@@ -107,7 +107,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         adx = ADX()
         self.stock.append_indicator(adx)
@@ -129,7 +129,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
 
         obv = OBV()
@@ -151,7 +151,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         slope = Slope()
 
@@ -174,7 +174,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         macd_ind = MACD()
         self.stock.append_indicator(macd_ind)
@@ -199,7 +199,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
 
         bb = BollingerBands()
@@ -227,7 +227,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
 
         atr = ATR()
@@ -258,7 +258,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         self.stock.plot(period=period)
 
@@ -293,7 +293,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
 
         self.stock.append_indicator(MACD())
@@ -324,7 +324,7 @@ class TestBasics(unittest.TestCase):
 
         self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
                                        end_date=(datetime.date.today()),
-                                       time_series=Constants.TIMESERIES.DAILY)
+                                       time_series=Constants.INTERVAL.DAY)
 
         keys = {'has_high_key': True,
                 'has_low_key': True,

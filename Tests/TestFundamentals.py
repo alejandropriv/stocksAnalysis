@@ -26,6 +26,11 @@ class TestBasics(unittest.TestCase):
 
     def test_fundamentals(self):
 
+        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
+
+
+        self.stock = Stock(self.tickers)
+
         if self.fundamentals:
             self.stock.get_fundamentals()
 

@@ -2,9 +2,9 @@ from data.DataSource import DataSource
 import pandas as pd
 import yfinance as yf
 
-import sys
-
 import datetime
+
+from utilities.Constants import Constants
 
 
 class YFinanceDataSource(DataSource):
@@ -13,87 +13,115 @@ class YFinanceDataSource(DataSource):
         super().__init__()
         self.prices = pd.DataFrame()
 
-
-
-
     def extract_historical_data(self,
                                 tickers,
                                 start_date=datetime.date.today() - datetime.timedelta(365),
                                 end_date=(datetime.date.today()),
-                                time_series=Constants.TIMESERIES.DAILY,
-                                data_columns=None):
+                                period=None,
+                                interval=Constants.INTERVAL.DAY):
+
+        super().extract_historical_data(tickers,
+                                        start_date=start_date,
+                                        end_date=(datetime.date.today()),
+                                        period=None,
+                                        interval=Constants.INTERVAL.DAY)
 
         self.tickers = tickers
+        self.tickers_str = self.get_tickers_str()
+
+
         self.start_date = start_date
         self.end_date = end_date
-        self.time_series = time_series
+        self.period = period
+        self.interval = interval
+        self.interval_str = interval.name
 
-        if data_columns is None:
-            data_columns = ["all"]
+        if self.period is not None:
+            self.start_date = None
+            self.end_date = None
 
-        self.data_columns = data_columns
+
+        self.validate_parameters()
 
         self.extract_data()
 
 
+    def validate_parameters(self):
+        if self.interval is Constants.INTERVAL.MINUTE and \
+                self.interval is Constants.INTERVAL.MINUTE2 and \
+                self.interval is Constants.INTERVAL.MINUTE5 and \
+                self.interval is Constants.INTERVAL.MINUTE15 and \
+                self.interval is Constants.INTERVAL.MINUTE30 and \
+                self.interval is Constants.INTERVAL.MINUTE60 and \
+                self.interval is Constants.INTERVAL.MINUTE90 and \
+                self.interval is Constants.INTERVAL.HOUR:
 
+            if self.start_date is None or self.end_date is None:
+
+                if self.period is not Constants.PERIOD.DAY or \
+                        self.period is not Constants.PERIOD.DAY or \
+                        self.period is not Constants.PERIOD.DAY5 or \
+                        self.period is not Constants.PERIOD.MONTH:
+
+                    print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
+                    raise AttributeError
+
+
+            else:
+                delta = (self.end_date - self.start_date).seconds
+
+                max_days = 60 * 24 * 60 * 60
+                if delta > max_days:
+                    print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
+                    raise AttributeError
+
+
+
+    def get_tickers_str(self):
+
+        tickers_str = ""
+        for ticker in self.tickers:
+            tickers_str = self.tickers_str + " " + ticker;
+
+        return tickers_str
 
     def extract_data(self):
 
-        interval = ""
-        if self.time_series == Constants.TIMESERIES.DAILY:
-            interval = 'd'
+        self.prices = yf.download(  # or pdr.get_data_yahoo(...
+            # tickers list or string as well
+            tickers=self.tickers_str,
 
-        elif self.time_series == Constants.TIMESERIES.WEEKLY:
-            interval = 'w'
+            # use "period" instead of start/end
+            # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
+            # (optional, default is '1mo')
+            period=self.period,
 
-        elif self.time_series == Constants.TIMESERIES.MONTHLY:
-            interval = 'm'
+            # fetch data by interval (including intraday if period < 60 days)
+            # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
+            # (optional, default is '1d')
+            interval=self.interval_str,
 
-        # extracting stock data (historical close price) for the stocks identified
-        for ticker in self.tickers:
+            # group by ticker (to access via data['SPY'])
+            # (optional, default is 'column')
+            group_by='ticker',
 
-            attempt = 0
+            # adjust all OHLC automatically
+            # (optional, default is False)
+            auto_adjust=True,
 
-            high_key = Constants.get_high_key(ticker)
-            low_key = Constants.get_low_key(ticker)
-            open_key = Constants.get_open_key(ticker)
-            close_key = Constants.get_close_key(ticker)
-            adj_close_key = Constants.get_adj_close_key(ticker)
-            volume_key = Constants.get_volume_key(ticker)
+            # download pre/post regular market hours data
+            # (optional, default is False)
+            prepost=True,
 
-            while attempt <= 5:
-                print("-------------------------------------")
-                print("Ticker: {0} - attempt number:{1} ".format(ticker, attempt))
-                print("-------------------------------------")
+            # use threads for mass downloading? (True/False/Integer)
+            # (optional, default is True)
+            threads=True,
 
-                try:
-                    temp = pdr.get_data_yahoo(ticker, self.start_date, self.end_date, interval=interval)
+            # proxy URL scheme use use when downloading?
+            # (optional, default is None)
+            proxy=None
+        )
 
-                    print("Ticker: {0} - data received! ".format(ticker))
-
-                    temp.dropna(inplace=True)
-
-
-                    # TODO: Validate and put the code to handle a sub-set of columns
-                    if self.data_columns[0] == "all":
-
-                        self.prices[high_key] = temp["High"]
-                        self.prices[low_key] = temp["Low"]
-                        self.prices[open_key] = temp["Open"]
-                        self.prices[close_key] = temp["Close"]
-                        self.prices[adj_close_key] = temp["Adj Close"]
-                        self.prices[volume_key] = temp["Volume"]
-
-                    break
-
-
-                except Exception as why:
-                    print("Unexpected error:{}, Why:{}".format(sys.exc_info(), why))
-                    print(ticker, " :failed to fetch data...retrying")
-                    attempt += 1
-
-                    continue
-
+        self.prices.dropna(inplace=True)
 
         self.prices.bfill(axis=0, inplace=True)

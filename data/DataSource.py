@@ -11,17 +11,19 @@ class DataSource(metaclass=abc.ABCMeta):
         YFINANCE = 1
         PANDASDATAREADER = 2
         ALPHA = 3
-        YAHOOFINANCIALS = 4
+        #YAHOOFINANCIALS = 4
 
 
 
     @abc.abstractmethod
     def __init__(self):
         self.tickers = None
+        self.tickers_str = None
         self.start_date = None
         self.end_date = None
-        self.time_series = None
-        self.data_columns = None
+        self.period = None
+        self.interval = None
+        self.interval_str = None
 
         self.daily_return = None
 
@@ -31,9 +33,16 @@ class DataSource(metaclass=abc.ABCMeta):
                                 tickers,
                                 start_date,
                                 end_date,
-                                time_series,
-                                data_columns):
-        pass
+                                period,
+                                interval):
+
+        if tickers is None:
+            print("Tickers are None, please define your tickers")
+            raise AttributeError
+
+        if end_date < start_date:
+            print("End_Date must be bigger than Start_date")
+            raise AttributeError
 
     @abc.abstractmethod
     def extract_data(self):

@@ -7,11 +7,37 @@ class Constants:
     adj_close = "Adj_Close"
     volume = "Volume"
 
+    # intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
+    class INTERVAL(Enum):
+        MINUTE = '1m'
+        MINUTE2 = '2m'
+        MINUTE5 = '5m'
+        MINUTE15 = '15m'
+        MINUTE30 = '30m'
+        MINUTE60 = '60m'
+        MINUTE90 = '90m'
+        HOUR = '1h'
+        DAY = '1d'
+        DAY5 = '5d'
+        WEEK = '1wk'
+        MONTH = '1mo'
+        MONTH3 = '3mo'
 
-    class TIMESERIES(Enum):
-        DAILY = 'daily'
-        WEEKLY = 'weekly'
-        MONTHLY = 'monthly'
+
+    #periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
+    class PERIOD(Enum):
+        DAY = '1d'
+        DAY5 = '5d'
+        MONTH = '1mo'
+        MONTH3 = '3mo'
+        MONTH6 = '6mo'
+        YEAR = '1y'
+        YEAR2 = '2y'
+        YEAR5 = '5y'
+        YEAR10 = '10y'
+        YTD = 'ytd'
+        MAX = 'max'
+
 
 
 

@@ -14,13 +14,10 @@ class StocksFactory:
     # Put here an enum and a case with the enum
     def __init__(self,
                  tickers=None,
-                 end_date=datetime.datetime.now(),
-                 start_date=None,
-                 time_delta= None,
-                 time_series=Constants.INTERVAL.DAY,
                  data_source_type=DataSource.DATASOURCETYPE.YFINANCE,
-                 bulk=False,
+                 bulk=True,
                  group=1):
+
 
         self.bulk = bulk
         self.group = group
@@ -35,30 +32,19 @@ class StocksFactory:
         self.data_source = None
         self.set_data_source(data_source_type)
 
-        self.time_series = time_series
-
-        self.end_date = end_date
-
-        self.start_date = None
 
 
-        if start_date is not None:
-            self.start_date = start_date
-
-        elif time_delta is not None:
-            self.start_date = datetime.date.today() - datetime.timedelta(time_delta)
-
-        else:
-            print("Error: Neither the Start_date nor the time_delta were defined ")
-            return
-            #TODO: Put here a default interval per timeSeries
-
-
-
-        self.stocks = []
 
         self.bulk = bulk
         self.group = group
+
+        self.stocks = []
+        self.create_stocks()
+
+        self.end_date = None
+        self.time_series = None
+        self.start_date = None
+
 
 
     def set_data_source(self, data_source_type):
@@ -75,13 +61,52 @@ class StocksFactory:
             self.data_source = None  #TODO
 
 
-    def createStocks(self):
-        if self.tickers is None:
-            print("Error: Define your tickers first !!!.")
+
+    def get_fundamentals(self):
+        for stock in self.stocks:
+            stock.get_fundamentals()
+
+    def get_historical_data(self,
+                            end_date=datetime.datetime.now(),
+                            start_date=None,
+                            time_delta=None,
+                            time_series=Constants.INTERVAL.DAY,
+                            ):
+
+        self.time_series = time_series
+
+        if end_date is None:
+            print("Error: end_date is None, verify function call ")
+            return
+        else:
+            self.end_date = end_date
+
+        if start_date is not None:
+            if start_date < end_date:
+                self.start_date = start_date
+            else:
+                print("Error:  Start_date should be earlier than end date")
+                return
+
+
+        elif time_delta is not None:
+            self.start_date = datetime.datetime.today() - datetime.timedelta(time_delta)
+
+
+        else:
+            print("Error: Neither the Start_date nor the time_delta were defined ")
             return
 
-        if self.start_date is None:
-            print("Error: Define a startDate or a timeDelta.")
+        for stock in self.stocks:
+            stock.get_historical_data(start_date=self.start_date,
+                                      end_date=self.end_date,
+                                      interval=self.time_series)
+
+
+
+    def create_stocks(self):
+        if self.tickers is None:
+            print("Error: Define your tickers first !!!.")
             return
 
         if self.bulk is False:
@@ -91,9 +116,6 @@ class StocksFactory:
         else:
             for ticker in self.tickers:
                 stock = Stock(tickers=ticker, data_source=self.data_source)
-                stock.get_historical_data(start_date=self.start_date,
-                                          end_date=self.end_date,
-                                          interval=self.time_series)
 
                 self.stocks.append(stock)
 

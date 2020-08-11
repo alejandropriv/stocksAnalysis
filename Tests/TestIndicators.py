@@ -2,6 +2,9 @@ import unittest
 
 import matplotlib.pyplot as plt
 
+from data.DataSource import DataSource
+
+from StocksFactory import StocksFactory
 from Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
@@ -27,23 +30,33 @@ class TestBasics(unittest.TestCase):
     historical_data = True
 
     stock = None
+    stocks_factory = None
 
     def testplot_only_stock(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
-        past_date_interval = 1825
+        past_date_interval = 365
         # TODO: check what is happening with period < 100
         period = 100
 
-        self.stock = Stock(self.tickers)
+        date_str = "11/07/2020"
+        date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
 
-        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
-                                       end_date=(datetime.date.today()),
-                                       interval=Constants.INTERVAL.DAY)
+        self.stocks_factory = StocksFactory(
+            tickers=self.tickers,
+            data_source_type=DataSource.DATASOURCETYPE.YFINANCE,
+            bulk=True,
+            group=1
+        )
+
+        self.stocks_factory.get_historical_data(
+            end_date=date,
+            start_date=None,
+            time_delta=past_date_interval,
+            time_series=Constants.INTERVAL.DAY)
 
 
-        self.stock.plot(period=period)
-
+        self.stocks_factory.stocks[0].plot()
         print("Analysis has been run")
 
         plt.show()

@@ -38,13 +38,28 @@ class BalanceSheet:
         soup = BeautifulSoup(page_content, 'html.parser')
         #    tabl = soup.find_all("table", {"class" : "Lh(1.7) W(100%) M(0)"})
 
-        tabl = soup.find_all("div", {"class": "M(0) Mb(10px) Whs(n) BdEnd Bdc($seperatorColor) D(itb)"})
-        for t in tabl:
-            rows = t.find_all("div", {"class": "rw-expnded"})
+        tabl = soup.find_all("div", {"class": "M(0) Whs(n) BdEnd Bdc($seperatorColor) D(itb)"})
+        #for t in tabl:
+        #print(t)
+        #rows = soup.find_all("div", {"class": "rw-expnded"})
+
+        t = soup.find_all("div", {"id": "mrt-node-Col1-1-Financials"})
+        for ro in t:
+            print(ro)
+
+            #rows = soup.find_all("div", {"data-test": "fin-row"})
+            rows = ro.find_all("div", {"class": "rw-expnded"})
+
+            print(rows)
+
+            rows2 = ro.find_all("div", {"data-test": "fin-row"})
+
+            #rows = soup.find_all("div", {"class": "D(tbr) fi-row Bgc($hoverBgColor):h"})
             for row in rows:
+                print (row)
                 indexName = row.get_text(separator='|').split("|")[0]
 
-                if indexName in self.filter:
+                if True: #indexName in self.filter:
                     data[indexName] = row.get_text(separator='|').split("|")[1]
                     datapy[indexName] = row.get_text(separator='|').split("|")[2]
                     datapy2[indexName] = row.get_text(separator='|').split("|")[3]

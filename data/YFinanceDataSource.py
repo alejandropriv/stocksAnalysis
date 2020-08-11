@@ -22,9 +22,9 @@ class YFinanceDataSource(DataSource):
 
         super().extract_historical_data(tickers,
                                         start_date=start_date,
-                                        end_date=(datetime.date.today()),
-                                        period=None,
-                                        interval=Constants.INTERVAL.DAY)
+                                        end_date=end_date,
+                                        period=period,
+                                        interval=interval)
 
         self.tickers = tickers
         self.tickers_str = self.get_tickers_str()
@@ -81,7 +81,7 @@ class YFinanceDataSource(DataSource):
 
         tickers_str = ""
         for ticker in self.tickers:
-            tickers_str = self.tickers_str + " " + ticker;
+            tickers_str = tickers_str + " " + ticker
 
         return tickers_str
 
@@ -96,10 +96,14 @@ class YFinanceDataSource(DataSource):
             # (optional, default is '1mo')
             period=self.period,
 
+            start=self.start_date,
+
+            end=self.end_date,
+
             # fetch data by interval (including intraday if period < 60 days)
             # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
             # (optional, default is '1d')
-            interval=self.interval_str,
+            interval="1d",
 
             # group by ticker (to access via data['SPY'])
             # (optional, default is 'column')
@@ -115,7 +119,7 @@ class YFinanceDataSource(DataSource):
 
             # use threads for mass downloading? (True/False/Integer)
             # (optional, default is True)
-            threads=True,
+            threads=False,
 
             # proxy URL scheme use use when downloading?
             # (optional, default is None)
@@ -125,3 +129,5 @@ class YFinanceDataSource(DataSource):
         self.prices.dropna(inplace=True)
 
         self.prices.bfill(axis=0, inplace=True)
+
+        print(self.prices)

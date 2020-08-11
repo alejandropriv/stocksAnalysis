@@ -1,6 +1,6 @@
 from fundamentals.Fundamentals import Fundamentals
 from data.PandasDataReaderDataSource import PandasDataReaderDataSource
-from data.YahooFinancialsHistoricalData import YahooFinancialsHistoricalData
+from data.YFinanceDataSource import YFinanceDataSource
 from data_analysis.DailyReturn import DailyReturn
 from plotter.Plotter import Plotter
 from utilities.Constants import Constants
@@ -36,11 +36,11 @@ class Stock:
         self.plotter = plotter
 
     def set_data_source(self, data_source_type):
-        if data_source_type == PandasDataReaderDataSource.DATASOURCETYPE.YAHOOFINANCIALS:
-            self.data_source = YahooFinancialsHistoricalData()
-
-        if data_source_type == PandasDataReaderDataSource.DATASOURCETYPE.YAHOOAPI:
-            self.data_source = PandasDataReaderDataSource()
+        if data_source_type == PandasDataReaderDataSource.DATASOURCETYPE.YFINANCE:
+            self.data_source = YFinanceDataSource()
+        #
+        # if data_source_type == PandasDataReaderDataSource.DATASOURCETYPE.YAHOOAPI:
+        #     self.data_source = PandasDataReaderDataSource()
 
     def get_fundamentals(self):
         self.fundamentals = {}
@@ -51,10 +51,16 @@ class Stock:
     def get_historical_data(self,
                             start_date=datetime.date.today() - datetime.timedelta(365),
                             end_date=(datetime.date.today()),
-                            time_series=Constants.INTERVAL.DAY):
+                            period=None,
+                            interval=Constants.INTERVAL.DAY):
 
         if self.data_source.prices is None or self.data_source.prices.empty == True:
-            self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)
+            self.data_source.extract_historical_data(
+                tickers=self.tickers,
+                start_date=start_date,
+                end_date=end_date,
+                period=period,
+                interval=interval)
 
 
     # Tickers parameter should be a sub-set of self.tickers

@@ -51,10 +51,10 @@ class Fundamentals:
 
         # storing information in pandas dataframe
 
-        combined_financials = pd.DataFrame(self.financial_dir)
-        tickers = combined_financials.columns
-        for ticker in tickers:
-            combined_financials = combined_financials[~combined_financials[ticker].str.contains("[a-z]").fillna(False)]
+#        combined_financials = pd.DataFrame(self.financial_dir)
+#        tickers = combined_financials.columns
+#        for ticker in tickers:
+#            combined_financials = combined_financials[~combined_financials[ticker].str.contains("[a-z]").fillna(False)]
 
         print("WOW")
 

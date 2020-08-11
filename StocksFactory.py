@@ -4,6 +4,7 @@ from data.DataSource import DataSource
 from data.PandasDataReaderDataSource import PandasDataReaderDataSource
 from data.YFinanceDataSource import YFinanceDataSource
 from utilities.Constants import Constants
+from Stock import Stock
 
 import datetime
 
@@ -65,7 +66,7 @@ class StocksFactory:
             self.data_source = PandasDataReaderDataSource()
 
         elif data_source_type is DataSource.DATASOURCETYPE.YFINANCE:
-            self.data_source = YFinanceDataSource
+            self.data_source = YFinanceDataSource()
 
         elif data_source_type is DataSource.DATASOURCETYPE.ALPHA:
             self.data_source = None  #TODO
@@ -84,96 +85,17 @@ class StocksFactory:
             return
 
         if self.bulk is False:
-
             print("This option has not been already programmed! wait for next release")
-            self.data_source.extract_historical_data(ticker=self.tickers,
-                                                     start_date=self.start_date,
-                                                     end_date=self.end_date,
-                                                     interval=self.time_series,
-                                                     data_columns=None)
+
 
         else:
             for ticker in self.tickers:
-                self.data_source.extract_historical_data(ticker=ticker,
-                                                         start_date=self.start_date,
-                                                         end_date=self.end_date,
-                                                         interval=self.time_series,
-                                                         data_columns=None)
+                stock = Stock(tickers=ticker, data_source=self.data_source)
+                stock.get_historical_data(start_date=self.start_date,
+                                          end_date=self.end_date,
+                                          interval=self.time_series)
+
+                self.stocks.append(stock)
 
 
-
-
-    def get_historical_data(self,
-                            start_date=datetime.date.today() - datetime.timedelta(365),
-                            end_date=(datetime.date.today()),
-                            time_series=Constants.INTERVAL.DAY):
-
-        if self.data_source.prices is None or self.data_source.prices.empty == True:
-            self.data_source.extract_historical_data(self.tickers, start_date, end_date, time_series)
-
-
-
-    # Tickers parameter should be a sub-set of self.tickers
-    def get_prices_data(self,
-                        tickers=None,
-                        keys=None ):
-
-        if keys is None:
-            print ("No keys has been specified. ")
-            raise ValueError
-
-        method_tag = "get_prices_data"
-
-        if tickers is None:
-            print("Default Tickers = ", self.tickers)
-            tickers = self.tickers
-
-        if self.data_source is not None:
-            if self.data_source.prices is None or self.data_source.prices.empty is True:
-                print("No historical data available, call method self.get_historical_data() first")
-                raise NotImplementedError  # here there should be an error object
-
-            key_titles = []
-
-            for ticker in tickers:
-
-                if keys["has_high_key"] == True:
-                    key_titles.append(Constants.get_high_key(ticker))
-
-                if keys["has_low_key"] == True:
-                    key_titles.append(Constants.get_low_key(ticker))
-
-                if keys["has_volume_key"] == True:
-                    key_titles.append(Constants.get_volume_key(ticker))
-
-                if keys["has_open_key"] == True:
-                    key_titles.append(Constants.get_open_key(ticker))
-
-                if keys["has_close_key"] == True:
-                    key_titles.append(Constants.get_close_key(ticker))
-
-                if keys["has_adj_close_key"] == True:
-                    key_titles.append(Constants.get_adj_close_key(ticker))
-
-
-            if len(key_titles) > 0:
-
-                prices = self.data_source.prices.loc[:, key_titles]
-
-
-            else:
-                print("{} - There are no prices information, for ticker:{}".format(method_tag, self.tickers))
-                raise ValueError
-
-
-
-        else:
-            print("There has been an error in {}".format(method_tag))
-            raise ValueError
-
-        if prices.empty == True:
-            print("There has been an error in {}".format(method_tag))
-            raise ValueError
-
-        return prices
 

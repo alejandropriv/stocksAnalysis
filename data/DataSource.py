@@ -1,7 +1,8 @@
 import abc
 
 from enum import Enum
-
+import datetime
+from utilities.Constants import Constants
 
 
 class DataSource(metaclass=abc.ABCMeta):
@@ -31,10 +32,10 @@ class DataSource(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def extract_historical_data(self,
                                 tickers,
-                                start_date,
-                                end_date,
-                                period,
-                                interval):
+                                start_date=datetime.date.today() - datetime.timedelta(365),
+                                end_date=(datetime.date.today()),
+                                period=None,
+                                interval=Constants.INTERVAL.DAY):
 
         if tickers is None:
             print("Tickers are None, please define your tickers")

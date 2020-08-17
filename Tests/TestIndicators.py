@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from data.DataSource import DataSource
 
-from StocksFactory import StocksFactory
+from data.DataCollector import DataCollector
 from Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
@@ -22,7 +22,8 @@ from utilities.Constants import Constants
 import datetime
 
 
-class TestBasics(unittest.TestCase):
+class TestIndicators(unittest.TestCase):
+
     apikey = "86VFFOKUNB1M9YQ8"
     data_source_type = None
     tickers = None
@@ -33,7 +34,7 @@ class TestBasics(unittest.TestCase):
     stocks_factory = None
 
     def testplot_only_stock(self):
-        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
+        self.tickers = ["TSLA"]
 
         past_date_interval = 365
         # TODO: check what is happening with period < 100
@@ -42,21 +43,37 @@ class TestBasics(unittest.TestCase):
         date_str = "11/07/2020"
         date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
 
-        self.stocks_factory = StocksFactory(
-            tickers=self.tickers,
-            data_source_type=DataSource.DATASOURCETYPE.YFINANCE,
-            bulk=True,
-            group=1
-        )
+        self.stock = Stock(self.tickers)
 
-        self.stocks_factory.get_historical_data(
-            end_date=date,
-            start_date=None,
-            time_delta=past_date_interval,
-            time_series=Constants.INTERVAL.DAY)
+        self.stock.get_historical_data(start_date=date,
+                                       end_date=(datetime.datetime.today()),
+                                       interval=Constants.INTERVAL.DAY)
 
 
-        self.stocks_factory.stocks[0].plot()
+
+        print(self.stock.price_info)
+        #self.stock.plot(period=period)
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
+    def testplot_2_only_stock(self):
+        self.tickers = ["TSLA", "SPY"]
+
+
+        date_str = "11/07/2020"
+        date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
+
+        data_collector = DataCollector(self.tickers, DataSource.DATASOURCETYPE.YFINANCE)
+        data_collector.extract_data(start_date=date,
+                                    end_date=(datetime.datetime.today()),
+                                    interval=Constants.INTERVAL.DAY)
+
+        print(self.stock.price_info)
+        #self.stock.plot(period=period)
+
         print("Analysis has been run")
 
         plt.show()

@@ -15,7 +15,7 @@ class YFinanceDataSource(DataSource):
 
     def extract_historical_data(self,
                                 tickers,
-                                start_date=datetime.date.today() - datetime.timedelta(365),
+                                start_date=datetime.date.today() - datetime.timedelta(1),
                                 end_date=(datetime.date.today()),
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):
@@ -29,14 +29,15 @@ class YFinanceDataSource(DataSource):
         self.tickers = tickers
         self.tickers_str = self.get_tickers_str()
 
-
         self.start_date = start_date
         self.end_date = end_date
         self.period = period
         self.interval = interval
         self.interval_str = interval.name
 
-        if self.period is not None:
+        if period is None:
+            self.period = "max"
+        else:
             self.start_date = None
             self.end_date = None
 
@@ -44,6 +45,7 @@ class YFinanceDataSource(DataSource):
         self.validate_parameters()
 
         self.extract_data()
+
 
 
     def validate_parameters(self):
@@ -85,7 +87,13 @@ class YFinanceDataSource(DataSource):
 
         return tickers_str
 
+
+
     def extract_data(self):
+
+        #self.tickers_str = "TSLA SPY"
+
+
 
         self.prices = yf.download(  # or pdr.get_data_yahoo(...
             # tickers list or string as well
@@ -103,7 +111,7 @@ class YFinanceDataSource(DataSource):
             # fetch data by interval (including intraday if period < 60 days)
             # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
             # (optional, default is '1d')
-            interval="1d",
+            interval=self.interval.value,
 
             # group by ticker (to access via data['SPY'])
             # (optional, default is 'column')
@@ -119,15 +127,17 @@ class YFinanceDataSource(DataSource):
 
             # use threads for mass downloading? (True/False/Integer)
             # (optional, default is True)
-            threads=False,
+            threads=True,
 
             # proxy URL scheme use use when downloading?
             # (optional, default is None)
             proxy=None
         )
 
+
         self.prices.dropna(inplace=True)
 
         self.prices.bfill(axis=0, inplace=True)
 
-        print(self.prices)
+#TODO put a debug flag for this print
+        #print(self.prices)

@@ -34,7 +34,6 @@ class DataSource(metaclass=abc.ABCMeta):
         self.daily_return = None
 
 
-    @abc.abstractmethod
     def get_tickers_str(self):
 
         tickers_str = ""

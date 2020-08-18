@@ -12,19 +12,15 @@ import datetime
 class StocksFactory:
 
     # Put here an enum and a case with the enum
-    def __init__(self,
-                 data_source=None,
-                 bulk=False):
-
-
-        self.create_stocks(
-            data_source,
-            bulk
-        )
+    def __init__(self):
+        pass
 
 
 
-    def create_stocks(self, data_source=None, bulk=False):
+    @staticmethod
+    def create_stocks(data_source=None, bulk=False):
+
+        stocks = []
         if data_source is None:
             print("Error: Define your data source first !!!.")
             return
@@ -33,15 +29,16 @@ class StocksFactory:
             print("Error: Set Historical data")
             return
 
-        if bulk is True:
-            print("This option has not been already programmed! wait for next release")
+        if bulk is True: #print("This option has not been already programmed! wait for next release")
 
+            stock = Stock(tickers=data_source.tickers, data_source=data_source)
+            stocks.append(stock)
 
         else:
-            for ticker in self.tickers:
-                stock = Stock(tickers=ticker, data_source=self.data_source)
+            for ticker in data_source.tickers:
+                stock = Stock(tickers=ticker, data_source=data_source)
 
-                self.stocks.append(stock)
+                stocks.append(stock)
 
 
-
+        return stocks

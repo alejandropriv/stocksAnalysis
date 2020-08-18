@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from data.DataSource import DataSource
 
 from data.DataCollector import DataCollector
+from stocks_model.StocksFactory import StocksFactory
 from stocks_model.Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
@@ -72,7 +73,11 @@ class TestIndicators(unittest.TestCase):
             interval=Constants.INTERVAL.DAY
         )
 
-        print(self.stock.price_info)
+
+        stocks = StocksFactory.create_stocks(data_source)
+
+        for stock in stocks:
+            print(stock.price_info)
         #self.stock.plot(period=period)
 
         print("Analysis has been run")

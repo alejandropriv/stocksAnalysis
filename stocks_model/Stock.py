@@ -15,7 +15,7 @@ class Stock:
     # Put here an enum and a case with the enum
     def __init__(self,
                  tickers=None,
-                 data_source_type=DataSource.DATASOURCETYPE.YFINANCE):
+                 data_source=None):
 
         self.error = None
         self.fundamentals = None
@@ -34,31 +34,16 @@ class Stock:
 
         self.tickers = tickers
 
-        if data_source_type is not None:
-            self.set_data_source(data_source_type)
-
-        else:
-            print("For each stock you need a data source")
+        if data_source is None:
+            print("Error: Please Specify a datasource !!!.")
             raise ValueError
+
+        self.data_source = data_source
 
         self.price_info = None
 
         print("Stock {} created".format(tickers))
 
-
-
-    def set_data_source(self, data_source_type):
-        if data_source_type is DataSource.DATASOURCETYPE.PANDASDATAREADER:
-            self.data_source = PandasDataReaderDataSource()
-
-        elif data_source_type is DataSource.DATASOURCETYPE.YFINANCE:
-            self.data_source = YFinanceDataSource()
-
-        elif data_source_type is DataSource.DATASOURCETYPE.ALPHA:
-            self.data_source = None  #TODO
-
-        elif data_source_type is DataSource.DATASOURCETYPE.YAHOOFINANCIALS:
-            self.data_source = None  #TODO
 
     def get_fundamentals(self):
         self.fundamentals = {}

@@ -24,12 +24,12 @@ class DataCollector:
 
 
 
-    def set_data_source(self, data_source_type):
+    def set_data_source(self, data_source_type, tickers):
         if data_source_type is DataSource.DATASOURCETYPE.PANDASDATAREADER:
             self.data_source = PandasDataReaderDataSource()
 
         elif data_source_type is DataSource.DATASOURCETYPE.YFINANCE:
-            self.data_source = YFinanceDataSource()
+            self.data_source = YFinanceDataSource(tickers)
 
         elif data_source_type is DataSource.DATASOURCETYPE.ALPHA:
             self.data_source = None  # TODO
@@ -37,6 +37,7 @@ class DataCollector:
         elif data_source_type is DataSource.DATASOURCETYPE.YAHOOFINANCIALS:
             self.data_source = None  # TODO
 
+        self.data_source.tickers = tickers
 
 
     def extract_historical_data(
@@ -48,7 +49,6 @@ class DataCollector:
 
 
         self.data_source.extract_historical_data(
-            self.tickers,
             start_date=start_date,
             end_date=end_date,
             period=period,

@@ -15,11 +15,12 @@ class DataCollector:
 
         super().__init__()
 
-        self.tickers = None
-        self.set_tickers(tickers)
+        if tickers is None:
+            print("Error: Define your tickers first !!!.")
+            raise ValueError
 
         self.data_source = None
-        self.set_data_source(data_source_type)
+        self.set_data_source(data_source_type, tickers)
 
 
 
@@ -37,20 +38,14 @@ class DataCollector:
             self.data_source = None  # TODO
 
 
-    def set_tickers(self, tickers):
 
-        if tickers is None:
-            print("Error: Define your tickers first !!!.")
-            raise ValueError
+    def extract_historical_data(
+            self,
+            start_date=datetime.date.today() - datetime.timedelta(1),
+            end_date=datetime.date.today(),
+            period=None,
+            interval=Constants.INTERVAL.DAY):
 
-        self.tickers = tickers
-
-
-    def extract_data(self,
-                     start_date=datetime.date.today() - datetime.timedelta(1),
-                     end_date=datetime.date.today(),
-                     period=None,
-                     interval=Constants.INTERVAL.DAY):
 
         self.data_source.extract_historical_data(
             self.tickers,
@@ -61,10 +56,6 @@ class DataCollector:
         )
 
         return self.data_source
-
-
-    def generate_stocks(self):
-        pass
 
     def extract_fundamentals(self):
         #self.data_source.extract_fundamentals()

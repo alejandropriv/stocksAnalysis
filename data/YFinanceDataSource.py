@@ -9,25 +9,23 @@ from utilities.Constants import Constants
 
 class YFinanceDataSource(DataSource):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, tickers):
+        super().__init__(tickers)
         self.prices = pd.DataFrame()
 
     def extract_historical_data(self,
-                                tickers,
                                 start_date=datetime.date.today() - datetime.timedelta(1),
                                 end_date=(datetime.date.today()),
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):
 
-        super().extract_historical_data(tickers,
-                                        start_date=start_date,
-                                        end_date=end_date,
-                                        period=period,
-                                        interval=interval)
+        super().extract_historical_data(
+            start_date=start_date,
+            end_date=end_date,
+            period=period,
+            interval=interval
+        )
 
-        self.tickers = tickers
-        self.tickers_str = self.get_tickers_str()
 
         self.start_date = start_date
         self.end_date = end_date
@@ -77,15 +75,6 @@ class YFinanceDataSource(DataSource):
                     print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
                     raise AttributeError
 
-
-
-    def get_tickers_str(self):
-
-        tickers_str = ""
-        for ticker in self.tickers:
-            tickers_str = tickers_str + " " + ticker
-
-        return tickers_str
 
 
 

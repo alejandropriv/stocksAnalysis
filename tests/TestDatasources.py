@@ -1,5 +1,5 @@
 import unittest
-from Stock import Stock
+from stocks_model.Stock import Stock
 from data.YFinanceDataSource import YFinanceDataSource
 from utilities.Constants import Constants
 

@@ -1,16 +1,7 @@
 import unittest
 
-import matplotlib.pyplot as plt
+from stocks_model.Stock import Stock
 
-from Stock import Stock
-from indicators.ATR import ATR
-from indicators.MACD import MACD
-from indicators.RSI import RSI
-
-from indicators.BollingerBands import BollingerBands
-from utilities.Constants import Constants
-
-import datetime
 import pprint
 
 

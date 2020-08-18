@@ -17,9 +17,14 @@ class DataSource(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self):
-        self.tickers = None
-        self.tickers_str = None
+    def __init__(self, tickers):
+
+        if tickers is None:
+            print("Tickers are None, please define your tickers")
+            raise AttributeError
+
+        self.tickers = tickers
+        self.tickers_str = self.get_tickers_str()
         self.start_date = None
         self.end_date = None
         self.period = None
@@ -30,16 +35,22 @@ class DataSource(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
+    def get_tickers_str(self):
+
+        tickers_str = ""
+        for ticker in self.tickers:
+            tickers_str = tickers_str + " " + ticker
+
+        return tickers_str
+
+    @abc.abstractmethod
     def extract_historical_data(self,
-                                tickers,
                                 start_date=datetime.date.today() - datetime.timedelta(365),
                                 end_date=(datetime.date.today()),
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):
 
-        if tickers is None:
-            print("Tickers are None, please define your tickers")
-            raise AttributeError
+
 
         if end_date < start_date:
             print("End_Date must be bigger than Start_date")

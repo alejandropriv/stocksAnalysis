@@ -16,7 +16,7 @@ class PandasDataReaderDataSource(DataSource):
 
     def extract_historical_data(self,
                                 tickers,
-                                start_date=datetime.date.today() - datetime.timedelta(365),
+                                start_date=datetime.date.today() - datetime.timedelta(1),
                                 end_date=(datetime.date.today()),
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):

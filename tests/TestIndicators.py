@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 from data.DataSource import DataSource
 
 from data.DataCollector import DataCollector
-from Stock import Stock
+from stocks_model.Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
-from indicators.RSI import RSI
 from indicators.ADX import ADX
 from indicators.OBV import OBV
 from indicators.RENKOIND import RENKOIND
@@ -67,9 +66,11 @@ class TestIndicators(unittest.TestCase):
         date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
 
         data_collector = DataCollector(self.tickers, DataSource.DATASOURCETYPE.YFINANCE)
-        data_collector.extract_data(start_date=date,
-                                    end_date=(datetime.datetime.today()),
-                                    interval=Constants.INTERVAL.DAY)
+        data_source = data_collector.extract_historical_data(
+            start_date=date,
+            end_date=(datetime.datetime.today()),
+            interval=Constants.INTERVAL.DAY
+        )
 
         print(self.stock.price_info)
         #self.stock.plot(period=period)

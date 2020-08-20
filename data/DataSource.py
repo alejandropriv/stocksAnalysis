@@ -28,6 +28,7 @@ class DataSource(metaclass=abc.ABCMeta):
         self.start_date = None
         self.end_date = None
         self.period = None
+        self.time_delta = None
         self.interval = None
         self.interval_str = None
 
@@ -48,16 +49,44 @@ class DataSource(metaclass=abc.ABCMeta):
                                 end_date=(datetime.date.today()),
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):
+        pass
 
 
 
-        if end_date < start_date:
-            print("End_Date must be bigger than Start_date")
-            raise AttributeError
 
     @abc.abstractmethod
     def extract_data(self):
         pass
+
+
+
+    @abc.abstractmethod
+    def get_high_key(self, ticker):
+        pass
+
+    @abc.abstractmethod
+    def get_low_key(self, ticker):
+        pass
+
+    @abc.abstractmethod
+    def get_open_key(self, ticker):
+        pass
+
+    @abc.abstractmethod
+    def get_close_key(self, ticker):
+        pass
+
+    @abc.abstractmethod
+    def get_adj_close_key(self, ticker):
+        pass
+
+
+    @abc.abstractmethod
+    def get_volume_key(self, ticker):
+        pass
+
+
+
 
 
 

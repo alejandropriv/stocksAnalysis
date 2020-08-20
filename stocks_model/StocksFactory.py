@@ -36,7 +36,7 @@ class StocksFactory:
 
         else:
             for ticker in data_source.tickers:
-                stock = Stock(tickers=ticker, data_source=data_source)
+                stock = Stock(tickers=[ticker], data_source=data_source)
 
                 stocks.append(stock)
 

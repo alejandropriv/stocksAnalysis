@@ -20,11 +20,9 @@ class Stock:
         self.error = None
         self.fundamentals = None
         self.data_source = None
-        self.interval = None
-        self.start_date = None
-        self.end_date = None
         self.daily_return = None
 
+        self.price_info = None
 
         self.indicators = []
 
@@ -34,15 +32,21 @@ class Stock:
 
         self.tickers = tickers
 
+
+
+        self.set_data_source(data_source)
+
+        print("Stock {} created".format(tickers))
+
+    def set_data_source(self, data_source):
         if data_source is None:
-            print("Error: Please Specify a datasource !!!.")
+            print("Error: Please Specify a DataSource object !!!.")
             raise ValueError
 
         self.data_source = data_source
+        self.get_prices_data()
 
-        self.price_info = None
 
-        print("Stock {} created".format(tickers))
 
 
     def get_fundamentals(self):
@@ -52,55 +56,17 @@ class Stock:
             self.fundamentals[ticker].get_data()
 
 
-
-    def get_historical_data(self,
-                            end_date=datetime.datetime.now(),
-                            start_date=None,
-                            time_delta=None,
-                            period=None,
-                            interval=Constants.INTERVAL.DAY):
-
-        self.interval = interval
-
-        if end_date is None:
-            print("Error: end_date is None, verify function call ")
-            return
+    def get_prices_info(self, cached=False, tickers=None, keys=None):
+        if cached is True:
+            return self.price_info
         else:
-            self.end_date = end_date
-
-        if start_date is not None:
-            if start_date < end_date:
-                self.start_date = start_date
-            else:
-                print("Error:  Start_date should be earlier than end date")
-                return
-
-
-        elif time_delta is not None:
-            self.start_date = datetime.datetime.today() - datetime.timedelta(time_delta)
-
-
-        else:
-            print("Error: Neither the Start_date nor the time_delta were defined ")
-            return
-
-
-        if self.data_source.prices is None or self.data_source.prices.empty == True:
-            self.data_source.extract_historical_data(
-                tickers=self.tickers,
-                start_date=start_date,
-                end_date=end_date,
-                period=period,
-                interval=interval)
-
-
-            self.price_info = self.get_prices_data(tickers=self.tickers)
+            return self.get_prices_data(tickers=tickers, keys=keys)
 
 
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,
                         tickers=None,
-                        keys=None ):
+                        keys=None):
 
         if keys is None or len(keys) == 0:
             print("No keys has been specified. All keys were selected. ")
@@ -127,31 +93,47 @@ class Stock:
                 raise NotImplementedError  # here there should be an error object
 
             key_titles = []
-
             for ticker in tickers:
 
                 if keys["has_high_key"] == True:
-                    key_titles.append(Constants.get_high_key(ticker))
+                    key = self.data_source.get_high_key(ticker)
+                    if key is not None:
+                        key_titles.append(key)
+
 
                 if keys["has_low_key"] == True:
-                    key_titles.append(Constants.get_low_key(ticker))
+                    key = self.data_source.get_low_key(ticker)
+                    if key is not None:
+                        key_titles.append(key)
 
-                if keys["has_volume_key"] == True:
-                    key_titles.append(Constants.get_volume_key(ticker))
 
                 if keys["has_open_key"] == True:
-                    key_titles.append(Constants.get_open_key(ticker))
+                    key = self.data_source.get_open_key(ticker)
+                    if key is not None:
+                        key_titles.append(key)
+
 
                 if keys["has_close_key"] == True:
-                    key_titles.append(Constants.get_close_key(ticker))
+                    key = self.data_source.get_close_key(ticker)
+                    if key is not None:
+                        key_titles.append(key)
+
 
                 if keys["has_adj_close_key"] == True:
-                    key_titles.append(Constants.get_adj_close_key(ticker))
+                    key = self.data_source.get_adj_close_key(ticker)
+                    if key is not None:
+                        key_titles.append(key)
+
+                if keys["has_volume_key"] == True:
+                    key = self.data_source.get_volume_key(ticker)
+                    if key is not None:
+                        key_titles.append(key)
+
 
 
             if len(key_titles) > 0:
-
-                prices = self.data_source.prices.loc[:, key_titles]
+                self.data_source.prices = self.data_source.prices.sort_index()
+                prices = self.data_source.prices[self.tickers].loc[:, key_titles]
 
 
             else:
@@ -168,34 +150,56 @@ class Stock:
             print("There has been an error in {}".format(method_tag))
             raise ValueError
 
+        self.price_info = prices
         return prices
 
 
-
-    def append_indicator(self, new_indicator=None, keys=None):
-
-        if keys is None:
-            keys = {'has_high_key': True,
-                    'has_low_key': True,
-                    'has_open_key': False,
-                    'has_close_key': False,
-                    'has_adj_close_key': True,
-                    'has_volume_key': True
-                    }
-
-        # if get_historical_data has already been called it returns the cached data
-        self.get_historical_data()
-
-        self.price_info = self.get_prices_data(tickers=self.tickers,
-                                               keys=keys)
-
-        self.price_info.ticker = self.tickers[0]
+    def get_historical_data(self,
+                            end_date=datetime.datetime.now(),
+                            start_date=None,
+                            time_delta=None,
+                            period=None,
+                            interval=Constants.INTERVAL.DAY):
 
 
-        new_indicator.set_input_data(self.price_info)
-        new_indicator.calculate()
 
-        self.indicators.append(new_indicator)
+
+        if self.data_source.prices is None or self.data_source.prices.empty == True:
+            self.data_source.extract_historical_data(
+                start_date=start_date,
+                end_date=end_date,
+                time_delta=time_delta,
+                period=period,
+                interval=interval)
+
+
+            self.price_info = self.get_prices_data(tickers=self.tickers)
+
+
+    # def append_indicator(self, new_indicator=None, keys=None):
+    #
+    #     if keys is None:
+    #         keys = {'has_high_key': True,
+    #                 'has_low_key': True,
+    #                 'has_open_key': False,
+    #                 'has_close_key': False,
+    #                 'has_adj_close_key': True,
+    #                 'has_volume_key': True
+    #                 }
+    #
+    #     # if get_historical_data has already been called it returns the cached data
+    #     self.get_historical_data()
+    #
+    #     self.price_info = self.get_prices_data(tickers=self.tickers,
+    #                                            keys=keys)
+    #
+    #     self.price_info.ticker = self.tickers[0]
+    #
+    #
+    #     new_indicator.set_input_data(self.price_info)
+    #     new_indicator.calculate()
+    #
+    #     self.indicators.append(new_indicator)
 
 
 

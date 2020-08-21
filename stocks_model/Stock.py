@@ -14,7 +14,7 @@ class Stock:
 
     # Put here an enum and a case with the enum
     def __init__(self,
-                 tickers=None,
+                 ticker=None,
                  data_source=None):
 
         self.error = None
@@ -26,17 +26,17 @@ class Stock:
 
         self.indicators = []
 
-        if tickers is None:
+        if ticker is None:
             print("Error: Define your tickers first !!!.")
             raise ValueError
 
-        self.tickers = tickers
+        self.ticker = ticker
 
 
 
         self.set_data_source(data_source)
 
-        print("Stock {} created".format(tickers))
+        print("Stock {} created".format(ticker))
 
     def set_data_source(self, data_source):
         if data_source is None:
@@ -50,23 +50,21 @@ class Stock:
 
 
     def get_fundamentals(self):
-        self.fundamentals = {}
-        for ticker in self.tickers:
-            self.fundamentals[ticker] = Fundamentals(ticker)
-            self.fundamentals[ticker].get_data()
+        self.fundamentals = {self.ticker: Fundamentals(self.ticker)}
+        self.fundamentals[self.ticker].get_data()
 
 
-    def get_prices_info(self, cached=False, tickers=None, keys=None):
+    def get_prices_info(self, cached=False, keys=None):
         if cached is True:
             return self.price_info
         else:
-            return self.get_prices_data(tickers=tickers, keys=keys)
+            return self.get_prices_data(keys=keys)
 
 
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,
-                        tickers=None,
                         keys=None):
+
 
         if keys is None or len(keys) == 0:
             print("No keys has been specified. All keys were selected. ")
@@ -83,9 +81,6 @@ class Stock:
 
         method_tag = "get_prices_data"
 
-        if tickers is None:
-            print("Default Tickers = ", self.tickers)
-            tickers = self.tickers
 
         if self.data_source is not None:
             if self.data_source.prices is None or self.data_source.prices.empty is True:
@@ -93,51 +88,52 @@ class Stock:
                 raise NotImplementedError  # here there should be an error object
 
             key_titles = []
-            for ticker in tickers:
 
-                if keys["has_high_key"] == True:
-                    key = self.data_source.get_high_key(ticker)
-                    if key is not None:
-                        key_titles.append(key)
-
-
-                if keys["has_low_key"] == True:
-                    key = self.data_source.get_low_key(ticker)
-                    if key is not None:
-                        key_titles.append(key)
+            if keys["has_high_key"] == True:
+                key = self.data_source.get_high_key(self.ticker)
+                if key is not None:
+                    key_titles.append(key)
 
 
-                if keys["has_open_key"] == True:
-                    key = self.data_source.get_open_key(ticker)
-                    if key is not None:
-                        key_titles.append(key)
+            if keys["has_low_key"] == True:
+                key = self.data_source.get_low_key(self.ticker)
+                if key is not None:
+                    key_titles.append(key)
 
 
-                if keys["has_close_key"] == True:
-                    key = self.data_source.get_close_key(ticker)
-                    if key is not None:
-                        key_titles.append(key)
+            if keys["has_open_key"] == True:
+                key = self.data_source.get_open_key(self.ticker)
+                if key is not None:
+                    key_titles.append(key)
 
 
-                if keys["has_adj_close_key"] == True:
-                    key = self.data_source.get_adj_close_key(ticker)
-                    if key is not None:
-                        key_titles.append(key)
+            if keys["has_close_key"] == True:
+                key = self.data_source.get_close_key(self.ticker)
+                if key is not None:
+                    key_titles.append(key)
 
-                if keys["has_volume_key"] == True:
-                    key = self.data_source.get_volume_key(ticker)
-                    if key is not None:
-                        key_titles.append(key)
+
+            if keys["has_adj_close_key"] == True:
+                key = self.data_source.get_adj_close_key(self.ticker)
+                if key is not None:
+                    key_titles.append(key)
+
+
+            if keys["has_volume_key"] == True:
+                key = self.data_source.get_volume_key(self.ticker)
+                if key is not None:
+                    key_titles.append(key)
 
 
 
             if len(key_titles) > 0:
-                self.data_source.prices = self.data_source.prices.sort_index()
-                prices = self.data_source.prices[self.tickers].loc[:, key_titles]
+
+                # self.data_source.prices = self.data_source.prices.sort_index()
+                prices = self.data_source.prices[self.ticker].loc[:, key_titles]
 
 
             else:
-                print("{} - There are no prices information, for ticker:{}".format(method_tag, self.tickers))
+                print("{} - There are no prices information, for ticker:{}".format(method_tag, self.ticker))
                 raise ValueError
 
 
@@ -146,9 +142,13 @@ class Stock:
             print("There has been an error in {}".format(method_tag))
             raise ValueError
 
+        # Validate Price dataframe
         if prices.empty == True:
             print("There has been an error in {}".format(method_tag))
             raise ValueError
+
+
+
 
         self.price_info = prices
         return prices
@@ -173,7 +173,7 @@ class Stock:
                 interval=interval)
 
 
-            self.price_info = self.get_prices_data(tickers=self.tickers)
+            self.price_info = self.get_prices_data(tickers=self.ticker)
 
 
     # def append_indicator(self, new_indicator=None, keys=None):

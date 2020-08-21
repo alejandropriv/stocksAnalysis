@@ -31,12 +31,12 @@ class StocksFactory:
 
         if bulk is True: #print("This option has not been already programmed! wait for next release")
 
-            stock = Stock(tickers=data_source.tickers, data_source=data_source)
+            stock = Stock(ticker=data_source.tickers, data_source=data_source)
             stocks.append(stock)
 
         else:
             for ticker in data_source.tickers:
-                stock = Stock(tickers=[ticker], data_source=data_source)
+                stock = Stock(ticker=ticker, data_source=data_source)
 
                 stocks.append(stock)
 

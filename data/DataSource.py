@@ -5,15 +5,14 @@ import datetime
 from utilities.Constants import Constants
 
 
+class DATASOURCETYPE(Enum):
+    YFINANCE = 1
+    PANDASDATAREADER = 2
+    ALPHA = 3
+    # YAHOOFINANCIALS = 4
+
+
 class DataSource(metaclass=abc.ABCMeta):
-
-    class DATASOURCETYPE(Enum):
-
-        YFINANCE = 1
-        PANDASDATAREADER = 2
-        ALPHA = 3
-        #YAHOOFINANCIALS = 4
-
 
 
     @abc.abstractmethod

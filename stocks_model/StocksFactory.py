@@ -1,24 +1,49 @@
-from data.DataSource import DataSource
 
-
-from data.PandasDataReaderDataSource import PandasDataReaderDataSource
-from data.YFinanceDataSource import YFinanceDataSource
 from utilities.Constants import Constants
 from stocks_model.Stock import Stock
+
+from data.DataCollector import DataCollector
 
 import datetime
 
 
 class StocksFactory:
 
-    # Put here an enum and a case with the enum
     def __init__(self):
         pass
 
+    @staticmethod
+    def create_stocks(
+            tickers,
+            data_source_type,
+            start_date=datetime.date.today() - datetime.timedelta(1),
+            end_date=datetime.date.today(),
+            period=None,
+            interval=Constants.INTERVAL.DAY,
+            fundamentals=True,
+            historic=True,
+            bulk=False
+    ):
 
+        data_collector = \
+            DataCollector(
+                tickers=tickers,
+                data_source_type=data_source_type,
+                fundamentals=fundamentals,
+                historic=historic,
+                start_date=start_date,
+                end_date=end_date,
+                period=period,
+                interval=interval
+            )
+
+        data_source = \
+            data_collector.extract_historical_data()
+
+        return StocksFactory.load_stocks(data_source, bulk)
 
     @staticmethod
-    def create_stocks(data_source=None, bulk=False):
+    def load_stocks(data_source=None, bulk=False):
 
         stocks = []
         if data_source is None:
@@ -29,7 +54,7 @@ class StocksFactory:
             print("Error: Set Historical data")
             return
 
-        if bulk is True: #print("This option has not been already programmed! wait for next release")
+        if bulk is True:  # print("This option has not been already programmed! wait for next release")
 
             stock = Stock(ticker=data_source.tickers, data_source=data_source)
             stocks.append(stock)
@@ -39,6 +64,5 @@ class StocksFactory:
                 stock = Stock(ticker=ticker, data_source=data_source)
 
                 stocks.append(stock)
-
 
         return stocks

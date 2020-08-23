@@ -2,9 +2,9 @@ import unittest
 
 import matplotlib.pyplot as plt
 
-from data.DataSource import DataSource
+from data.DataSource import DATASOURCETYPE
 
-from data.DataCollector import DataCollector
+
 from stocks_model.StocksFactory import StocksFactory
 from stocks_model.Stock import Stock
 from indicators.ATR import ATR
@@ -15,7 +15,6 @@ from indicators.RENKOIND import RENKOIND
 
 from indicators.Slope import Slope
 
-
 from indicators.BollingerBands import BollingerBands
 from utilities.Constants import Constants
 
@@ -23,7 +22,6 @@ import datetime
 
 
 class TestIndicators(unittest.TestCase):
-
     apikey = "86VFFOKUNB1M9YQ8"
     data_source_type = None
     tickers = None
@@ -49,41 +47,60 @@ class TestIndicators(unittest.TestCase):
                                        end_date=(datetime.datetime.today()),
                                        interval=Constants.INTERVAL.DAY)
 
-
-
         print(self.stock.price_info)
-        #self.stock.plot(period=period)
+        # self.stock.plot(period=period)
 
         print("Analysis has been run")
 
         plt.show()
 
+    @staticmethod
+    def truncate(n):
+        return int(n * 1000) / 1000
 
     def testplot_2_only_stock(self):
-        self.tickers = ["TSLA", "SPY"]
-
+        tickers = ["TSLA", "SPY"]
 
         date_str = "11/07/2020"
-        date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
-
-        data_collector = DataCollector(self.tickers, DataSource.DATASOURCETYPE.YFINANCE)
-        data_source = data_collector.extract_historical_data(
-            start_date=date,
-            end_date=(datetime.datetime.today()),
-            interval=Constants.INTERVAL.DAY
-        )
+        start_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
+        end_date=datetime.datetime.today()
 
 
-        stocks = StocksFactory.create_stocks(data_source)
+        stocks = StocksFactory.create_stocks(tickers=tickers,
+                                             data_source_type=DATASOURCETYPE.YFINANCE,
+                                             start_date=start_date,
+                                             end_date=end_date,
+                                             period=None,
+                                             interval=Constants.INTERVAL.DAY
+                                             )
 
         for stock in stocks:
             print(stock.price_info)
-        #self.stock.plot(period=period)
+
+        assert TestIndicators.truncate(stocks[0].price_info["High"].iloc[0]) == \
+               TestIndicators.truncate(1548.920044), \
+            TestIndicators.truncate(stocks[0].price_info["High"].iloc[0])
+
+        assert TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0]) == \
+               TestIndicators.truncate(1376.010010), \
+            TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0])
+
+        assert stocks[0].price_info["Open"].iloc[0] == \
+               1396.0, \
+            stocks[0].price_info["Open"].iloc[0]
+
+        assert TestIndicators.truncate(stocks[0].price_info["Close"].iloc[0]) == \
+               TestIndicators.truncate(1544.650024), \
+            TestIndicators.truncate(stocks[0].price_info["Close"].iloc[0])
+
+        assert stocks[0].price_info["Volume"].iloc[0] == \
+               23337600, \
+            stocks[0].price_info["Volume"].iloc[0]
+
 
         print("Analysis has been run")
 
         plt.show()
-
 
     def test_macd(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -107,13 +124,10 @@ class TestIndicators(unittest.TestCase):
 
         plt.show()
 
-
-
-
     def test_atr(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
-        past_date_interval = 365*3
+        past_date_interval = 365 * 3
         period = 1000
 
         self.stock = Stock(self.tickers)
@@ -127,12 +141,9 @@ class TestIndicators(unittest.TestCase):
 
         self.stock.plot(period=period)
 
-
         print("Analysis has been run")
 
         plt.show()
-
-
 
     def test_adx(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -153,8 +164,6 @@ class TestIndicators(unittest.TestCase):
 
         plt.show()
 
-
-
     def test_obv(self):
         self.tickers = ["TSLA"]  # "FB", "TSLA", "UBER"]
 
@@ -167,7 +176,6 @@ class TestIndicators(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        interval=Constants.INTERVAL.DAY)
 
-
         obv = OBV()
         self.stock.append_indicator(obv)
         self.stock.plot(period=period)
@@ -175,7 +183,6 @@ class TestIndicators(unittest.TestCase):
         print("Analysis has been run")
 
         plt.show()
-
 
     def test_slope(self):
         self.tickers = ["AAPL"]
@@ -198,7 +205,6 @@ class TestIndicators(unittest.TestCase):
         print("Analysis has been run")
 
         plt.show()
-
 
     def test_macd_atr(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -223,8 +229,6 @@ class TestIndicators(unittest.TestCase):
 
         plt.show()
 
-
-
     def test_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
@@ -237,21 +241,14 @@ class TestIndicators(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        interval=Constants.INTERVAL.DAY)
 
-
         bb = BollingerBands()
         self.stock.append_indicator(bb)
 
-
         self.stock.plot(period=period)
-
-
 
         print("Analysis has been run")
 
         plt.show()
-
-
-
 
     def test_atr_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -265,24 +262,17 @@ class TestIndicators(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        interval=Constants.INTERVAL.DAY)
 
-
         atr = ATR()
         self.stock.append_indicator(atr)
 
         bb = BollingerBands()
         self.stock.append_indicator(bb)
 
-
         self.stock.plot(period=period)
-
-
 
         print("Analysis has been run")
 
         plt.show()
-
-
-
 
     def test_macd_atr_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
@@ -307,17 +297,11 @@ class TestIndicators(unittest.TestCase):
         bb = BollingerBands()
         self.stock.append_indicator(bb)
 
-
         self.stock.plot(period=period)
-
-
 
         print("Analysis has been run")
 
         plt.show()
-
-
-
 
     def test_macd_atr_rsi_bollinger_bands(self):
         self.tickers = ["TSLA"]  # , "FB", "UBER"]
@@ -331,7 +315,6 @@ class TestIndicators(unittest.TestCase):
                                        end_date=(datetime.date.today()),
                                        interval=Constants.INTERVAL.DAY)
 
-
         self.stock.append_indicator(MACD())
 
         self.stock.append_indicator(ATR())
@@ -339,16 +322,11 @@ class TestIndicators(unittest.TestCase):
         bb = BollingerBands()
         self.stock.append_indicator(bb)
 
-
         self.stock.plot(period=period)
-
-
 
         print("Analysis has been run")
 
         plt.show()
-
-
 
     def test_renko(self):
         self.tickers = ["TSLA"]  # , "FB", "UBER"]
@@ -373,26 +351,19 @@ class TestIndicators(unittest.TestCase):
         renko = RENKOIND()
         self.stock.append_indicator(renko, keys=keys)
 
-
         self.stock.plot(period=period)
-
-
 
         print("Analysis has been run")
 
         plt.show()
 
-
     ###################################################################
     #  CALCULATIONS
     ###################################################################
 
-
-
     def get_historical_data(self):
         if self.historical_data:
             self.stock.get_historical_data()
-
 
 
 if __name__ == '__main__':

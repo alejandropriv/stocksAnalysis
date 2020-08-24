@@ -16,7 +16,7 @@ class YFinanceDataSource(DataSource):
     def extract_historical_data(self,
                                 start_date=None,
                                 end_date=(datetime.date.today()),
-                                time_delta=1,
+                                time_delta=None,
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):
 

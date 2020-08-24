@@ -21,7 +21,7 @@ class StocksFactory:
             period=None,
             interval=Constants.INTERVAL.DAY,
             fundamentals=True,
-            historic=True,
+            historical=True,
             bulk=False
     ):
 
@@ -30,15 +30,15 @@ class StocksFactory:
                 tickers=tickers,
                 data_source_type=data_source_type,
                 fundamentals=fundamentals,
-                historic=historic,
+                historical=historical,
                 start_date=start_date,
                 end_date=end_date,
                 period=period,
                 interval=interval
             )
-
-        data_source = \
-            data_collector.extract_historical_data()
+        if historical is True:
+            data_source = \
+                data_collector.extract_historical_data()
 
         return StocksFactory.load_stocks(data_source, bulk)
 

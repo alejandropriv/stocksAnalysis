@@ -1,4 +1,3 @@
-from data.DataSource import DataSource
 from data.DataSource import DATASOURCETYPE
 
 from data.PandasDataReaderDataSource import PandasDataReaderDataSource
@@ -15,7 +14,7 @@ class DataCollector:
                  tickers,
                  data_source_type=DATASOURCETYPE.YFINANCE,
                  fundamentals=True,
-                 historic=True,
+                 historical=True,
                  start_date=datetime.date.today() - datetime.timedelta(1),
                  end_date=datetime.date.today(),
                  period=None,
@@ -37,7 +36,7 @@ class DataCollector:
 
         self.set_parameters(start_date, end_date, period, interval)
 
-        if historic == True:
+        if historical == True:
             self.extract_historical_data()
 
         if fundamentals == True:

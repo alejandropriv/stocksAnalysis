@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from data.DataSource import DATASOURCETYPE
 
+from strategy.StrategyManager import StrategyManager
+from strategy.StrategyManager import AV_STRATEGY
 
 from stocks_model.StocksFactory import StocksFactory
 from stocks_model.Stock import Stock
@@ -58,12 +60,12 @@ class TestIndicators(unittest.TestCase):
     def truncate(n):
         return int(n * 1000) / 1000
 
-    def testplot_2_only_stock(self):
+    def testplot_2_only_stock_old(self):
         tickers = ["TSLA", "SPY"]
 
         date_str = "11/07/2020"
         start_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
-        end_date=datetime.datetime.today()
+        end_date = datetime.datetime.today()
 
 
         stocks = StocksFactory.create_stocks(tickers=tickers,
@@ -80,6 +82,51 @@ class TestIndicators(unittest.TestCase):
         assert TestIndicators.truncate(stocks[0].price_info["High"].iloc[0]) == \
                TestIndicators.truncate(1548.920044), \
             TestIndicators.truncate(stocks[0].price_info["High"].iloc[0])
+
+        assert TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0]) == \
+               TestIndicators.truncate(1376.010010), \
+            TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0])
+
+        assert stocks[0].price_info["Open"].iloc[0] == \
+               1396.0, \
+            stocks[0].price_info["Open"].iloc[0]
+
+        assert TestIndicators.truncate(stocks[0].price_info["Close"].iloc[0]) == \
+               TestIndicators.truncate(1544.650024), \
+            TestIndicators.truncate(stocks[0].price_info["Close"].iloc[0])
+
+        assert stocks[0].price_info["Volume"].iloc[0] == \
+               23337600, \
+            stocks[0].price_info["Volume"].iloc[0]
+
+
+        print("Analysis has been run")
+
+        plt.show()
+
+
+    def testplot_2_only_stock(self):
+        tickers = ["TSLA", "SPY"]
+
+
+        strategies = [AV_STRATEGY.STRATEGYI]
+
+        smanager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+
+        stocks_per_strategy = smanager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+
+        assert TestIndicators.truncate(stocks_per_strategy[0][0].price_info["High"].iloc[0]) == \
+               TestIndicators.truncate(1548.920044), \
+            TestIndicators.truncate(stocks_per_strategy[0][0].price_info["High"].iloc[0])
 
         assert TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0]) == \
                TestIndicators.truncate(1376.010010), \

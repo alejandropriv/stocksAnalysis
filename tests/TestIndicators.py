@@ -124,25 +124,25 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
-        assert TestIndicators.truncate(stocks_per_strategy[0][0].price_info["High"].iloc[0]) == \
+        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["High"].iloc[0]) == \
                TestIndicators.truncate(1548.920044), \
-            TestIndicators.truncate(stocks_per_strategy[0][0].price_info["High"].iloc[0])
+            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["High"].iloc[0])
 
-        assert TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0]) == \
+        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Low"].iloc[0]) == \
                TestIndicators.truncate(1376.010010), \
-            TestIndicators.truncate(stocks[0].price_info["Low"].iloc[0])
+            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Low"].iloc[0])
 
-        assert stocks[0].price_info["Open"].iloc[0] == \
+        assert stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Open"].iloc[0] == \
                1396.0, \
-            stocks[0].price_info["Open"].iloc[0]
+            stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Open"].iloc[0]
 
-        assert TestIndicators.truncate(stocks[0].price_info["Close"].iloc[0]) == \
+        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Close"].iloc[0]) == \
                TestIndicators.truncate(1544.650024), \
-            TestIndicators.truncate(stocks[0].price_info["Close"].iloc[0])
+            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Close"].iloc[0])
 
-        assert stocks[0].price_info["Volume"].iloc[0] == \
+        assert stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Volume"].iloc[0] == \
                23337600, \
-            stocks[0].price_info["Volume"].iloc[0]
+            stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["Volume"].iloc[0]
 
 
         print("Analysis has been run")

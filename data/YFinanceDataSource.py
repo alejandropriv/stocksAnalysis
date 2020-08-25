@@ -118,7 +118,6 @@ class YFinanceDataSource(DataSource):
 
     def extract_data(self):
 
-        #self.tickers_str = "TSLA SPY"
 
         self.prices = yf.download(  # or pdr.get_data_yahoo(...
             # tickers list or string as well
@@ -166,6 +165,11 @@ class YFinanceDataSource(DataSource):
 
 #TODO put a debug flag for this print
         #print(self.prices)
+
+    def get_prices(self, tickers, key_titles):
+        return self.prices[tickers].loc[:, key_titles]
+    #TODO Add bulk case
+
 
 
     def get_high_key(self, ticker):

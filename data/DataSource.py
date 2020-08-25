@@ -57,6 +57,10 @@ class DataSource(metaclass=abc.ABCMeta):
     def extract_data(self):
         pass
 
+    @abc.abstractmethod
+    def get_prices(self, tickers, key_titles):
+        pass
+
 
 
     @abc.abstractmethod

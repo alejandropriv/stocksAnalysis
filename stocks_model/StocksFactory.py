@@ -25,6 +25,8 @@ class StocksFactory:
             bulk=False
     ):
 
+        stocks = None
+
         data_collector = \
             DataCollector(
                 tickers=tickers,
@@ -40,7 +42,9 @@ class StocksFactory:
             data_source = \
                 data_collector.extract_historical_data()
 
-        return StocksFactory.load_stocks(data_source, bulk)
+            stocks = StocksFactory.load_stocks(data_source, bulk)
+
+        return stocks
 
     @staticmethod
     def load_stocks(data_source=None, bulk=False):

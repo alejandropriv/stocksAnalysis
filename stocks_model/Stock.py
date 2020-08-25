@@ -40,6 +40,7 @@ class Stock:
 
         self.data_source = data_source
         self.get_prices_data()
+        #TODO Remove unneccesary data from datasource
 
 
 
@@ -54,6 +55,41 @@ class Stock:
             return self.price_info
         else:
             return self.get_prices_data(keys=keys)
+
+    def get_key_titles(self, keys):
+
+        key_titles=[]
+        if keys["has_high_key"] == True:
+            key = self.data_source.get_high_key(self.ticker)
+            if key is not None:
+                key_titles.append(key)
+
+        if keys["has_low_key"] == True:
+            key = self.data_source.get_low_key(self.ticker)
+            if key is not None:
+                key_titles.append(key)
+
+        if keys["has_open_key"] == True:
+            key = self.data_source.get_open_key(self.ticker)
+            if key is not None:
+                key_titles.append(key)
+
+        if keys["has_close_key"] == True:
+            key = self.data_source.get_close_key(self.ticker)
+            if key is not None:
+                key_titles.append(key)
+
+        if keys["has_adj_close_key"] == True:
+            key = self.data_source.get_adj_close_key(self.ticker)
+            if key is not None:
+                key_titles.append(key)
+
+        if keys["has_volume_key"] == True:
+            key = self.data_source.get_volume_key(self.ticker)
+            if key is not None:
+                key_titles.append(key)
+
+        return key_titles
 
 
     # Tickers parameter should be a sub-set of self.tickers
@@ -82,49 +118,13 @@ class Stock:
                 print("No historical data available, call method self.get_historical_data() first")
                 raise NotImplementedError  # here there should be an error object
 
-            key_titles = []
-
-            if keys["has_high_key"] == True:
-                key = self.data_source.get_high_key(self.ticker)
-                if key is not None:
-                    key_titles.append(key)
-
-
-            if keys["has_low_key"] == True:
-                key = self.data_source.get_low_key(self.ticker)
-                if key is not None:
-                    key_titles.append(key)
-
-
-            if keys["has_open_key"] == True:
-                key = self.data_source.get_open_key(self.ticker)
-                if key is not None:
-                    key_titles.append(key)
-
-
-            if keys["has_close_key"] == True:
-                key = self.data_source.get_close_key(self.ticker)
-                if key is not None:
-                    key_titles.append(key)
-
-
-            if keys["has_adj_close_key"] == True:
-                key = self.data_source.get_adj_close_key(self.ticker)
-                if key is not None:
-                    key_titles.append(key)
-
-
-            if keys["has_volume_key"] == True:
-                key = self.data_source.get_volume_key(self.ticker)
-                if key is not None:
-                    key_titles.append(key)
-
+            key_titles = self.get_key_titles(keys)
 
 
             if len(key_titles) > 0:
 
                 # self.data_source.prices = self.data_source.prices.sort_index()
-                prices = self.data_source.prices[self.ticker].loc[:, key_titles]
+                prices = self.data_source.get_prices(self.ticker, key_titles)
 
 
             else:
@@ -167,8 +167,7 @@ class Stock:
                 period=period,
                 interval=interval)
 
-
-            self.price_info = self.get_prices_data(tickers=self.ticker)
+            self.price_info = self.get_prices_data()
 
 
     # def append_indicator(self, new_indicator=None, keys=None):

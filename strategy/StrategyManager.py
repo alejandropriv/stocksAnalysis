@@ -37,6 +37,10 @@ class StrategyManager:
     def select_strategy(self, strategy_type):
         if strategy_type is AV_STRATEGY.STRATEGYI:
             return StrategyI()
+        else:
+            raise ValueError
+
+
 
     def load_strategy(self):
 
@@ -45,7 +49,7 @@ class StrategyManager:
             strategy = self.select_strategy(strategy_type)
 
 
-            self.stocks_per_strategy[strategy_type.value] = \
+            self.stocks_per_strategy[strategy_type.name] = \
                 StocksFactory.create_stocks(
                         tickers=self.tickers,
                         data_source_type=self.data_source_type,

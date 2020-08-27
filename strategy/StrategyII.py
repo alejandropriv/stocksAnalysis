@@ -1,11 +1,13 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
+from indicators.MACD import MACD
+
 
 import datetime
 
 
 
-class StrategyI(Strategy):
+class StrategyII(Strategy):
 
 
     def __init__(self):
@@ -13,6 +15,7 @@ class StrategyI(Strategy):
         super().__init__()
         self.set_data_source_required_parameters()
         self.set_date_parameters()
+        self.set_indicators()
 
 
 
@@ -29,4 +32,5 @@ class StrategyI(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        pass
+        macd = MACD(fast_period=12, slow_period=26, signal_period=9)
+        self.indicators = [macd]

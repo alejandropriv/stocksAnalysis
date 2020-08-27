@@ -34,7 +34,8 @@ class StrategyManager:
         self.load_strategy()
 
 
-    def select_strategy(self, strategy_type):
+    @staticmethod
+    def select_strategy(strategy_type):
         if strategy_type is AV_STRATEGY.STRATEGYI:
             return StrategyI()
         else:
@@ -59,8 +60,10 @@ class StrategyManager:
                         interval=strategy.interval,
                         fundamentals=strategy.fundamentals,
                         historical=strategy.historical,
+                        indicators=strategy.indicators,
                         bulk=self.bulk
                 )
+
 
 
 

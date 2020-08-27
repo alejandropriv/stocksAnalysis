@@ -170,30 +170,29 @@ class Stock:
             self.price_info = self.get_prices_data()
 
 
-    # def append_indicator(self, new_indicator=None, keys=None):
-    #
-    #     if keys is None:
-    #         keys = {'has_high_key': True,
-    #                 'has_low_key': True,
-    #                 'has_open_key': False,
-    #                 'has_close_key': False,
-    #                 'has_adj_close_key': True,
-    #                 'has_volume_key': True
-    #                 }
-    #
-    #     # if get_historical_data has already been called it returns the cached data
-    #     self.get_historical_data()
-    #
-    #     self.price_info = self.get_prices_data(tickers=self.tickers,
-    #                                            keys=keys)
-    #
-    #     self.price_info.ticker = self.tickers[0]
-    #
-    #
-    #     new_indicator.set_input_data(self.price_info)
-    #     new_indicator.calculate()
-    #
-    #     self.indicators.append(new_indicator)
+    def append_indicator(self, new_indicator=None, keys=None):
+
+        if keys is None:
+            keys = {'has_high_key': True,
+                    'has_low_key': True,
+                    'has_open_key': False,
+                    'has_close_key': False,
+                    'has_adj_close_key': True,
+                    'has_volume_key': True
+                    }
+
+        # if get_historical_data has already been called it returns the cached data
+        self.get_historical_data()
+
+        self.price_info = self.get_prices_data(keys=keys)
+
+        self.price_info.ticker = self.ticker
+
+
+        new_indicator.set_input_data(self.price_info)
+        new_indicator.calculate()
+
+        self.indicators.append(new_indicator)
 
 
 

@@ -22,8 +22,10 @@ class StocksFactory:
             interval=Constants.INTERVAL.DAY,
             fundamentals=True,
             historical=True,
+            indicators=None,
             bulk=False
     ):
+
 
         stocks = None
 
@@ -43,11 +45,17 @@ class StocksFactory:
                 data_collector.extract_historical_data()
 
             stocks = StocksFactory.load_stocks(data_source, bulk)
+            stocks = StocksFactory.load_indicators(stocks, indicators)
+
+        if fundamentals is True:
+            pass
+
+
 
         return stocks
 
     @staticmethod
-    def load_stocks(data_source=None, bulk=False):
+    def load_stocks(data_source=None, bulk=False, indicators=None):
 
         stocks = []
         if data_source is None:
@@ -66,7 +74,21 @@ class StocksFactory:
         else:
             for ticker in data_source.tickers:
                 stock = Stock(ticker=ticker, data_source=data_source)
+                stock = StocksFactory.load_indicators(stock, indicators)
 
                 stocks.append(stock)
 
         return stocks
+
+
+
+    @staticmethod
+    def load_indicators(stock, indicators):
+
+        if indicators is None:
+            indicators = []
+
+        for indicator in indicators:
+            stock.append_indicator(indicator)
+
+        return stock

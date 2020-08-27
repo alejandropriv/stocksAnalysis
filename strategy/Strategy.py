@@ -10,6 +10,8 @@ class Strategy(metaclass=abc.ABCMeta):
         self.start_date = None
         self.end_date = None
         self.interval = None
+        self.indicators = []
+        self.kpi = []
 
 
     def set_data_source_required_parameters(self):

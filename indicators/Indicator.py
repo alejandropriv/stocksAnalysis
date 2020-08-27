@@ -35,6 +35,7 @@ class Indicator(metaclass=abc.ABCMeta):
                 raise IOError
 
 
+
         def plot_indicator(self, plotter=None, period=100, key=None, color="tab:green", legend_position=None):
 
             if plotter is None:

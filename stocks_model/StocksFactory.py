@@ -5,7 +5,8 @@ from stocks_model.Stock import Stock
 from data.DataCollector import DataCollector
 
 import datetime
-
+import pandas as pd
+import copy
 
 class StocksFactory:
 
@@ -40,12 +41,13 @@ class StocksFactory:
                 period=period,
                 interval=interval
             )
+
         if historical is True:
             data_source = \
                 data_collector.extract_historical_data()
 
-            stocks = StocksFactory.load_stocks(data_source, bulk)
-            stocks = StocksFactory.load_indicators(stocks, indicators)
+            stocks = StocksFactory.load_stocks(data_source, bulk, indicators)
+
 
         if fundamentals is True:
             pass
@@ -73,7 +75,12 @@ class StocksFactory:
 
         else:
             for ticker in data_source.tickers:
-                stock = Stock(ticker=ticker, data_source=data_source)
+
+                data_source_stock = copy.copy(data_source)
+                data_source_stock.prices = pd.DataFrame()
+                data_source_stock.prices = pd.concat([data_source.prices[ticker]], axis=1, keys=[ticker])
+
+                stock = Stock(ticker=[ticker], data_source=data_source_stock)
                 stock = StocksFactory.load_indicators(stock, indicators)
 
                 stocks.append(stock)

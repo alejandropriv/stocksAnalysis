@@ -63,32 +63,6 @@ class DataSource(metaclass=abc.ABCMeta):
 
 
 
-    @abc.abstractmethod
-    def get_high_key(self, ticker):
-        pass
-
-    @abc.abstractmethod
-    def get_low_key(self, ticker):
-        pass
-
-    @abc.abstractmethod
-    def get_open_key(self, ticker):
-        pass
-
-    @abc.abstractmethod
-    def get_close_key(self, ticker):
-        pass
-
-    @abc.abstractmethod
-    def get_adj_close_key(self, ticker):
-        pass
-
-
-    @abc.abstractmethod
-    def get_volume_key(self, ticker):
-        pass
-
-
 
 
 

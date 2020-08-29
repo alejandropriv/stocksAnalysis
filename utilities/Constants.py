@@ -43,42 +43,42 @@ class Constants:
 
 
     @staticmethod
-    def get_adj_close_key(ticker):
-        key = "{}_{}".format(ticker, "Adj_Close")
+    def get_adj_close_key():
+        key = "{}".format("Adj_Close")
         return key
 
     @staticmethod
-    def get_high_key(ticker):
-        key = "{}_{}".format(ticker, "High")
+    def get_high_key():
+        key = "{}".format("High")
         return key
 
     @staticmethod
-    def get_low_key(ticker):
-        key = "{}_{}".format(ticker, "Low")
+    def get_low_key():
+        key = "{}".format("Low")
         return key
 
     @staticmethod
-    def get_open_key(ticker):
-        key = "{}_{}".format(ticker, "Open")
+    def get_open_key():
+        key = "{}".format("Open")
         return key
 
     @staticmethod
-    def get_close_key(ticker):
-        key = "{}_{}".format(ticker, "Close")
+    def get_close_key():
+        key = "{}".format("Close")
         return key
 
     @staticmethod
-    def get_volume_key(ticker):
-        key = "{}_{}".format(ticker, "Volume")
+    def get_volume_key():
+        key = "{}".format("Volume")
         return key
 
     @staticmethod
-    def get_daiy_ret_key(ticker):
-        key = "{}_{}".format(ticker, "Daily_Ret")
+    def get_daiy_ret_key():
+        key = "{}".format("Daily_Ret")
         return key
 
     @staticmethod
-    def get_key(ticker, base_key):
-        key = "{}_{}".format(ticker, base_key)
+    def get_key(base_key):
+        key = "{}".format(base_key)
         return key
 

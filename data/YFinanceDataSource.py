@@ -167,30 +167,23 @@ class YFinanceDataSource(DataSource):
         #print(self.prices)
 
     def get_prices(self, tickers, key_titles):
-        return self.prices[tickers].loc[:, key_titles]
+        available_titles = [Constants.get_open_key(),
+                            Constants.get_close_key(),
+                            Constants.get_high_key(),
+                            Constants.get_low_key(),
+                            Constants.get_volume_key()]
+
+
+        search_titles = []
+        for key_title in key_titles:
+            if key_title in available_titles:
+                search_titles.append(key_title)
+
+        if len(search_titles) == 0:
+            print("No valid keys were requested returning empty dataframe")
+            return pd.DataFrame()
+
+        for ticker in tickers:
+            self.prices=pd.concat([self.prices[ticker].loc[:, search_titles]], axis=1, keys=[ticker])
+        return self.prices
     #TODO Add bulk case
-
-
-
-    def get_high_key(self, ticker):
-        key = "{}".format( "High")
-        return key
-
-    def get_low_key(self, ticker):
-        key = "{}".format("Low")
-        return key
-
-    def get_open_key(self, ticker):
-        key = "{}".format("Open")
-        return key
-
-    def get_close_key(self, ticker):
-        key = "{}".format("Close")
-        return key
-
-    def get_adj_close_key(self, ticker):
-        return None
-
-    def get_volume_key(self, ticker):
-        key = "{}".format("Volume")
-        return key

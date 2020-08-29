@@ -1,5 +1,6 @@
 from utilities.Constants import Constants
 from indicators.Indicator import Indicator
+import pandas as pd
 
 
 class MACD(Indicator):
@@ -15,6 +16,8 @@ class MACD(Indicator):
 
         # Set dataframe keys
         self.adj_close_key = None
+        self.close_key = None
+
         self.macd_key = None
         self.signal_key = None
 
@@ -26,12 +29,26 @@ class MACD(Indicator):
         super().set_input_data(df)
 
         # Set dataFrame keys
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.macd_key = Constants.get_key(self.ticker, "MACD")
-        self.signal_key = Constants.get_key(self.ticker, "Signal")
+        adj_close_key = Constants.get_adj_close_key()
+        close_key = Constants.get_close_key()
 
-        self.df = df[[self.adj_close_key]].copy()
-        self.df.ticker = df.ticker
+        self.macd_key = Constants.get_key("MACD")
+        self.signal_key = Constants.get_key("Signal")
+
+
+        if adj_close_key in df.columns is True:
+            for ticker in df.columns.levels[0]:
+                temp = pd.DataFrame(df[ticker][adj_close_key].copy())
+                self.df = pd.concat([temp], axis=1, keys=[ticker, adj_close_key])
+
+            self.adj_close_key = adj_close_key
+
+        else:
+            for ticker in df.columns.levels[0]:
+                temp = pd.DataFrame(df[ticker][close_key].copy())
+                self.df = pd.concat([temp], axis=1, keys=[ticker])
+
+            self.adj_close_key = close_key
 
 
 
@@ -39,24 +56,44 @@ class MACD(Indicator):
         """function to calculate MACD
            typical values a = 12; b =26, c =9"""
 
+        if self.df is None:
+            print("Error Constructing the Indicator, Please verify constructor")
+            raise ValueError
+
         # Set temp dataframe keys
-        fast_key = Constants.get_key(self.ticker, "MA_Fast")
-        slow_key = Constants.get_key(self.ticker, "MA_Slow")
+        fast_key = Constants.get_key("MA_Fast")
+        slow_key = Constants.get_key("MA_Slow")
 
-        self.df[fast_key] = self.df[self.adj_close_key].ewm(span=self.fast_period,
-                                                            min_periods=self.fast_period).mean()
 
-        self.df[slow_key] = self.df[self.adj_close_key].ewm(span=self.slow_period,
-                                                            min_periods=self.slow_period).mean()
+        for ticker in self.df.columns.levels[0]:
+            df_data = self.df[ticker].copy()
 
-        self.df[self.macd_key] = self.df[fast_key] - self.df[slow_key]
+            df_data[fast_key] = \
+                df_data[self.adj_close_key].ewm(
+                    span=self.fast_period,
+                    min_periods=self.fast_period
+                ).mean()
 
-        self.df[self.signal_key] = self.df[self.macd_key].ewm(span=self.signal_period,
-                                                              min_periods=self.signal_period).mean()
+            df_data[slow_key] = \
+                df_data[self.adj_close_key].ewm(
+                    span=self.slow_period,
+                    min_periods=self.slow_period
+                ).mean()
 
-        self.df.drop(columns=[fast_key, slow_key], inplace=True)
+            df_data[self.macd_key] = \
+                df_data[fast_key] - df_data[slow_key]
 
-        self.df.dropna(inplace=True)
+            df_data[self.signal_key] = \
+                df_data[self.macd_key].ewm(
+                    span=self.signal_period,
+                    min_periods=self.signal_period
+                ).mean()
+
+            df_data.drop(columns=[fast_key, slow_key], inplace=True)
+
+            df_data.dropna(inplace=True)
+
+        self.df = df_data
 
         return self.df
 

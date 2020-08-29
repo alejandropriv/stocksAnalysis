@@ -40,7 +40,6 @@ class Stock:
 
         self.data_source = data_source
         self.get_prices_data()
-        #TODO Remove unneccesary data from datasource
 
 
 
@@ -60,32 +59,32 @@ class Stock:
 
         key_titles=[]
         if keys["has_high_key"] == True:
-            key = self.data_source.get_high_key(self.ticker)
+            key = Constants.get_high_key()
             if key is not None:
                 key_titles.append(key)
 
         if keys["has_low_key"] == True:
-            key = self.data_source.get_low_key(self.ticker)
+            key = Constants.get_low_key()
             if key is not None:
                 key_titles.append(key)
 
         if keys["has_open_key"] == True:
-            key = self.data_source.get_open_key(self.ticker)
+            key = Constants.get_open_key()
             if key is not None:
                 key_titles.append(key)
 
         if keys["has_close_key"] == True:
-            key = self.data_source.get_close_key(self.ticker)
+            key = Constants.get_close_key()
             if key is not None:
                 key_titles.append(key)
 
         if keys["has_adj_close_key"] == True:
-            key = self.data_source.get_adj_close_key(self.ticker)
+            key = Constants.get_adj_close_key()
             if key is not None:
                 key_titles.append(key)
 
         if keys["has_volume_key"] == True:
-            key = self.data_source.get_volume_key(self.ticker)
+            key = Constants.get_volume_key()
             if key is not None:
                 key_titles.append(key)
 
@@ -107,8 +106,6 @@ class Stock:
                     'has_adj_close_key': True,
                     'has_volume_key': True
                     }
-
-
 
         method_tag = "get_prices_data"
 
@@ -167,27 +164,13 @@ class Stock:
                 period=period,
                 interval=interval)
 
-            self.price_info = self.get_prices_data()
+        self.price_info = self.get_prices_data()
 
 
-    def append_indicator(self, new_indicator=None, keys=None):
-
-        if keys is None:
-            keys = {'has_high_key': True,
-                    'has_low_key': True,
-                    'has_open_key': False,
-                    'has_close_key': False,
-                    'has_adj_close_key': True,
-                    'has_volume_key': True
-                    }
+    def append_indicator(self, new_indicator=None):
 
         # if get_historical_data has already been called it returns the cached data
         self.get_historical_data()
-
-        self.price_info = self.get_prices_data(keys=keys)
-
-        self.price_info.ticker = self.ticker
-
 
         new_indicator.set_input_data(self.price_info)
         new_indicator.calculate()

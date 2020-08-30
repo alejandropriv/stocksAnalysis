@@ -37,14 +37,14 @@ class MACD(Indicator):
 
 
         if adj_close_key in df.columns is True:
-            for ticker in df.columns.levels[0]:
+            for ticker in self.tickers:
                 temp = pd.DataFrame(df[ticker][adj_close_key].copy())
                 self.df = pd.concat([temp], axis=1, keys=[ticker, adj_close_key])
 
             self.adj_close_key = adj_close_key
 
         else:
-            for ticker in df.columns.levels[0]:
+            for ticker in self.tickers:
                 temp = pd.DataFrame(df[ticker][close_key].copy())
                 self.df = pd.concat([temp], axis=1, keys=[ticker])
 
@@ -64,8 +64,9 @@ class MACD(Indicator):
         fast_key = Constants.get_key("MA_Fast")
         slow_key = Constants.get_key("MA_Slow")
 
+        df_data = pd.DataFrame()
 
-        for ticker in self.df.columns.levels[0]:
+        for ticker in self.tickers:
             df_data = self.df[ticker].copy()
 
             df_data[fast_key] = \
@@ -93,7 +94,7 @@ class MACD(Indicator):
 
             df_data.dropna(inplace=True)
 
-        self.df = df_data
+        self.df = df_data.copy()
 
         return self.df
 

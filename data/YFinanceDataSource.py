@@ -183,7 +183,19 @@ class YFinanceDataSource(DataSource):
             print("No valid keys were requested returning empty dataframe")
             return pd.DataFrame()
 
+        # prices_temp = self.prices.copy()
+        prices_temp = pd.DataFrame()
+
+        df_list=[]
         for ticker in tickers:
-            self.prices=pd.concat([self.prices[ticker].loc[:, search_titles]], axis=1, keys=[ticker])
+            df_list.append(pd.concat([self.prices[ticker].loc[:, search_titles], prices_temp], axis=1, keys=[ticker]))
+
+        prices_temp = pd.concat(
+            df_list,
+            axis=1
+        )
+
+
+        self.prices = prices_temp.copy()
         return self.prices
     #TODO Add bulk case

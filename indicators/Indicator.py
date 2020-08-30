@@ -8,7 +8,7 @@ class Indicator(metaclass=abc.ABCMeta):
 
         @abc.abstractmethod
         def __init__(self):
-            self.ticker = None
+            self.tickers = None
             self.df = None
 
         @abc.abstractmethod
@@ -17,7 +17,7 @@ class Indicator(metaclass=abc.ABCMeta):
                 print("Error: data not found")
                 raise IOError
 
-            self.ticker = df.ticker
+            self.tickers = df.columns.levels[0]
 
 
         @abc.abstractmethod

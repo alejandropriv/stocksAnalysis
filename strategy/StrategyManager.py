@@ -1,5 +1,4 @@
 from enum import Enum
-import datetime
 
 
 
@@ -7,14 +6,12 @@ from stocks_model.StocksFactory import StocksFactory
 from strategy.StrategyI import StrategyI
 from strategy.StrategyII import StrategyII
 
-from utilities.Constants import Constants
 
 
 class AV_STRATEGY(Enum):
     STRATEGYI = 1
     STRATEGYII = 2
 
-#    PANDASDATAREADER = 2
 
 
 class StrategyManager:
@@ -24,8 +21,7 @@ class StrategyManager:
                  strategies,
                  tickers,
                  data_source_type,
-                 bulk=False
-                 ):
+                 bulk=False):
 
         self.strategies_type = strategies
 
@@ -34,7 +30,6 @@ class StrategyManager:
 
         self.bulk = bulk
         self.stocks_per_strategy = {}
-
 
         self.load_strategy()
 
@@ -70,6 +65,21 @@ class StrategyManager:
                         bulk=self.bulk
                 )
 
+            self.run_strategies()
 
 
+    def run_strategies(self):
+        if not self.stocks_per_strategy: # Empty dictionary
+            print("Error: Load Strategy first")
+            raise ValueError
+
+
+        self.report()
+
+
+
+
+
+    def report(self):
+        pass
 

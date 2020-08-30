@@ -1,6 +1,7 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
 
+
 import datetime
 
 
@@ -13,6 +14,7 @@ class StrategyI(Strategy):
         super().__init__()
         self.set_data_source_required_parameters()
         self.set_date_parameters()
+        self.set_plotter()
 
 
 
@@ -30,3 +32,4 @@ class StrategyI(Strategy):
 
     def set_indicators(self):
         pass
+

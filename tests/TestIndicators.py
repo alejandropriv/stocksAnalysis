@@ -7,7 +7,7 @@ from data.DataSource import DATASOURCETYPE
 from strategy.StrategyManager import StrategyManager
 from strategy.StrategyManager import AV_STRATEGY
 
-from stocks_model.StocksFactory import StocksFactory
+
 from stocks_model.Stock import Stock
 from indicators.ATR import ATR
 from indicators.MACD import MACD
@@ -18,6 +18,9 @@ from indicators.RENKOIND import RENKOIND
 from indicators.Slope import Slope
 
 from indicators.BollingerBands import BollingerBands
+
+from plotter.Plotter import Plotter
+
 from utilities.Constants import Constants
 
 import datetime
@@ -149,8 +152,63 @@ class TestIndicators(unittest.TestCase):
 
         print("Analysis has been run")
 
+
         plt.show()
 
+
+    def test_2_macd_plot(self):
+        tickers = ["TSLA", "SPY"]
+
+        strategies = [AV_STRATEGY.STRATEGYII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+
+        assert TestIndicators.truncate(
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
+               TestIndicators.truncate(1548.920044), \
+            TestIndicators.truncate(
+                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
+
+        assert TestIndicators.truncate(
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
+               TestIndicators.truncate(1376.010010), \
+            TestIndicators.truncate(
+                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
+
+        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0] == \
+               1396.0, \
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
+
+        assert TestIndicators.truncate(
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
+               TestIndicators.truncate(1544.650024), \
+            TestIndicators.truncate(
+                stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Close"].iloc[0])
+
+        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
+               23337600, \
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
+
+        print("Analysis has been run")
+
+
+        plotter = Plotter()
+
+        for stock_list in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_list]:
+                plotter.plot_stock(stock, period=5)
+
+        plt.show()
 
 
     def test_2_macd_bulk(self):
@@ -158,7 +216,7 @@ class TestIndicators(unittest.TestCase):
 
         strategies = [AV_STRATEGY.STRATEGYII]
 
-        smanager = \
+        manager = \
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
@@ -166,7 +224,7 @@ class TestIndicators(unittest.TestCase):
                 bulk=True
             )
 
-        stocks_per_strategy = smanager.stocks_per_strategy
+        stocks_per_strategy = manager.stocks_per_strategy
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)

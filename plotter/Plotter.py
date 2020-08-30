@@ -89,10 +89,10 @@ class Plotter:
                 if (adj_close_key in stock.price_info[ticker]) == False:
                     adj_close_key = Constants.get_close_key()
 
+                x_series[ticker] = stock.price_info[ticker].iloc[-period:, :].index
+
                 price_series[ticker] = stock.price_info[ticker].iloc[-period:, :][adj_close_key]
                 time_series_volume[ticker] = stock.price_info[ticker].iloc[-period:, :][volume_key]
-
-                x_series[ticker] = stock.price_info[ticker].iloc[-period:, :].index
 
                 self.ax_main = dict()
                 self.ax_indicators = dict()
@@ -110,7 +110,7 @@ class Plotter:
                         )
                 else:
                     # Plot Line1 (Left Y Axis)
-                    self.fig, (self.ax_main[Constants.volume], self.ax_indicators[Constants.main_indicator_axis]) = \
+                    self.fig, (self.ax_main[Constants.volume]) = \
                         plt.subplots(
                             1,
                             1,
@@ -122,7 +122,7 @@ class Plotter:
                     x_series=x_series[ticker],
                     time_series_volume=time_series_volume[ticker]
                 )
-                x_series = x_series[ticker],
+
                 self.set_stock_price(
                     x_series=x_series[ticker],
                     price_series=price_series[ticker],
@@ -130,64 +130,9 @@ class Plotter:
                     color=self.stock_color)
 
 
-        else:  # here goes code for i.e bollinger bands
-            print("Main stock data has already been set.")
 
 
         print("plot")
-
-
-
-
-
-
-    def plot_main(self, df, period=None, color="black"):
-
-        if df.ticker is None or df.ticker is "":
-            print("There is no ticker Information, nothing to be plot")
-            return
-
-        if period is not None:
-            self.period = period
-
-
-        self.ticker = df.ticker
-
-        x = df.iloc[:, [0]]
-        self.index = x.iloc[-period:, :].index
-
-        if self.fig is None or self.ax_main is None or self.ax_indicators is None:
-
-            adj_close_key = Constants.get_adj_close_key(ticker=self.ticker)
-
-            volume_key = Constants.get_volume_key(ticker=self.ticker)
-
-            time_series_adj_close = df.iloc[-period:, :][adj_close_key]
-
-            time_series_volume = df.iloc[-period:, :][volume_key]
-
-            self.ax_main = dict()
-            self.ax_indicators = dict()
-
-            # Plot Line1 (Left Y Axis)
-            self.fig, (self.ax_main[Constants.volume], self.ax_indicators[Constants.main_indicator_axis]) = \
-                plt.subplots(
-                    2,
-                    1,
-                    figsize=(16, 9),
-                    dpi=80,
-                    sharex=False,
-                    gridspec_kw={'height_ratios': [2, 1]}
-                )
-
-            self.set_volume(time_series_volume)
-
-            self.set_stock_price(time_series_adj_close, color)
-
-
-        else:  # here goes code for i.e bollinger bands
-            print("Main stock data has already been set.")
-
 
 
     def set_volume(self, x_series, time_series_volume):
@@ -209,10 +154,10 @@ class Plotter:
         )
 
         self.ax_main[Constants.volume].legend()
-        self.ax_indicators[Constants.main_indicator_axis].set_xlim(
-            time_series_volume.iloc[[0]].index,
-            time_series_volume.iloc[[-1]].index
-        )
+        #self.ax_indicators[Constants.main_indicator_axis].set_xlim(
+        #    time_series_volume.iloc[[0]].index,
+        #    time_series_volume.iloc[[-1]].index
+        #)
 
 
     def set_stock_price(self, x_series, price_series, title="", color="black"):
@@ -241,14 +186,6 @@ class Plotter:
             price_series.iloc[[-1]].index
         )
 
-        #  Set the layout of the indicators plot
-        #  Indicator plot layout
-        self.ax_indicators[Constants.main_indicator_axis].tick_params(axis='y', labelcolor='tab:green', size=20)
-        self.ax_indicators[Constants.main_indicator_axis].grid(alpha=.4)
-        self.ax_indicators[Constants.main_indicator_axis].spines["top"].set_alpha(0.0)
-        self.ax_indicators[Constants.main_indicator_axis].spines["bottom"].set_alpha(1)
-        self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
-        self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
 
 
 
@@ -259,6 +196,16 @@ class Plotter:
         if self.fig is None or self.ax_indicators is None:
             print("Please call first method plot_main")
             return
+
+        #  Set the layout of the indicators plot
+        #  Indicator plot layout
+        self.ax_indicators[Constants.main_indicator_axis].tick_params(axis='y', labelcolor='tab:green', size=20)
+        self.ax_indicators[Constants.main_indicator_axis].grid(alpha=.4)
+        self.ax_indicators[Constants.main_indicator_axis].spines["top"].set_alpha(0.0)
+        self.ax_indicators[Constants.main_indicator_axis].spines["bottom"].set_alpha(1)
+        self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
+        self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
+
 
         indicator_key = df.columns[0]
 

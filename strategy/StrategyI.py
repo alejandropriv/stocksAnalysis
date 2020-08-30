@@ -14,7 +14,6 @@ class StrategyI(Strategy):
         super().__init__()
         self.set_data_source_required_parameters()
         self.set_date_parameters()
-        self.set_plotter()
 
 
 

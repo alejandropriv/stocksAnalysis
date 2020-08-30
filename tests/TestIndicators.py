@@ -106,6 +106,12 @@ class TestIndicators(unittest.TestCase):
 
         print("Analysis has been run")
 
+        plotter = Plotter()
+
+        for stock_list in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_list]:
+                plotter.plot_stock(stock, period=500)
+
         plt.show()
 
 
@@ -206,7 +212,7 @@ class TestIndicators(unittest.TestCase):
 
         for stock_list in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_list]:
-                plotter.plot_stock(stock, period=5)
+                plotter.plot_stock(stock, period=500)
 
         plt.show()
 
@@ -252,7 +258,14 @@ class TestIndicators(unittest.TestCase):
 
         print("Analysis has been run")
 
+        plotter = Plotter()
+
+        for stock_list in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_list]:
+                plotter.plot_stock(stock, period=500)
+
         plt.show()
+
 
 
 

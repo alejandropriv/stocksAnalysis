@@ -71,6 +71,7 @@ class StocksFactory:
         if bulk is True:  # print("This option has not been already programmed! wait for next release")
 
             stock = Stock(ticker=data_source.tickers, data_source=data_source)
+            stock = StocksFactory.load_indicators(stock, indicators)
             stocks.append(stock)
 
         else:

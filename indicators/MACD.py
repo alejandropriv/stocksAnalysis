@@ -1,6 +1,8 @@
 from utilities.Constants import Constants
 from indicators.Indicator import Indicator
 import pandas as pd
+import copy
+
 
 
 class MACD(Indicator):
@@ -44,11 +46,23 @@ class MACD(Indicator):
             self.adj_close_key = adj_close_key
 
         else:
-            for ticker in self.tickers:
-                temp = pd.DataFrame(df[ticker][close_key].copy())
-                self.df = pd.concat([temp], axis=1, keys=[ticker])
 
             self.adj_close_key = close_key
+
+            prices_temp = pd.DataFrame()
+
+            df_list = []
+            for ticker in self.tickers:
+                df_list.append(pd.concat([df[ticker].loc[:, [self.adj_close_key]], prices_temp], axis=1, keys=[ticker]))
+
+            df_indicator = pd.concat(
+                df_list,
+                axis=1
+            )
+
+            self.df = copy.copy(df_indicator)
+
+
 
 
 
@@ -97,6 +111,7 @@ class MACD(Indicator):
         self.df = df_data.copy()
 
         return self.df
+
 
 
     def plot(self, plotter=None, period=100, color="tab:green"):

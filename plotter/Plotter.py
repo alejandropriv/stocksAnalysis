@@ -28,7 +28,6 @@ class Plotter:
         self.ax_main = None
         self.ax_indicators = None
         self.main_ax_indicator = None
-        self.index = None
         self.legend_id = 0
 
         register_matplotlib_converters()
@@ -130,6 +129,10 @@ class Plotter:
                     color=self.stock_color)
 
 
+                for indicator in stock.indicators:
+                    indicator.plot(self, self.period)
+
+
 
 
         print("plot")
@@ -154,7 +157,7 @@ class Plotter:
         )
 
         self.ax_main[Constants.volume].legend()
-        #self.ax_indicators[Constants.main_indicator_axis].set_xlim(
+        #   self.ax_indicators[Constants.main_indicator_axis].set_xlim(
         #    time_series_volume.iloc[[0]].index,
         #    time_series_volume.iloc[[-1]].index
         #)
@@ -215,4 +218,5 @@ class Plotter:
         self.fig.tight_layout()
 
         self.main_ax_indicator.plot(self.index, time_series_indicator, color=color)
+        #TODO: Check the index, indicator key and time_series_indicator
 

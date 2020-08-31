@@ -186,7 +186,7 @@ class YFinanceDataSource(DataSource):
         # prices_temp = self.prices.copy()
         prices_temp = pd.DataFrame()
 
-        df_list=[]
+        df_list = []
         for ticker in tickers:
             df_list.append(pd.concat([self.prices[ticker].loc[:, search_titles], prices_temp], axis=1, keys=[ticker]))
 

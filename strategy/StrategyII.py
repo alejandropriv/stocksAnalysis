@@ -27,7 +27,7 @@ class StrategyII(Strategy):
     def set_date_parameters(self):
         self.period = None
         self.end_date = datetime.datetime.today()
-        date_str = "11/07/2020"
+        date_str = "11/07/2019"
         self.start_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
         self.interval = Constants.INTERVAL.DAY
 

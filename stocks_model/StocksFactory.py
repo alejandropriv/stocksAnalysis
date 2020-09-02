@@ -13,6 +13,14 @@ class StocksFactory:
     def __init__(self):
         pass
 
+    # Fix this was created to fix the problem of having only one stock (input dataframe is different)
+    # This should be removed and dataframe handled accordingly
+    @staticmethod
+    def add_SPI500_ticker(tickers):
+        tickers.append("^GSPC")
+        return tickers
+
+
     @staticmethod
     def create_stocks(
             tickers,
@@ -27,7 +35,7 @@ class StocksFactory:
             bulk=False
     ):
 
-
+        tickers = StocksFactory.add_SPI500_ticker(tickers=tickers)
         stocks = None
 
         data_collector = \
@@ -52,9 +60,9 @@ class StocksFactory:
         if fundamentals is True:
             pass
 
-
-
         return stocks
+
+
 
     @staticmethod
     def load_stocks(data_source=None, bulk=False, indicators=None):

@@ -72,7 +72,7 @@ class Plotter:
         if period is not None:
             self.period = period
 
-
+        #TODO: Check what happens here in the iteration
         if self.fig is None or self.ax_main is None or self.ax_indicators is None:
 
             adj_close_key = Constants.get_adj_close_key()
@@ -140,7 +140,7 @@ class Plotter:
 
     def set_volume(self, x_series, time_series_volume):
 
-        self.ax_main[Constants.volume].set_ylim(0, 100000000)
+        self.ax_main[Constants.volume].set_ylim(0, time_series_volume.max()*2)
         self.ax_main[Constants.volume].tick_params(axis='y', rotation=0, labelcolor=self.volume_color)
 
         self.ax_main[Constants.volume].spines["top"].set_alpha(0.0)
@@ -217,6 +217,6 @@ class Plotter:
         # Plot Line2 (Right Y Axis)
         self.fig.tight_layout()
 
-        self.main_ax_indicator.plot(self.index, time_series_indicator, color=color)
+        self.main_ax_indicator.plot(df.index, time_series_indicator, color=color)
         #TODO: Check the index, indicator key and time_series_indicator
 

@@ -84,23 +84,23 @@ class TestIndicators(unittest.TestCase):
                 print(stock.price_info)
 
         assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["High"].iloc[0]) == \
-               TestIndicators.truncate(1548.920044), \
+               TestIndicators.truncate(309.783), \
             TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["High"].iloc[0])
 
         assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
-               TestIndicators.truncate(1376.010010), \
+               TestIndicators.truncate(275.201), \
             TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Low"].iloc[0])
 
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Open"].iloc[0] == \
-               1396.0, \
+        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Open"].iloc[0]) == \
+               TestIndicators.truncate(279.200), \
             stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Open"].iloc[0]
 
         assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
-               TestIndicators.truncate(1544.650024), \
+               TestIndicators.truncate(308.929), \
             TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Close"].iloc[0])
 
         assert stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
-               23337600, \
+               116688000, \
             stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Volume"].iloc[0]
 
 
@@ -135,25 +135,31 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
-        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
-               TestIndicators.truncate(1548.920044), \
-            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
+        assert TestIndicators.truncate(
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
+               TestIndicators.truncate(309.783), \
+            TestIndicators.truncate(
+                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
 
-        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
-               TestIndicators.truncate(1376.010010), \
-            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
+        assert TestIndicators.truncate(
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
+               TestIndicators.truncate(275.201), \
+            TestIndicators.truncate(
+                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
 
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0] == \
-               1396.0, \
+        assert TestIndicators.truncate(
+            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]) == \
+               TestIndicators.truncate(279.200), \
             stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
 
         assert TestIndicators.truncate(
             stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
-               TestIndicators.truncate(1544.650024), \
-            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Close"].iloc[0])
+               TestIndicators.truncate(308.929), \
+            TestIndicators.truncate(
+                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0])
 
         assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
-               23337600, \
+               116688000, \
             stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
 
         print("Analysis has been run")
@@ -163,7 +169,7 @@ class TestIndicators(unittest.TestCase):
 
 
     def test_2_macd_plot(self):
-        tickers = ["TSLA", "SPY"]
+        tickers = ["TSLA", "SNAP"]# , "SPY", "CCL"
 
         strategies = [AV_STRATEGY.STRATEGYII]
 
@@ -179,46 +185,49 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
-               TestIndicators.truncate(1548.920044), \
-            TestIndicators.truncate(
-                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
+        test_date="14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
-               TestIndicators.truncate(1376.010010), \
-            TestIndicators.truncate(
-                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
+        h_value = TestIndicators.truncate(
+            test_df["TSLA"]["High"].loc[
+                test_df["TSLA"]["High"].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+            ].iloc[0])
+        assert h_value == TestIndicators.truncate(318.0), h_value
 
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0] == \
-               1396.0, \
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
+            #
+        # assert TestIndicators.truncate(record["TSLA"]["Low"]) == \
+        #        TestIndicators.truncate(275.201), \
+        #     TestIndicators.truncate(record["TSLA"]["Low"])
+        #
+        # assert TestIndicators.truncate(record["TSLA"]["Open"]) == \
+        #        TestIndicators.truncate(279.200), \
+        #     TestIndicators.truncate(record["TSLA"]["Open"])
+        #
+        # assert TestIndicators.truncate(record["TSLA"]["Close"]) == \
+        #        TestIndicators.truncate(308.929), \
+        #     TestIndicators.truncate(record["TSLA"]["Close"])
+        #
+        # assert TestIndicators.truncate(record["TSLA"]["Volume"]) == \
+        #        TestIndicators.truncate(116688000), \
+        #     TestIndicators.truncate(record["TSLA"]["Volume"])
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
-               TestIndicators.truncate(1544.650024), \
-            TestIndicators.truncate(
-                stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Close"].iloc[0])
 
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
-               23337600, \
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
 
         print("Analysis has been run")
 
 
-        plotter = Plotter()
+
 
         for stock_list in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_list]:
+                plotter = Plotter()#TODO: make this object re-usable
                 plotter.plot_stock(stock, period=500)
 
         plt.show()
 
 
     def test_2_macd_bulk(self):
-        tickers = ["TSLA", "SPY"]
+        tickers = ["TSLA"]#, "SPY", "TSLA", "SNAP"
 
         strategies = [AV_STRATEGY.STRATEGYII]
 
@@ -235,26 +244,33 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
-        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
-               TestIndicators.truncate(1548.920044), \
-            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
+        # assert TestIndicators.truncate(
+        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
+        #        TestIndicators.truncate(309.783), \
+        #     TestIndicators.truncate(
+        #         stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
+        #
+        # assert TestIndicators.truncate(
+        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
+        #        TestIndicators.truncate(275.201), \
+        #     TestIndicators.truncate(
+        #         stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
+        #
+        # assert TestIndicators.truncate(
+        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]) == \
+        #        TestIndicators.truncate(279.200), \
+        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
+        #
+        # assert TestIndicators.truncate(
+        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
+        #        TestIndicators.truncate(308.929), \
+        #     TestIndicators.truncate(
+        #         stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0])
+        #
+        # assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
+        #        116688000, \
+        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
 
-        assert TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
-               TestIndicators.truncate(1376.010010), \
-            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
-
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0] == \
-               1396.0, \
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
-
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
-               TestIndicators.truncate(1544.650024), \
-            TestIndicators.truncate(stocks_per_strategy[AV_STRATEGY.STRATEGYI.name][0].price_info["TSLA"]["Close"].iloc[0])
-
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
-               23337600, \
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
 
         print("Analysis has been run")
 

@@ -60,7 +60,7 @@ class MACD(Indicator):
                 axis=1
             )
 
-            self.df = copy.copy(df_indicator)
+            self.df = df_indicator.copy()
 
 
 
@@ -79,6 +79,7 @@ class MACD(Indicator):
         slow_key = Constants.get_key("MA_Slow")
 
         df_data = pd.DataFrame()
+        df_result = []
 
         for ticker in self.tickers:
             df_data = self.df[ticker].copy()
@@ -108,7 +109,10 @@ class MACD(Indicator):
 
             df_data.dropna(inplace=True)
 
-        self.df = df_data.copy()
+
+            df_result.append(df_data)
+
+        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
 
         return self.df
 
@@ -120,27 +124,28 @@ class MACD(Indicator):
 
         print("Plotting MACD")
 
-        max_value = self.df[self.macd_key].max()
-        min_value = self.df[self.macd_key].min()
+        for ticker in self.tickers:
+            max_value = self.df[ticker][self.macd_key].max()
+            min_value = self.df[ticker][self.macd_key].min()
 
-        if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
-            plotter.ax_indicators[self.macd_key] = plotter.ax_indicators[Constants.main_indicator_axis]
+            if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
+                plotter.ax_indicators[self.macd_key] = plotter.ax_indicators[Constants.main_indicator_axis]
 
-        else:
-            # instantiate a second axes that shares the same x-axis
-            plotter.ax_indicators[self.macd_key] = \
-                plotter.ax_indicators[Constants.main_indicator_axis].twinx()
+            else:
+                # instantiate a second axes that shares the same x-axis
+                plotter.ax_indicators[self.macd_key] = \
+                    plotter.ax_indicators[Constants.main_indicator_axis].twinx()
 
 
-        plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
+            plotter.ax_indicators[self.macd_key].set_ylim(min_value - 1, max_value + 1)
 
-        plotter.main_ax_indicator = plotter.ax_indicators[self.macd_key]
-        plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
-        plotter.plot_indicator(df=self.df[[self.macd_key]], period=period, color=color)
-        plotter.plot_indicator(df=self.df[[self.signal_key]], period=period, color="tab:orange")
+            plotter.main_ax_indicator = plotter.ax_indicators[self.macd_key]
+            plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
+            plotter.plot_indicator(df=self.df[ticker][[self.macd_key]], period=period, color=color)
+            plotter.plot_indicator(df=self.df[ticker][[self.signal_key]], period=period, color="tab:orange")
 
-        legend_position = plotter.get_legend_position()
-        plotter.ax_indicators[self.macd_key].legend(loc=legend_position)
+            legend_position = plotter.get_legend_position()
+            plotter.ax_indicators[self.macd_key].legend(loc=legend_position)
 
         return plotter
 

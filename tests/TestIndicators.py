@@ -26,6 +26,10 @@ from utilities.Constants import Constants
 import datetime
 
 
+
+
+DEVELOPMENT = True
+
 class TestIndicators(unittest.TestCase):
     apikey = "86VFFOKUNB1M9YQ8"
     data_source_type = None
@@ -135,37 +139,29 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
-               TestIndicators.truncate(309.783), \
-            TestIndicators.truncate(
-                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
-               TestIndicators.truncate(275.201), \
-            TestIndicators.truncate(
-                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
+        if DEVELOPMENT == True:
+            plt.show()
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]) == \
-               TestIndicators.truncate(279.200), \
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
 
-        assert TestIndicators.truncate(
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
-               TestIndicators.truncate(308.929), \
-            TestIndicators.truncate(
-                stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0])
 
-        assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
-               116688000, \
-            stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
 
         print("Analysis has been run")
 
-
-        plt.show()
 
 
     def test_2_macd_plot(self):
@@ -184,46 +180,32 @@ class TestIndicators(unittest.TestCase):
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
-
-        test_date="14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
-
-        h_value = TestIndicators.truncate(
-            test_df["TSLA"]["High"].loc[
-                test_df["TSLA"]["High"].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-            ].iloc[0])
-        assert h_value == TestIndicators.truncate(318.0), h_value
-
-            #
-        # assert TestIndicators.truncate(record["TSLA"]["Low"]) == \
-        #        TestIndicators.truncate(275.201), \
-        #     TestIndicators.truncate(record["TSLA"]["Low"])
-        #
-        # assert TestIndicators.truncate(record["TSLA"]["Open"]) == \
-        #        TestIndicators.truncate(279.200), \
-        #     TestIndicators.truncate(record["TSLA"]["Open"])
-        #
-        # assert TestIndicators.truncate(record["TSLA"]["Close"]) == \
-        #        TestIndicators.truncate(308.929), \
-        #     TestIndicators.truncate(record["TSLA"]["Close"])
-        #
-        # assert TestIndicators.truncate(record["TSLA"]["Volume"]) == \
-        #        TestIndicators.truncate(116688000), \
-        #     TestIndicators.truncate(record["TSLA"]["Volume"])
-
+                plotter = Plotter()#TODO: make this object re-usable
+                plotter.plot_stock(stock, period=500)
 
 
         print("Analysis has been run")
 
+        if DEVELOPMENT == True:
+            plt.show()
 
 
 
-        for stock_list in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_list]:
-                plotter = Plotter()#TODO: make this object re-usable
-                plotter.plot_stock(stock, period=500)
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
-        plt.show()
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
 
 
     def test_2_macd_bulk(self):
@@ -243,69 +225,36 @@ class TestIndicators(unittest.TestCase):
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
-
-        # assert TestIndicators.truncate(
-        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0]) == \
-        #        TestIndicators.truncate(309.783), \
-        #     TestIndicators.truncate(
-        #         stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["High"].iloc[0])
-        #
-        # assert TestIndicators.truncate(
-        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0]) == \
-        #        TestIndicators.truncate(275.201), \
-        #     TestIndicators.truncate(
-        #         stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Low"].iloc[0])
-        #
-        # assert TestIndicators.truncate(
-        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]) == \
-        #        TestIndicators.truncate(279.200), \
-        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Open"].iloc[0]
-        #
-        # assert TestIndicators.truncate(
-        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0]) == \
-        #        TestIndicators.truncate(308.929), \
-        #     TestIndicators.truncate(
-        #         stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Close"].iloc[0])
-        #
-        # assert stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0] == \
-        #        116688000, \
-        #     stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info["TSLA"]["Volume"].iloc[0]
-
-
-        print("Analysis has been run")
-
-        plotter = Plotter()
-
-        for stock_list in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_list]:
+                plotter = Plotter()
                 plotter.plot_stock(stock, period=500)
 
-        plt.show()
-
-
-
-
-    def test_macd(self):
-        self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
-
-        past_date_interval = 1825
-        # TODO: check what is happening with period < 100
-        period = 100
-
-        self.stock = Stock(self.tickers)
-
-        self.stock.get_historical_data(start_date=datetime.date.today() - datetime.timedelta(past_date_interval),
-                                       end_date=(datetime.date.today()),
-                                       interval=Constants.INTERVAL.DAY)
-
-        macd_ind = MACD()
-        self.stock.append_indicator(macd_ind)
-
-        self.stock.plot(period=period)
 
         print("Analysis has been run")
 
-        plt.show()
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+
+
+
 
     def test_atr(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]

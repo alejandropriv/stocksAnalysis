@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
+from indicators.MACD import MACD
+from plotter.PlotterMACD import PlotterMACD
 
 
 from utilities.Constants import Constants
@@ -24,7 +26,7 @@ class Plotter:
 
                  ):
 
-        self.fig = None
+        self.fig = {}
         self.ax_main = None
         self.ax_indicators = None
         self.main_ax_indicator = None
@@ -97,8 +99,9 @@ class Plotter:
                 self.ax_indicators = dict()
 
                 if len(stock.indicators) > 0:
+
                     # Plot Line1 (Left Y Axis)
-                    self.fig, (self.ax_main[Constants.volume], self.ax_indicators[Constants.main_indicator_axis]) = \
+                    self.fig[ticker], (self.ax_main[Constants.volume], self.ax_indicators[Constants.main_indicator_axis]) = \
                         plt.subplots(
                             2,
                             1,
@@ -108,8 +111,9 @@ class Plotter:
                             gridspec_kw={'height_ratios': [2, 1]}
                         )
                 else:
+
                     # Plot Line1 (Left Y Axis)
-                    self.fig, (self.ax_main[Constants.volume]) = \
+                    self.fig[ticker], (self.ax_main[Constants.volume]) = \
                         plt.subplots(
                             1,
                             1,
@@ -130,7 +134,8 @@ class Plotter:
 
 
                 for indicator in stock.indicators:
-                    indicator.plot(self, self.period)
+                    pass
+                    #indicator.plot(self, self.period)
 
 
 
@@ -193,8 +198,23 @@ class Plotter:
 
 
     # this has to be called after calling plot_main
-    def plot_indicator(self, df, period=100, color="tab:green"):
+    def set_plot_indicator(self, indicator, ticker, period=100, color="tab:green"):
 
+        if isinstance(indicator, MACD):
+            PlotterMACD(self, indicator, ticker)
+
+
+
+
+
+
+
+    # this has to be called after calling plot_main
+    def plot_indicator(self, indicator, ticker, period=100, color="tab:green"):
+
+        if ticker is None:
+            print("Please define the ticker you want to plot")
+            return
 
         if self.fig is None or self.ax_indicators is None:
             print("Please call first method plot_main")
@@ -209,7 +229,6 @@ class Plotter:
         self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
         self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
 
-
         indicator_key = df.columns[0]
 
         time_series_indicator = df.iloc[-period:, :][indicator_key]
@@ -218,5 +237,35 @@ class Plotter:
         self.fig.tight_layout()
 
         self.main_ax_indicator.plot(df.index, time_series_indicator, color=color)
-        #TODO: Check the index, indicator key and time_series_indicator
+        # TODO: Check the index, indicator key and time_series_indicator
 
+# def plot_indicator(self, plotter=None, period=100, key=None, color="tab:green", legend_position=None):
+#     if plotter is None:
+#         print("Error: plotter Object not found, please Select the main stock first.")
+#         return
+#
+#     if legend_position is None:
+#         legend_position = plotter.get_legend_position()
+#
+#     print("Plotting {}".format(key))
+#
+#     max_value = self.df[key].max()
+#     min_value = self.df[key].min()
+#
+#     if plotter.ax_indicators is None or len(plotter.ax_indicators) <= 1:
+#         print("This is the first indicator, in the plot")
+#         plotter.ax_indicators[key] = plotter.ax_indicators[Constants.main_indicator_axis]
+#
+#     else:
+#         print("This indicator is added to the current-existing plot")
+#         # instantiate a second axes that shares the same x-axis
+#         plotter.ax_indicators[key] = plotter.ax_indicators[Constants.main_indicator_axis].twinx()
+#
+#     plotter.ax_indicators[key].set_ylim(min_value - 1, max_value + 1)
+#
+#     plotter.main_ax_indicator = plotter.ax_indicators[key]
+#     plotter.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
+#
+#     plotter.plot_indicator(df=self.df[[key]], period=period, color=color)
+#
+#     plotter.ax_indicators[key].legend(loc=legend_position)

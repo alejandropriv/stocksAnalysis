@@ -105,6 +105,6 @@ class StocksFactory:
             indicators = []
 
         for indicator in indicators:
-            stock.append_indicator(indicator)
+            stock.append_indicator(copy.copy(indicator))
 
         return stock

@@ -180,40 +180,6 @@ class Stock:
 
 
 
-    # def plot(self, ticker=None, price_types=None, period=100):
-    #     if price_types is None:
-    #         # Initialize price types if no value has been provided
-    #         price_types = ["adj_close"]
-    #
-    #     if ticker is None:
-    #         # Initialize ticker value if it has not been provided
-    #         ticker = [self.tickers[0]]
-    #
-    #     if self.plotter is None:
-    #         # Initialize Plotter if it has not been already initialized
-    #         self.plotter = Plotter()
-    #
-    #     for priceType in price_types:
-    #         if priceType == "adj_close":
-    #             keys = {'has_high_key': False,
-    #                     'has_low_key': False,
-    #                     'has_open_key': False,
-    #                     'has_close_key': False,
-    #                     'has_adj_close_key': True,
-    #                     'has_volume_key': True
-    #                     }
-    #
-    #             self.price_info = self.get_prices_data(ticker, keys=keys)
-    #
-    #             self.price_info.ticker = ticker[0]
-    #             self.plotter.plot_main(df=self.price_info, period=period)  # count how many graphics there will be
-    #
-    #     for indicator in self.indicators:
-    #         indicator.plot(plotter=self.plotter, period=period)
-
-
-
-
 
 
     def get_statistical_data(self, period):

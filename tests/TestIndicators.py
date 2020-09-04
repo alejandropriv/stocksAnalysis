@@ -180,8 +180,8 @@ class TestIndicators(unittest.TestCase):
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
-                plotter = Plotter()#TODO: make this object re-usable
-                plotter.plot_stock(stock, period=500)
+                plotter = Plotter(period=500)
+                plotter.plot_stock(stock)
 
 
         print("Analysis has been run")
@@ -225,8 +225,8 @@ class TestIndicators(unittest.TestCase):
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
-                plotter = Plotter()
-                plotter.plot_stock(stock, period=500)
+                plotter = Plotter(period=500)
+                plotter.plot_stock(stock)
 
 
         print("Analysis has been run")

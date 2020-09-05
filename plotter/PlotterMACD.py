@@ -8,15 +8,13 @@ from utilities.Constants import Constants
 
 class PlotterMACD(PlotterIndicator):
 
-    def __init__(self, plotter, indicator, ticker, period=100, color="tab:green"):
-        super().__init__(plotter, indicator, ticker, period, color)
-        self.main_color = color
+    def __init__(self, plotter, indicator, ticker, color="tab:green"):
+        super().__init__(plotter, indicator, ticker, color)
         self.signal_color = "tab:orange"
         self.tick_y_color = "tab:green"
 
 
     def plot(self):
-        super().plot()
 
         print("Plotting MACD")
 
@@ -35,6 +33,7 @@ class PlotterMACD(PlotterIndicator):
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.indicator.macd_key]
         self.plotter.main_ax_indicator.tick_params(axis='y', labelcolor=self.tick_y_color, size=20)
+
         self.plotter.plot_indicator(
                 df=self.indicator.df[self.ticker][[self.indicator.macd_key]],
                 color=self.main_color

@@ -39,28 +39,30 @@ class MACD(Indicator):
 
 
         if adj_close_key in df.columns is True:
-            for ticker in self.tickers:
-                temp = pd.DataFrame(df[ticker][adj_close_key].copy())
-                self.df = pd.concat([temp], axis=1, keys=[ticker, adj_close_key])
-
             self.adj_close_key = adj_close_key
 
         else:
-
             self.adj_close_key = close_key
 
-            prices_temp = pd.DataFrame()
 
-            df_list = []
-            for ticker in self.tickers:
-                df_list.append(pd.concat([df[ticker].loc[:, [self.adj_close_key]], prices_temp], axis=1, keys=[ticker]))
+        prices_temp = pd.DataFrame()
 
-            df_indicator = pd.concat(
-                df_list,
-                axis=1
+        df_list = []
+        for ticker in self.tickers:
+            df_list.append(
+                pd.concat(
+                    [df[ticker].loc[:, [self.adj_close_key]],prices_temp],
+                    axis=1,
+                    keys=[ticker]
+                )
             )
 
-            self.df = df_indicator.copy()
+        df_indicator = pd.concat(
+            df_list,
+            axis=1
+        )
+
+        self.df = df_indicator.copy()
 
 
 
@@ -71,7 +73,8 @@ class MACD(Indicator):
            typical values a = 12; b =26, c =9"""
 
         if self.df is None:
-            print("Error Constructing the Indicator, Please verify constructor")
+            print("DF has not been set, there is no data to calculate the indicator, "
+                  "please verify the indicator constructor")
             raise ValueError
 
         # Set temp dataframe keys
@@ -110,7 +113,7 @@ class MACD(Indicator):
             df_data.dropna(inplace=True)
 
 
-            df_result.append(df_data)
+            df_result.append(df_data.loc[:, [self.macd_key, self.signal_key]])
 
         self.df = pd.concat(df_result, axis=1, keys=self.tickers)
 

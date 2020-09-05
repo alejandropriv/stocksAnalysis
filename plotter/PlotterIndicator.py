@@ -10,7 +10,7 @@ from utilities.Constants import Constants
 class PlotterIndicator:
 
 
-    def __init__(self, plotter, indicator, ticker, period=100, color="tab:green"):
+    def __init__(self, plotter, indicator, ticker, color="tab:green"):
 
         self.indicator = indicator
         self.ticker = ticker
@@ -20,13 +20,27 @@ class PlotterIndicator:
             raise IOError
 
         self.plotter = plotter
-        self.period = period
-        self.color = color
+        self.main_color = color
 
 
-    @abc.abstractmethod
+
+
     def plot(self):
-        pass
+
+
+        main_key = None
+        available_indicators = ["MACD", "ATR"]
+
+        for key in self.indicator.df[self.ticker].columns:
+            if key in available_indicators:
+                main_key = key
+                break
+
+
+        self.plotter.plot_indicator(
+            df=self.indicator.df[self.ticker][[main_key]],
+            color=self.main_color
+        )
 
 
 

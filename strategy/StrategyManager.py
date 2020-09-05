@@ -5,12 +5,17 @@ from enum import Enum
 from stocks_model.StocksFactory import StocksFactory
 from strategy.StrategyI import StrategyI
 from strategy.StrategyII import StrategyII
+from strategy.StrategyIII import StrategyIII
+from strategy.StrategyX import StrategyX
+
 
 
 
 class AV_STRATEGY(Enum):
     STRATEGYI = 1
     STRATEGYII = 2
+    STRATEGYIII = 3
+    STRATEGYX = 10
 
 
 
@@ -40,6 +45,10 @@ class StrategyManager:
             return StrategyI()
         elif strategy_type is AV_STRATEGY.STRATEGYII:
             return StrategyII()
+        elif strategy_type is AV_STRATEGY.STRATEGYIII:
+            return StrategyIII()
+        elif strategy_type is AV_STRATEGY.STRATEGYX:
+            return StrategyX()
         else:
             raise ValueError
 

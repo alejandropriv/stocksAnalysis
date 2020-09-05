@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 from indicators.MACD import MACD
+from indicators.ATR import ATR
+
+from plotter.PlotterIndicator import PlotterIndicator
 from plotter.PlotterMACD import PlotterMACD
 
 
@@ -215,12 +218,27 @@ class Plotter:
     # this has to be called after calling plot_main
     def set_plot_indicator(self, indicator, ticker, period=100, color="tab:green"):
 
+        plot_indicator = None
         if isinstance(indicator, MACD):
-            plot_indicator = PlotterMACD(self, indicator, ticker)
+            plot_indicator = PlotterMACD(
+                self,
+                indicator=indicator,
+                ticker=ticker
+            )
+        if isinstance(indicator, ATR):
+            plot_indicator = PlotterIndicator(
+                self,
+                indicator=indicator,
+                ticker=ticker
+            )
 
+        if plot_indicator is not None:
             plot_indicator.plot()
+        else:
+            print("Plotter for indicator has not been defined.")
+            raise ValueError
 
-            self.fig[ticker].tight_layout()
+        self.fig[ticker].tight_layout()
 
 
     # this has to be called after calling plot_main

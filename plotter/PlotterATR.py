@@ -6,23 +6,21 @@ from plotter.PlotterIndicator import PlotterIndicator
 from utilities.Constants import Constants
 
 
-class PlotterMACD(PlotterIndicator):
+class PlotterATR(PlotterIndicator):
 
     def __init__(self, plotter, indicator, ticker, color="tab:green"):
         super().__init__(plotter, indicator, ticker, color)
-        self.signal_color = "tab:orange"
 
 
     def plot(self):
 
-        print("Plotting MACD")
+        print("Plotting ATR")
 
         max_value = self.indicator.df[self.ticker][self.indicator.indicator_key].max()
         min_value = self.indicator.df[self.ticker][self.indicator.indicator_key].min()
 
         if self.plotter.ax_indicators is None or len(self.plotter.ax_indicators) <= 1:
-            self.plotter.ax_indicators[self.indicator.indicator_key] =\
-                self.plotter.ax_indicators[Constants.main_indicator_axis]
+            self.plotter.ax_indicators[self.indicator.indicator_key] = self.plotter.ax_indicators[Constants.main_indicator_axis]
 
         else:
             # instantiate a second axes that shares the same x-axis
@@ -37,10 +35,6 @@ class PlotterMACD(PlotterIndicator):
         self.plotter.plot_indicator(
                 df=self.indicator.df[self.ticker][[self.indicator.indicator_key]],
                 color=self.main_color
-        )
-        self.plotter.plot_indicator(
-                df=self.indicator.df[self.ticker][[self.indicator.signal_key]],
-                color=self.signal_color
         )
 
         legend_position = self.plotter.get_legend_position()

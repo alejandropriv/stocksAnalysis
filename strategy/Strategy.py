@@ -20,3 +20,5 @@ class Strategy(metaclass=abc.ABCMeta):
     def set_date_parameters(self):
         pass
 
+
+

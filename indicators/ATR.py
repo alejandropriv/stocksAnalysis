@@ -16,7 +16,7 @@ class ATR(Indicator):
         self.low_key = None
         self.high_key = None
         self.adj_close_key = None
-        self.atr_key = None
+        self.indicator_key = None
 
         if df is not None:
             self.set_input_data(df)
@@ -32,7 +32,7 @@ class ATR(Indicator):
         adj_close_key = Constants.get_adj_close_key()
         close_key = Constants.get_close_key()
 
-        self.atr_key = Constants.get_key("ATR")
+        self.indicator_key = Constants.get_key("ATR")
 
 
         if adj_close_key in df.columns is True:
@@ -86,13 +86,13 @@ class ATR(Indicator):
             df_data[h_pc_key] = abs(df_data[self.high_key] - df_data[self.adj_close_key].shift(1))
             df_data[l_pc_key] = abs(df_data[self.low_key] - df_data[self.adj_close_key].shift(1))
             df_data[tr_key] = df_data[[h_l_key, h_pc_key, l_pc_key]].max(axis=1, skipna=False)
-            df_data[self.atr_key] = df_data[tr_key].rolling(self.n).mean()
-            # df[atr_key] = df[tr_key].ewm(span=n,adjust=False,min_periods=n).mean()
+            df_data[self.indicator_key] = df_data[tr_key].rolling(self.n).mean()
+            # df[indicator_key] = df[tr_key].ewm(span=n,adjust=False,min_periods=n).mean()
             # df_data.dropna(inplace=True, axis=0)
 
             df_data.drop([h_l_key, h_pc_key, l_pc_key], axis=1, inplace=True)
 
-            df_result.append(df_data.loc[:, [self.atr_key, tr_key]])
+            df_result.append(df_data.loc[:, [self.indicator_key, tr_key]])
 
         self.df = pd.concat(df_result, axis=1, keys=self.tickers)
 
@@ -108,7 +108,7 @@ class ATR(Indicator):
     #     self.plot_indicator(
     #         plotter=plotter,
     #         period=period,
-    #         key=self.atr_key,
+    #         key=self.indicator_key,
     #         color=color,
     #         legend_position=None
     #     )

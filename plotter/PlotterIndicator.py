@@ -21,6 +21,7 @@ class PlotterIndicator:
 
         self.plotter = plotter
         self.main_color = color
+        self.tick_y_color = color
 
 
 

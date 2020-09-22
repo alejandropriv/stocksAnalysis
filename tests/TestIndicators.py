@@ -296,7 +296,7 @@ class TestIndicators(unittest.TestCase):
 
 
 
-    def test_macd_atr_2(self):
+    def test_macd_atr(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
         strategies = [AV_STRATEGY.STRATEGYX]
@@ -312,7 +312,7 @@ class TestIndicators(unittest.TestCase):
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
-                plotter = Plotter(period=500)
+                plotter = Plotter()
                 plotter.plot_stock(stock)
 
         print("Analysis has been run")
@@ -397,7 +397,7 @@ class TestIndicators(unittest.TestCase):
 
         plt.show()
 
-    def test_macd_atr(self):
+    def test_macd_atr_2(self):
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
         past_date_interval = 365

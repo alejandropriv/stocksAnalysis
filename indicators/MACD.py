@@ -20,7 +20,7 @@ class MACD(Indicator):
         self.adj_close_key = None
         self.close_key = None
 
-        self.macd_key = None
+        self.indicator_key = None
         self.signal_key = None
 
         if df is not None:
@@ -34,7 +34,7 @@ class MACD(Indicator):
         adj_close_key = Constants.get_adj_close_key()
         close_key = Constants.get_close_key()
 
-        self.macd_key = Constants.get_key("MACD")
+        self.indicator_key = Constants.get_key("MACD")
         self.signal_key = Constants.get_key("Signal")
 
 
@@ -99,11 +99,11 @@ class MACD(Indicator):
                     min_periods=self.slow_period
                 ).mean()
 
-            df_data[self.macd_key] = \
+            df_data[self.indicator_key] = \
                 df_data[fast_key] - df_data[slow_key]
 
             df_data[self.signal_key] = \
-                df_data[self.macd_key].ewm(
+                df_data[self.indicator_key].ewm(
                     span=self.signal_period,
                     min_periods=self.signal_period
                 ).mean()
@@ -113,7 +113,7 @@ class MACD(Indicator):
             df_data.dropna(inplace=True)
 
 
-            df_result.append(df_data.loc[:, [self.macd_key, self.signal_key]])
+            df_result.append(df_data.loc[:, [self.indicator_key, self.signal_key]])
 
         self.df = pd.concat(df_result, axis=1, keys=self.tickers)
 

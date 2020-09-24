@@ -360,7 +360,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIII.name][0].price_info
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYX.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 

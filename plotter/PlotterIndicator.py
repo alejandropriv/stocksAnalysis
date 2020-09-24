@@ -1,10 +1,5 @@
 import abc
 
-import matplotlib.pyplot as plt
-from pandas.plotting import register_matplotlib_converters
-
-
-from utilities.Constants import Constants
 
 
 class PlotterIndicator:
@@ -26,7 +21,7 @@ class PlotterIndicator:
 
 
 
-    def plot(self):
+    def plot(self, axis):
 
 
         main_key = None
@@ -40,6 +35,7 @@ class PlotterIndicator:
 
         self.plotter.plot_indicator(
             df=self.indicator.df[self.ticker][[main_key]],
+            axis=axis,
             color=self.main_color
         )
 

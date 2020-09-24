@@ -3,9 +3,10 @@ from enum import Enum
 
 class Constants:
 
-    main_indicator_axis = "collapsed_indicator_axis"
     adj_close = "Adj_Close"
     volume = "Volume"
+    prices_axis = "prices_axis"
+    volume_axis = "volume_axis"
 
     # intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
     class INTERVAL(Enum):

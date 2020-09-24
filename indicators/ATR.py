@@ -99,16 +99,3 @@ class ATR(Indicator):
 
         return self.df
 
-
-    # # expect Stock, volume, Indicator
-    # def plot(self, plotter=None, period=100, color="tab:red"):
-    #
-    #     super().plot(plotter=plotter, period=period, color=color)
-    #
-    #     self.plot_indicator(
-    #         plotter=plotter,
-    #         period=period,
-    #         key=self.indicator_key,
-    #         color=color,
-    #         legend_position=None
-    #     )

@@ -12,6 +12,7 @@ from utilities.Constants import Constants
 
 class Plotter:
 
+    legend_id = 0
     def get_legend_position(self):
         legend = [
             "upper left",
@@ -23,8 +24,8 @@ class Plotter:
             "lower right",
             "center right", "center", "right", "left"]
 
-        legend_name = legend[self.legend_id % 10]
-        self.legend_id += 1
+        legend_name = legend[Plotter.legend_id % len(legend)]
+        Plotter.legend_id += 1
         return legend_name
 
     current_color_indicator = 0
@@ -34,26 +35,36 @@ class Plotter:
                      "tab:blue",
                      "tab:purple"]
 
-        sel_color = av_colors[Plotter.current_color_indicator % (len(av_colors))]
+        sel_color = av_colors[Plotter.current_color_indicator % len(av_colors)]
         Plotter.current_color_indicator += 1
 
         return sel_color
 
-    def __init__(self):
+    def __init__(self,
+                 period=100
+                 ):
 
         self.fig = {}
         self.ax_main = None
         self.ax_indicators = None
-        self.main_ax_indicator = None
-        self.legend_id = 0
+        #self.main_ax_indicator = None
 
         register_matplotlib_converters()
+
+        self.period = period
 
         self.volume_color = None
         self.volume_alpha = None
         self.stock_color = None
         self.set_colors()
+
+        self.collapse_indicators = True
+        self.axes = None
+
         Plotter.current_color_indicator = 0
+        Plotter.legend_id = 0
+
+
 
     def set_plot_settings(self):
         pass
@@ -67,7 +78,7 @@ class Plotter:
         self.volume_color = volume_color
         self.volume_alpha = volume_alpha
 
-    def plot_stock(self, stock, tickers=None):
+    def plot_stock(self, stock, tickers=None, collapse_indicators=True):
 
         self.legend_id = 0
 
@@ -77,8 +88,10 @@ class Plotter:
 
         if tickers is None:
             tickers = stock.ticker
+
         elif isinstance(tickers, list) is True:
             tickers = tickers
+
         else:
             tickers = [tickers]
 
@@ -105,32 +118,56 @@ class Plotter:
                 self.ax_main = dict()
                 self.ax_indicators = dict()
 
-                if len(stock.indicators) > 0:
+                if len(stock.indicators) >= 0: #TODO: Remove this
 
-                    # Plot Line1 (Left Y Axis)
-                    self.fig[ticker], (
-                        self.ax_main[Constants.volume], self.ax_indicators[Constants.main_indicator_axis]) = \
-                        plt.subplots(
-                            2,
+                    subplots = 0
+                    if len(stock.indicators) > 0 and collapse_indicators is True:
+                        subplots = 2
+
+                    else:
+                        subplots = len(stock.indicators)
+
+                    heights_list = [1 for i in range(subplots-1)]
+                    heights_list.append(2)
+
+                    fig = plt.figure()
+                    self.axes = \
+                        fig.subplots(
+                            len(stock.indicators),
                             1,
-                            figsize=(16, 9),
-                            dpi=80,
-                            sharex=True,
-                            gridspec_kw={'height_ratios': [2, 1]}
+                            sharex='col',
+                            gridspec_kw={'height_ratios': heights_list}
                         )
-                else:
 
-                    # Plot Line1 (Left Y Axis)
-                    self.fig[ticker], (self.ax_main[Constants.volume]) = \
-                        plt.subplots(
-                            1,
-                            1,
-                            dpi=80,
-                            sharex=True)
+
+
+
+
+                #     # Plot Line1 (Left Y Axis)
+                #     self.fig[ticker], (
+                #         self.ax_main[Constants.volume], self.ax_indicators) = \
+                #         plt.subplots(
+                #             subplots,
+                #             1,
+                #             figsize=(16, 9),
+                #             dpi=80,
+                #             sharex=True,
+                #             gridspec_kw={'height_ratios': [2, 1]}
+                #         )
+                # else:
+                #
+                #     # Plot Line1 (Left Y Axis)
+                #     self.fig[ticker], (self.ax_main[Constants.volume]) = \
+                #         plt.subplots(
+                #             1,
+                #             1,
+                #             dpi=80,
+                #             sharex=True)
 
                 self.set_volume(
                     x_series=x_series[ticker],
-                    time_series_volume=time_series_volume[ticker]
+                    time_series_volume=time_series_volume[ticker],
+                    axis=self.axes[0]
                 )
 
                 self.set_stock_price(
@@ -146,17 +183,17 @@ class Plotter:
 
         print("plot")
 
-    def set_volume(self, x_series, time_series_volume):
+    def set_volume(self, x_series, time_series_volume, axis):
 
         self.legend_id = 0
 
-        self.ax_main[Constants.volume].set_ylim(0, time_series_volume.max() * 2)
-        self.ax_main[Constants.volume].tick_params(axis='y', rotation=0, labelcolor=self.volume_color)
+        axis.set_ylim(0, time_series_volume.max() * 2)
+        axis.tick_params(axis='y', rotation=0, labelcolor=self.volume_color)
 
-        self.ax_main[Constants.volume].spines["top"].set_alpha(0.0)
-        self.ax_main[Constants.volume].spines["bottom"].set_alpha(1)
-        self.ax_main[Constants.volume].spines["right"].set_alpha(0.0)
-        self.ax_main[Constants.volume].spines["left"].set_alpha(1)
+        axis.spines["top"].set_alpha(0.0)
+        axis.spines["bottom"].set_alpha(1)
+        axis.spines["right"].set_alpha(0.0)
+        axis.spines["left"].set_alpha(1)
 
         handles = self.ax_main[Constants.volume].bar(
             x_series,
@@ -167,8 +204,8 @@ class Plotter:
         )
 
         position = self.get_legend_position()
-        self.ax_main[Constants.volume].legend(loc=position)
-        self.ax_main[Constants.volume].set_xlim(
+        axis.legend(loc=position)
+        axis.set_xlim(
             time_series_volume.iloc[[0]].index,
             time_series_volume.iloc[[-1]].index
         )
@@ -245,27 +282,27 @@ class Plotter:
 
         #  Set the layout of the indicators plot
         #  Indicator plot layout
-        self.ax_indicators[Constants.main_indicator_axis].tick_params(axis='y', labelcolor=color, size=20)
-        self.ax_indicators[Constants.main_indicator_axis].grid(alpha=.4)
-        self.ax_indicators[Constants.main_indicator_axis].spines["top"].set_alpha(0.0)
-        self.ax_indicators[Constants.main_indicator_axis].spines["bottom"].set_alpha(1)
-        self.ax_indicators[Constants.main_indicator_axis].spines["right"].set_alpha(0.0)
-        self.ax_indicators[Constants.main_indicator_axis].spines["left"].set_alpha(1)
+        self.main_ax_indicator.tick_params(axis='y', labelcolor=color, size=20)
+        self.main_ax_indicator.grid(alpha=.4)
+        self.main_ax_indicator.spines["top"].set_alpha(0.0)
+        self.main_ax_indicator.spines["bottom"].set_alpha(1)
+        self.main_ax_indicator.spines["right"].set_alpha(0.0)
+        self.main_ax_indicator.spines["left"].set_alpha(1)
 
         indicator_key = df.columns[0]
 
         time_series_indicator = df.iloc[-self.period:, :][indicator_key]
 
-        self.ax_indicators[Constants.main_indicator_axis].plot(
+        self.main_ax_indicator.plot(
             time_series_indicator.index,
             time_series_indicator,
             color=color, label=indicator_key
         )
 
         position = self.get_legend_position()
-        self.ax_indicators[Constants.main_indicator_axis].legend(loc=position)
+        self.main_ax_indicator.legend(loc=position)
 
-        self.ax_indicators[Constants.main_indicator_axis].set_xlim(
+        self.main_ax_indicator.set_xlim(
             time_series_indicator.iloc[[0]].index,
             time_series_indicator.iloc[[-1]].index
         )

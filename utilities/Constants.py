@@ -3,7 +3,7 @@ from enum import Enum
 
 class Constants:
 
-    main_indicator_axis = "Template_indicator_axis"
+    main_indicator_axis = "collapsed_indicator_axis"
     adj_close = "Adj_Close"
     volume = "Volume"
 
@@ -24,7 +24,7 @@ class Constants:
         MONTH3 = '3mo'
 
 
-    #periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
+    # periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
     class PERIOD(Enum):
         DAY = '1d'
         DAY5 = '5d'

@@ -30,7 +30,7 @@ class PlotterATR(PlotterIndicator):
         self.plotter.ax_indicators[self.indicator.indicator_key].set_ylim(min_value - 1, max_value + 1)
 
         self.plotter.main_ax_indicator = self.plotter.ax_indicators[self.indicator.indicator_key]
-        self.plotter.main_ax_indicator.tick_params(axis='y', labelcolor=self.tick_y_color, size=20)
+        self.plotter.ax_indicators[self.indicator.indicator_key].tick_params(axis='y', labelcolor=self.tick_y_color, size=20)
 
         self.plotter.plot_indicator(
                 df=self.indicator.df[self.ticker][[self.indicator.indicator_key]],

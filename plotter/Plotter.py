@@ -125,15 +125,15 @@ class Plotter:
                     subplots = 2
 
                 else:
-                    subplots = len(stock.indicators)
+                    subplots = len(stock.indicators)+1
 
                 heights_list = [1 for i in range(subplots-1)]
                 heights_list.insert(0, 2)
 
-                self.fig = plt.figure(figsize=(8, 6), dpi=80,)
+                self.fig = plt.figure(figsize=(8, 6), dpi=80)
                 axes = \
                     self.fig.subplots(
-                        len(stock.indicators),
+                        subplots,
                         1,
                         sharex='col',
                         gridspec_kw={'height_ratios': heights_list}
@@ -164,7 +164,7 @@ class Plotter:
                         i += 1
 
                     else:
-                        indicator_axis = axes[i]
+                        indicator_axis = self.axes_indicators[i]
                         i += 1
 
 

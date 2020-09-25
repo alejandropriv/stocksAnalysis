@@ -18,7 +18,6 @@ class MACD(Indicator):
 
         # Set dataframe keys
         self.adj_close_key = None
-        self.close_key = None
 
         self.indicator_key = None
         self.signal_key = None

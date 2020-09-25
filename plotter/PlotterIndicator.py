@@ -2,7 +2,7 @@ import abc
 
 
 
-class PlotterIndicator:
+class PlotterIndicator(metaclass=abc.ABCMeta):
 
 
     def __init__(self, plotter, indicator, ticker, color="tab:green"):
@@ -24,20 +24,26 @@ class PlotterIndicator:
     def plot(self, axis):
 
 
-        main_key = None
-        available_indicators = ["MACD", "ATR"]
+        print("Plotting Indicator")
 
-        for key in self.indicator.df[self.ticker].columns:
-            if key in available_indicators:
-                main_key = key
-                break
+        max_value = self.indicator.df[self.ticker][self.indicator.indicator_key].max()
+        min_value = self.indicator.df[self.ticker][self.indicator.indicator_key].min()
 
+
+        axis.set_ylim(min_value - 1, max_value + 1)
+
+        axis.tick_params(axis='y', labelcolor=self.tick_y_color, size=20)
 
         self.plotter.plot_indicator(
-            df=self.indicator.df[self.ticker][[main_key]],
+            df=self.indicator.df[self.ticker][[self.indicator.indicator_key]],
             axis=axis,
             color=self.main_color
         )
+
+        legend_position = self.plotter.get_legend_position()
+        axis.legend(loc=legend_position)
+
+        return self.plotter
 
 
 

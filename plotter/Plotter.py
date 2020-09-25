@@ -21,7 +21,7 @@ class Plotter:
             "lower left",
             "lower center",
             "lower right",
-            "center right", "center", "right", "left"]
+            "center right", "center", "right"]
 
         legend_name = legend[Plotter.legend_id % len(legend)]
         Plotter.legend_id += 1

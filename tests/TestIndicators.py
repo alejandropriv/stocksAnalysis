@@ -265,7 +265,8 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type=DATASOURCETYPE.YFINANCE,
+                bulk=True
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -294,6 +295,44 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
+
+    def test_atr_bulk(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYIII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=500)
+                plotter.plot_stock(stock)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
 
 
     def test_macd_atr_collapse(self):

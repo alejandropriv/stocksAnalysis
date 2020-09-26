@@ -74,20 +74,24 @@ class BollingerBands(Indicator):
         for ticker in self.tickers:
             df_data = self.df[ticker].copy()
 
-            self.df.rename(columns={self.ticker: self.prices_key}, inplace=True)
+            df_data.rename(columns={self.ticker: self.prices_key}, inplace=True)
 
-            self.df[ma_key] = \
-                self.df[self.prices_key].rolling(self.n).mean()
-
-            # ddof=0 is required since we want to take the standard deviation of the population and not sample
-            self.df[self.bb_up_key] = \
-                self.df[ma_key] + 2 * self.df[self.prices_key].rolling(self.n).std(ddof=0)
+            df_data[ma_key] = \
+                df_data[self.prices_key].rolling(self.n).mean()
 
             # ddof=0 is required since we want to take the standard deviation of the population and not sample
-            self.df[self.bb_down_key] = \
-                self.df[ma_key] - 2 * self.df[self.prices_key].rolling(self.n).std(
+            df_data[self.bb_up_key] = \
+                df_data[ma_key] + 2 * df_data[self.prices_key].rolling(self.n).std(ddof=0)
+
+            # ddof=0 is required since we want to take the standard deviation of the population and not sample
+            df_data[self.bb_down_key] = \
+                df_data[ma_key] - 2 * df_data[self.prices_key].rolling(self.n).std(
                 ddof=0)
-            self.df[self.bb_width_key] = self.df[self.bb_up_key] - self.df[self.bb_down_key]
-            self.df.dropna(inplace=True)
+            df_data[self.bb_width_key] = df_data[self.bb_up_key] - df_data[self.bb_down_key]
+            df_data.dropna(inplace=True)
 
-        return self.df
+            df_result.append(df_data.loc[:, [self.indicator_key]])
+
+        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+
+        return df_data

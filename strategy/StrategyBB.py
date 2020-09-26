@@ -1,14 +1,13 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.MACD import MACD
-from indicators.ATR import ATR
+from indicators.BollingerBands import BollingerBands
 
 
 import datetime
 
 
 
-class StrategyIII(Strategy):
+class StrategyBB(Strategy):
 
 
     def __init__(self):
@@ -33,6 +32,6 @@ class StrategyIII(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        atr = ATR(n=14)
-        self.indicators = [atr]
+        bb = BollingerBands(n=20)
 
+        self.indicators = [bb]

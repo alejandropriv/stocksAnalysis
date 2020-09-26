@@ -17,7 +17,7 @@ class MACD(Indicator):
         self.signal_period = signal_period
 
         # Set dataframe keys
-        self.adj_close_key = None
+        self.prices_key = None
 
         self.indicator_key = None
         self.signal_key = None
@@ -33,15 +33,14 @@ class MACD(Indicator):
         adj_close_key = Constants.get_adj_close_key()
         close_key = Constants.get_close_key()
 
-        self.indicator_key = Constants.get_key("MACD")
-        self.signal_key = Constants.get_key("Signal")
-
-
         if adj_close_key in df.columns is True:
-            self.adj_close_key = adj_close_key
+            self.prices_key = adj_close_key
 
         else:
-            self.adj_close_key = close_key
+            self.prices_key = close_key
+
+        self.indicator_key = Constants.get_key("MACD")
+        self.signal_key = Constants.get_key("Signal")
 
 
         prices_temp = pd.DataFrame()
@@ -50,7 +49,7 @@ class MACD(Indicator):
         for ticker in self.tickers:
             df_list.append(
                 pd.concat(
-                    [df[ticker].loc[:, [self.adj_close_key]],prices_temp],
+                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
                     axis=1,
                     keys=[ticker]
                 )
@@ -87,13 +86,13 @@ class MACD(Indicator):
             df_data = self.df[ticker].copy()
 
             df_data[fast_key] = \
-                df_data[self.adj_close_key].ewm(
+                df_data[self.prices_key].ewm(
                     span=self.fast_period,
                     min_periods=self.fast_period
                 ).mean()
 
             df_data[slow_key] = \
-                df_data[self.adj_close_key].ewm(
+                df_data[self.prices_key].ewm(
                     span=self.slow_period,
                     min_periods=self.slow_period
                 ).mean()

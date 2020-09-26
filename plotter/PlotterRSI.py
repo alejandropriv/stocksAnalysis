@@ -6,17 +6,16 @@ from plotter.PlotterIndicator import PlotterIndicator
 from utilities.Constants import Constants
 
 
-class PlotterATR(PlotterIndicator):
+class PlotterRSI(PlotterIndicator):
 
     def __init__(self, plotter, indicator, ticker, color="tab:green"):
         super().__init__(plotter, indicator, ticker, color)
 
 
+
     def plot(self, axis):
         super().plot(axis)
         return self.plotter
-
-
 
 
 

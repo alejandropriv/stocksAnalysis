@@ -14,7 +14,7 @@ class RSI(Indicator):
         self.n = n
 
         # Set dataframe keys
-        self.adj_close_key = None
+        self.prices_key = None
         self.indicator_key = None
 
         if df is not None:
@@ -28,13 +28,14 @@ class RSI(Indicator):
         adj_close_key = Constants.get_adj_close_key()
         close_key = Constants.get_close_key()
 
-        self.indicator_key = Constants.get_key("RSI")
-
         if adj_close_key in df.columns is True:
-            self.adj_close_key = adj_close_key
+            self.prices_key = adj_close_key
 
         else:
-            self.adj_close_key = close_key
+            self.prices_key = close_key
+
+
+        self.indicator_key = Constants.get_key("RSI")
 
         prices_temp = pd.DataFrame()
 
@@ -42,7 +43,7 @@ class RSI(Indicator):
         for ticker in self.tickers:
             df_list.append(
                 pd.concat(
-                    [df[ticker].loc[:, [self.adj_close_key]],prices_temp],
+                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
                     axis=1,
                     keys=[ticker]
                 )
@@ -76,13 +77,14 @@ class RSI(Indicator):
 
             df_data = self.df[ticker].copy()
 
-            df_data[delta_key] = df_data[self.adj_close_key] - df_data[self.adj_close_key].shift(1)
+            df_data[delta_key] = df_data[self.prices_key] - df_data[self.prices_key].shift(1)
             df_data[gain_key] = np.where(df_data[delta_key] >= 0, df_data[delta_key], 0)
             df_data[loss_key] = np.where(df_data[delta_key] < 0, abs(df_data[delta_key]), 0)
             avg_gain = []
             avg_loss = []
             gain = df_data[gain_key].tolist()
             loss = df_data[loss_key].tolist()
+
             for i in range(len(df_data)):
                 if i < self.n:
                     avg_gain.append(np.NaN)

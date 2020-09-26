@@ -180,8 +180,6 @@ class Stock:
 
 
 
-
-
     def get_statistical_data(self, period):
         pass
         # if self.data_source.adj_close is None:

@@ -2,9 +2,13 @@ import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 from indicators.MACD import MACD
 from indicators.ATR import ATR
+from indicators.RSI import RSI
+
 
 from plotter.PlotterMACD import PlotterMACD
 from plotter.PlotterATR import PlotterATR
+from plotter.PlotterRSI import PlotterRSI
+
 
 from utilities.Constants import Constants
 
@@ -250,6 +254,14 @@ class Plotter:
             )
         if isinstance(indicator, ATR):
             plot_indicator = PlotterATR(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                color=color
+
+            )
+        if isinstance(indicator, RSI):
+            plot_indicator = PlotterRSI(
                 self,
                 indicator=indicator,
                 ticker=ticker,

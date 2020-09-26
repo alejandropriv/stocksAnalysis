@@ -1,13 +1,13 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.MACD import MACD
+from indicators.RSI import RSI
 
 
 import datetime
 
 
 
-class StrategyII(Strategy):
+class StrategyRSI(Strategy):
 
 
     def __init__(self):
@@ -32,5 +32,6 @@ class StrategyII(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        macd = MACD(fast_period=12, slow_period=26, signal_period=9)
-        self.indicators = [macd]
+        rsi = RSI(n=14)
+
+        self.indicators = [rsi]

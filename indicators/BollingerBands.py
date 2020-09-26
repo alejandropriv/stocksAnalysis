@@ -1,5 +1,7 @@
 from utilities.Constants import Constants
 from indicators.Indicator import Indicator
+import pandas as pd
+
 
 
 
@@ -12,7 +14,7 @@ class BollingerBands(Indicator):
         self.n = n
 
         # Set dataframe keys
-        self.adj_close_key = None
+        self.prices_key = None
         self.bb_up_key = None
         self.bb_down_key = None
         self.bb_width_key = None
@@ -24,56 +26,68 @@ class BollingerBands(Indicator):
     def set_input_data(self, df):
         super().set_input_data(df)
 
-        # Set dataframe keys
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.bb_up_key = Constants.get_key(self.ticker, "BB_up")
-        self.bb_down_key = Constants.get_key(self.ticker, "BB_down")
-        self.bb_width_key = Constants.get_key(self.ticker, "BB_width")
+        # Set dataFrame keys
+        adj_close_key = Constants.get_adj_close_key()
+        close_key = Constants.get_close_key()
 
-        self.df = df[[self.adj_close_key]].copy()
-        self.df.ticker = df.ticker
+        if adj_close_key in df.columns is True:
+            self.prices_key = adj_close_key
+
+        else:
+            self.prices_key = close_key
+
+        self.bb_up_key = Constants.get_key("BB_up")
+        self.bb_down_key = Constants.get_key("BB_down")
+        self.bb_width_key = Constants.get_key("BB_width")
+
+        self.df = df[[self.prices_key]].copy()
+
+        prices_temp = pd.DataFrame()
+
+        df_list = []
+        for ticker in self.tickers:
+            df_list.append(
+                pd.concat(
+                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
+                    axis=1,
+                    keys=[ticker]
+                )
+            )
+
+        df_indicator = pd.concat(
+            df_list,
+            axis=1
+        )
+
+        self.df = df_indicator.copy()
 
 
     def calculate(self):
         """function to calculate Bollinger Bands"""
 
         # Set temp dataframe keys
-        ma_key = Constants.get_key(self.ticker, "MA")
+        ma_key = Constants.get_key("MA")
 
+        df_data = pd.DataFrame()
+        df_result = []
 
-        self.df.rename(columns={self.ticker: self.adj_close_key}, inplace=True)
+        for ticker in self.tickers:
+            df_data = self.df[ticker].copy()
 
-        self.df[ma_key] = \
-            self.df[self.adj_close_key].rolling(self.n).mean()
+            self.df.rename(columns={self.ticker: self.prices_key}, inplace=True)
 
-        # ddof=0 is required since we want to take the standard deviation of the population and not sample
-        self.df[self.bb_up_key] = \
-            self.df[ma_key] + 2 * self.df[self.adj_close_key].rolling(self.n).std(ddof=0)
+            self.df[ma_key] = \
+                self.df[self.prices_key].rolling(self.n).mean()
 
-        # ddof=0 is required since we want to take the standard deviation of the population and not sample
-        self.df[self.bb_down_key] = \
-            self.df[ma_key] - 2 * self.df[self.adj_close_key].rolling(self.n).std(
-            ddof=0)
-        self.df[self.bb_width_key] = self.df[self.bb_up_key] - self.df[self.bb_down_key]
-        self.df.dropna(inplace=True)
+            # ddof=0 is required since we want to take the standard deviation of the population and not sample
+            self.df[self.bb_up_key] = \
+                self.df[ma_key] + 2 * self.df[self.prices_key].rolling(self.n).std(ddof=0)
+
+            # ddof=0 is required since we want to take the standard deviation of the population and not sample
+            self.df[self.bb_down_key] = \
+                self.df[ma_key] - 2 * self.df[self.prices_key].rolling(self.n).std(
+                ddof=0)
+            self.df[self.bb_width_key] = self.df[self.bb_up_key] - self.df[self.bb_down_key]
+            self.df.dropna(inplace=True)
 
         return self.df
-
-
-    # expect Stock, volume, Indicator
-    def plot(self,  plotter=None, period=100, color="tab:red"):
-        super().plot(plotter=plotter, period=period, color=color)
-
-        x = self.df.iloc[:, [0]]
-        index = x.iloc[-period:, :].index
-
-        # put period for the data also
-        df = self.df.iloc[-period:, :]
-
-        if plotter.ax_main is None:
-            print("Error: Main Stock has not been plotted, "
-                  "plot a stock and then plot the associated bollinger bands")
-            raise IOError
-
-        plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_down_key], color=color)
-        plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_up_key], color=color)

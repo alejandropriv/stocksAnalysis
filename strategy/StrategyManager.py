@@ -4,18 +4,26 @@ from enum import Enum
 
 from stocks_model.StocksFactory import StocksFactory
 from strategy.StrategyI import StrategyI
-from strategy.StrategyII import StrategyII
-from strategy.StrategyIII import StrategyIII
+from strategy.StrategyMACD import StrategyMACD
+from strategy.StrategyATR import StrategyATR
+from strategy.StrategyMACDRSI import StrategyMACDRSI
+from strategy.StrategyRSI import StrategyRSI
+from strategy.StrategyBB import StrategyBB
+
 from strategy.StrategyX import StrategyX
 
 
 
 
 class AV_STRATEGY(Enum):
-    STRATEGYI = 1
-    STRATEGYII = 2
-    STRATEGYIII = 3
+    STRATEGYBB = 1
+    STRATEGYMACD = 2
+    STRATEGYATR = 3
+    STRATEGYRSI = 4
+    STRATEGYMACDRSI = 5
     STRATEGYX = 10
+    STRATEGYI = 11 # Show only the Stock plot
+
 
 
 
@@ -43,12 +51,20 @@ class StrategyManager:
     def select_strategy(strategy_type):
         if strategy_type is AV_STRATEGY.STRATEGYI:
             return StrategyI()
-        elif strategy_type is AV_STRATEGY.STRATEGYII:
-            return StrategyII()
-        elif strategy_type is AV_STRATEGY.STRATEGYIII:
-            return StrategyIII()
+        elif strategy_type is AV_STRATEGY.STRATEGYMACD:
+            return StrategyMACD()
+        elif strategy_type is AV_STRATEGY.STRATEGYATR:
+            return StrategyATR()
+        elif strategy_type is AV_STRATEGY.STRATEGYMACDRSI:
+            return StrategyMACDRSI()
+        elif strategy_type is AV_STRATEGY.STRATEGYRSI:
+            return StrategyRSI()
         elif strategy_type is AV_STRATEGY.STRATEGYX:
             return StrategyX()
+        elif strategy_type is AV_STRATEGY.STRATEGYBB:
+            return StrategyBB()
+
+
         else:
             raise ValueError
 

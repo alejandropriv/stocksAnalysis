@@ -15,7 +15,7 @@ class ATR(Indicator):
         # Set dataframe keys
         self.low_key = None
         self.high_key = None
-        self.adj_close_key = None
+        self.prices_key = None
         self.indicator_key = None
 
         if df is not None:
@@ -28,18 +28,17 @@ class ATR(Indicator):
         # Set dataframe keys
         self.low_key = Constants.get_low_key()
         self.high_key = Constants.get_high_key()
-        self.adj_close_key = Constants.get_adj_close_key()
+
         adj_close_key = Constants.get_adj_close_key()
         close_key = Constants.get_close_key()
 
-        self.indicator_key = Constants.get_key("ATR")
-
-
         if adj_close_key in df.columns is True:
-            self.adj_close_key = adj_close_key
+            self.prices_key = adj_close_key
 
         else:
-            self.adj_close_key = close_key
+            self.prices_key = close_key
+
+        self.indicator_key = Constants.get_key("ATR")
 
 
         prices_temp = pd.DataFrame()
@@ -49,7 +48,7 @@ class ATR(Indicator):
 
             df_list.append(
                 pd.concat(
-                    [df[ticker].loc[:, [self.low_key, self.high_key, self.adj_close_key]], prices_temp],
+                    [df[ticker].loc[:, [self.low_key, self.high_key, self.prices_key]], prices_temp],
                     axis=1,
                     keys=[ticker]
                 )
@@ -81,10 +80,11 @@ class ATR(Indicator):
         df_result = []
 
         for ticker in self.tickers:
+
             df_data = self.df[ticker].copy()
             df_data[h_l_key] = abs(df_data[self.high_key] - df_data[self.low_key])
-            df_data[h_pc_key] = abs(df_data[self.high_key] - df_data[self.adj_close_key].shift(1))
-            df_data[l_pc_key] = abs(df_data[self.low_key] - df_data[self.adj_close_key].shift(1))
+            df_data[h_pc_key] = abs(df_data[self.high_key] - df_data[self.prices_key].shift(1))
+            df_data[l_pc_key] = abs(df_data[self.low_key] - df_data[self.prices_key].shift(1))
             df_data[tr_key] = df_data[[h_l_key, h_pc_key, l_pc_key]].max(axis=1, skipna=False)
             df_data[self.indicator_key] = df_data[tr_key].rolling(self.n).mean()
             # df[indicator_key] = df[tr_key].ewm(span=n,adjust=False,min_periods=n).mean()

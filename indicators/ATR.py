@@ -76,7 +76,6 @@ class ATR(Indicator):
         l_pc_key = Constants.get_key("L-PC")
         tr_key = Constants.get_key("TR")
 
-        df_data = pd.DataFrame()
         df_result = []
 
         for ticker in self.tickers:

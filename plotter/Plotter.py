@@ -1,14 +1,19 @@
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
+
 from indicators.MACD import MACD
 from indicators.ATR import ATR
 from indicators.RSI import RSI
+from indicators.ADX import ADX
+
 from indicators.BollingerBands import BollingerBands
 
 
 from plotter.PlotterMACD import PlotterMACD
 from plotter.PlotterATR import PlotterATR
 from plotter.PlotterRSI import PlotterRSI
+from plotter.PlotterADX import PlotterADX
+
 from plotter.PlotterBollingerBands import PlotterBollingerBands
 
 
@@ -247,33 +252,6 @@ class Plotter:
         if color is None:
             color = self.get_next_indicator_color()
 
-        plot_indicator = None
-        if isinstance(indicator, MACD):
-            plot_indicator = PlotterMACD(
-                self,
-                indicator=indicator,
-                ticker=ticker,
-                period=self.period,
-                color=color
-            )
-        if isinstance(indicator, ATR):
-            plot_indicator = PlotterATR(
-                self,
-                indicator=indicator,
-                ticker=ticker,
-                period=self.period,
-                color=color
-
-            )
-        if isinstance(indicator, RSI):
-            plot_indicator = PlotterRSI(
-                self,
-                indicator=indicator,
-                ticker=ticker,
-                period=self.period,
-                color=color
-
-            )
 
         if isinstance(indicator, BollingerBands):
             plot_indicator = PlotterBollingerBands(
@@ -284,10 +262,50 @@ class Plotter:
                 color=color
 
             )
+        elif isinstance(indicator, MACD):
+            plot_indicator = PlotterMACD(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
+            )
+        elif isinstance(indicator, ATR):
+            plot_indicator = PlotterATR(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
 
-        if plot_indicator is not None or self.fig is None or axis is None:
+            )
+        elif isinstance(indicator, RSI):
+            plot_indicator = PlotterRSI(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
+
+            )
+        elif isinstance(indicator, ADX):
+            plot_indicator = PlotterADX(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
+
+            )
+        else:
+            print("Plotter Indicator Not found")
+            raise ValueError
+
+
+
+        if self.fig is not None and axis is not None:
             plot_indicator.plot(axis)
 
         else:
-            print("Plotter for indicator has not been defined, Verify plot configuration")
+            print("Plot has not been defined correctly, Verify plot configuration")
             raise ValueError

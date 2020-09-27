@@ -2,6 +2,8 @@ from utilities.Constants import Constants
 import numpy as np
 from indicators.ATR import ATR
 from indicators.Indicator import Indicator
+import pandas as pd
+
 
 
 
@@ -17,8 +19,8 @@ class ADX(Indicator):
         # Set dataframe keys
         self.low_key = None
         self.high_key = None
-        self.adj_close_key = None
-        self.adx_key = None
+        self.prices_key = None
+        self.indicator_key = None
 
         if df is not None:
             self.set_input_data(df)
@@ -28,116 +30,137 @@ class ADX(Indicator):
         super().set_input_data(df)
 
         # Set dataFrame keys
-        self.low_key = Constants.get_low_key(self.ticker)
-        self.high_key = Constants.get_high_key(self.ticker)
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.adx_key = Constants.get_key(self.ticker, "ADX")
+        adj_close_key = Constants.get_adj_close_key()
+        close_key = Constants.get_close_key()
 
-        self.df = df[[self.low_key]].copy()
-        self.df[self.high_key] = df[[self.high_key]]
-        self.df[self.adj_close_key] = df[[self.adj_close_key]]
-        self.df.ticker = df.ticker
+        if adj_close_key in df.columns is True:
+            self.prices_key = adj_close_key
+
+        else:
+            self.prices_key = close_key
+
+        self.low_key = Constants.get_low_key()
+        self.high_key = Constants.get_high_key()
+        self.indicator_key = Constants.get_key("ADX")
+
+        prices_temp = pd.DataFrame()
+
+        df_list = []
+        for ticker in self.tickers:
+            df_list.append(
+                pd.concat(
+                    [df[ticker].loc[:, [self.low_key, self.high_key, self.prices_key]], prices_temp],
+                    axis=1,
+                    keys=[ticker]
+                )
+            )
+
+        df_indicator = pd.concat(
+            df_list,
+            axis=1
+        )
+
+        self.df = df_indicator.copy()
+
 
 
     def calculate(self):
         """"function to calculate ADX"""
 
         if self.df is None:
-            print("DF has not been set, there is no data to calculate the indicator")
-            return
+            print("DF has not been set, there is no data to calculate the indicator, "
+                  "please verify the indicator constructor")
+            raise ValueError
 
 
-        tr_key = Constants.get_key(self.ticker, "TR")
-        trn_key = Constants.get_key(self.ticker, "TRn")
+        tr_key = Constants.get_key("TR")
+        trn_key = Constants.get_key("TRn")
 
-        dm_plus_key = Constants.get_key(self.ticker, "DMplus")
-        dm_plus_n_key = Constants.get_key(self.ticker, "DMplusN")
+        dm_plus_key = Constants.get_key("DMplus")
+        dm_plus_n_key = Constants.get_key("DMplusN")
 
-        dm_minus_key = Constants.get_key(self.ticker, "DMminus")
-        dm_minus_n_key = Constants.get_key(self.ticker, "DMminusN")
-        di_plus_n_key = Constants.get_key(self.ticker, "DIplusN")
-        di_minus_n_key = Constants.get_key(self.ticker, "DIminusN")
-        di_diff_key = Constants.get_key(self.ticker, "DIdiff")
-        di_sum_key = Constants.get_key(self.ticker, "DIsum")
-        dx_key = Constants.get_key(self.ticker, "DX")
+        dm_minus_key = Constants.get_key("DMminus")
+        dm_minus_n_key = Constants.get_key("DMminusN")
+        di_plus_n_key = Constants.get_key("DIplusN")
+        di_minus_n_key = Constants.get_key("DIminusN")
+        di_diff_key = Constants.get_key("DIdiff")
+        di_sum_key = Constants.get_key("DIsum")
+        dx_key = Constants.get_key("DX")
 
-        atr_ind = ATR(df=self.df, n=14)
+        df_result = []
 
-        # the period parameter of ATR function does not matter because period does not influence TR calculation
-        self.df[tr_key] = atr_ind.calculate()[[tr_key]]
+        for ticker in self.tickers:
 
-        self.df[dm_plus_key] = \
-            np.where(
-                (self.df[self.high_key] - self.df[self.high_key].shift(1)) >
-                (self.df[self.low_key].shift(1) - self.df[self.low_key]),
-                self.df[self.high_key] - self.df[self.high_key].shift(1),
-                0)
+            df_data_atr = self.df[[ticker]].copy()
+            atr_ind = ATR(df=df_data_atr, n=14)
 
-        self.df[dm_plus_key] = \
-            np.where(
-                self.df[dm_plus_key] < 0,
-                0,
-                self.df[dm_plus_key])
+            df_data = self.df[ticker].copy()
+            # the period parameter of ATR function does not matter because period does not influence TR calculation
+            df_data[tr_key] = atr_ind.calculate()[ticker][[tr_key]]
 
-        self.df[dm_minus_key] = \
-            np.where((self.df[self.low_key].shift(1) - self.df[self.low_key]) >
-                     (self.df[self.high_key] - self.df[self.high_key].shift(1)),
-                     self.df[self.low_key].shift(1) - self.df[self.low_key],
-                     0)
+            df_data[dm_plus_key] = \
+                np.where(
+                    (df_data[self.high_key] - df_data[self.high_key].shift(1)) >
+                    (df_data[self.low_key].shift(1) - df_data[self.low_key]),
+                    df_data[self.high_key] - df_data[self.high_key].shift(1),
+                    0)
 
-        self.df[dm_minus_key] = np.where(self.df[dm_minus_key] < 0, 0, self.df[dm_minus_key])
+            df_data[dm_plus_key] = \
+                np.where(
+                    df_data[dm_plus_key] < 0,
+                    0,
+                    df_data[dm_plus_key])
 
-        TRn = []
-        DMplusN = []
-        DMminusN = []
-        TR = self.df[tr_key].tolist()
-        DMplus = self.df[dm_plus_key].tolist()
-        DMminus = self.df[dm_minus_key].tolist()
+            df_data[dm_minus_key] = \
+                np.where((df_data[self.low_key].shift(1) - df_data[self.low_key]) >
+                         (df_data[self.high_key] - df_data[self.high_key].shift(1)),
+                         df_data[self.low_key].shift(1) - df_data[self.low_key],
+                         0)
 
-        for i in range(len(self.df)):
-            if i < self.n:
-                TRn.append(np.NaN)
-                DMplusN.append(np.NaN)
-                DMminusN.append(np.NaN)
-            elif i == self.n:
-                TRn.append(self.df[tr_key].rolling(self.n).sum().tolist()[self.n])
-                DMplusN.append(self.df[dm_plus_key].rolling(self.n).sum().tolist()[self.n])
-                DMminusN.append(self.df[dm_minus_key].rolling(self.n).sum().tolist()[self.n])
-            elif i > self.n:
-                TRn.append(TRn[i - 1] - (TRn[i - 1] / 14) + TR[i])
-                DMplusN.append(DMplusN[i - 1] - (DMplusN[i - 1] / 14) + DMplus[i])
-                DMminusN.append(DMminusN[i - 1] - (DMminusN[i - 1] / 14) + DMminus[i])
+            df_data[dm_minus_key] = np.where(df_data[dm_minus_key] < 0, 0, df_data[dm_minus_key])
 
-        self.df[trn_key] = np.array(TRn)
-        self.df[dm_plus_n_key] = np.array(DMplusN)
-        self.df[dm_minus_n_key] = np.array(DMminusN)
-        self.df[di_plus_n_key] = 100 * (self.df[dm_plus_n_key] / self.df[trn_key])
-        self.df[di_minus_n_key] = 100 * (self.df[dm_minus_n_key] / self.df[trn_key])
-        self.df[di_diff_key] = abs(self.df[di_plus_n_key] - self.df[di_minus_n_key])
-        self.df[di_sum_key] = self.df[di_plus_n_key] + self.df[di_minus_n_key]
-        self.df[dx_key] = 100 * (self.df[di_diff_key] / self.df[di_sum_key])
-        ADX = []
-        DX = self.df[dx_key].tolist()
-        for j in range(len(self.df)):
-            if j < 2 * self.n - 1:
-                ADX.append(np.NaN)
-            elif j == 2 * self.n - 1:
-                ADX.append(self.df[dx_key][j - self.n + 1:j + 1].mean())
-            elif j > 2 * self.n - 1:
-                ADX.append(((self.n - 1) * ADX[j - 1] + DX[j]) / self.n)
-        self.df[self.adx_key] = np.array(ADX)
-        return self.df[self.adx_key]
+            TRn = []
+            DMplusN = []
+            DMminusN = []
+            TR = df_data[tr_key].tolist()
+            DMplus = df_data[dm_plus_key].tolist()
+            DMminus = df_data[dm_minus_key].tolist()
 
+            for i in range(len(df_data)):
+                if i < self.n:
+                    TRn.append(np.NaN)
+                    DMplusN.append(np.NaN)
+                    DMminusN.append(np.NaN)
+                elif i == self.n:
+                    TRn.append(df_data[tr_key].rolling(self.n).sum().tolist()[self.n])
+                    DMplusN.append(df_data[dm_plus_key].rolling(self.n).sum().tolist()[self.n])
+                    DMminusN.append(df_data[dm_minus_key].rolling(self.n).sum().tolist()[self.n])
+                elif i > self.n:
+                    TRn.append(TRn[i - 1] - (TRn[i - 1] / 14) + TR[i])
+                    DMplusN.append(DMplusN[i - 1] - (DMplusN[i - 1] / 14) + DMplus[i])
+                    DMminusN.append(DMminusN[i - 1] - (DMminusN[i - 1] / 14) + DMminus[i])
 
-    # expect Stock, volume, Indicator
-    def plot(self, plotter=None, period=100, color="tab:brown"):
+            df_data[trn_key] = np.array(TRn)
+            df_data[dm_plus_n_key] = np.array(DMplusN)
+            df_data[dm_minus_n_key] = np.array(DMminusN)
+            df_data[di_plus_n_key] = 100 * (df_data[dm_plus_n_key] / df_data[trn_key])
+            df_data[di_minus_n_key] = 100 * (df_data[dm_minus_n_key] / df_data[trn_key])
+            df_data[di_diff_key] = abs(df_data[di_plus_n_key] - df_data[di_minus_n_key])
+            df_data[di_sum_key] = df_data[di_plus_n_key] + df_data[di_minus_n_key]
+            df_data[dx_key] = 100 * (df_data[di_diff_key] / df_data[di_sum_key])
+            ADX = []
+            DX = df_data[dx_key].tolist()
+            for j in range(len(df_data)):
+                if j < 2 * self.n - 1:
+                    ADX.append(np.NaN)
+                elif j == 2 * self.n - 1:
+                    ADX.append(df_data[dx_key][j - self.n + 1:j + 1].mean())
+                elif j > 2 * self.n - 1:
+                    ADX.append(((self.n - 1) * ADX[j - 1] + DX[j]) / self.n)
+            df_data[self.indicator_key] = np.array(ADX)
 
-        super().plot(plotter=plotter, period=period, color=color)
+            df_result.append(df_data.loc[:, [self.indicator_key]])
 
-        self.plot_indicator(
-            plotter=plotter,
-            period=period,
-            key=self.adx_key,
-            color=color,
-            legend_position=None
-        )
+        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+
+        return self.df

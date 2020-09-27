@@ -9,6 +9,7 @@ from strategy.StrategyATR import StrategyATR
 from strategy.StrategyMACDRSI import StrategyMACDRSI
 from strategy.StrategyRSI import StrategyRSI
 from strategy.StrategyBB import StrategyBB
+from strategy.StrategyADX import StrategyADX
 
 from strategy.StrategyX import StrategyX
 
@@ -21,6 +22,7 @@ class AV_STRATEGY(Enum):
     STRATEGYATR = 3
     STRATEGYRSI = 4
     STRATEGYMACDRSI = 5
+    STRATEGYADX = 6
     STRATEGYX = 10
     STRATEGYI = 11 # Show only the Stock plot
 
@@ -49,6 +51,9 @@ class StrategyManager:
 
     @staticmethod
     def select_strategy(strategy_type):
+
+        if strategy_type is AV_STRATEGY.STRATEGYBB:
+            return StrategyBB()
         if strategy_type is AV_STRATEGY.STRATEGYI:
             return StrategyI()
         elif strategy_type is AV_STRATEGY.STRATEGYMACD:
@@ -61,8 +66,9 @@ class StrategyManager:
             return StrategyRSI()
         elif strategy_type is AV_STRATEGY.STRATEGYX:
             return StrategyX()
-        elif strategy_type is AV_STRATEGY.STRATEGYBB:
-            return StrategyBB()
+        elif strategy_type is AV_STRATEGY.STRATEGYADX:
+            return StrategyADX()
+
 
 
         else:

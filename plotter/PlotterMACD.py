@@ -12,19 +12,18 @@ class PlotterMACD(PlotterIndicator):
 
         print("Plotting MACD")
 
-        self.plot_indicator(
-            axis=axis
-        )
+
 
         self.plot_indicator(
             axis=axis,
-            series=self.indicator.df[self.ticker][[self.indicator.signal_key]],
+            df=self.indicator.df[self.ticker][[self.indicator.signal_key]],
             label=self.indicator.signal_key,
             color=self.signal_color
         )
 
-        legend_position = self.plotter.get_legend_position()
-        axis.legend(loc=legend_position)
+        self.plot_indicator(
+            axis=axis
+        )
 
         return self.plotter
 

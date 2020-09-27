@@ -79,7 +79,6 @@ class MACD(Indicator):
         fast_key = Constants.get_key("MA_Fast")
         slow_key = Constants.get_key("MA_Slow")
 
-        df_data = pd.DataFrame()
         df_result = []
 
         for ticker in self.tickers:

@@ -83,8 +83,7 @@ class BollingerBands(Indicator):
 
             # ddof=0 is required since we want to take the standard deviation of the population and not sample
             df_data[self.bb_down_key] = \
-                df_data[ma_key] - 2 * df_data[self.prices_key].rolling(self.n).std(
-                ddof=0)
+                df_data[ma_key] - 2 * df_data[self.prices_key].rolling(self.n).std(ddof=0)
             df_data[self.bb_width_key] = df_data[self.bb_up_key] - df_data[self.bb_down_key]
             df_data.dropna(inplace=True)
 

@@ -20,27 +20,28 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
 
 
 
-    def plot_indicator(self, axis, series=None, label=None, color=None):
+    def plot_indicator(self, axis, df=None, label=None, color=None):
 
         print("Plotting Indicator")
 
         if color is None:
             color = self.main_color
 
-        if series is None:
-            series = \
-                self.indicator.df[self.ticker][[self.indicator.indicator_key]].iloc[-self.period:, :][
-                    self.indicator.indicator_key]
+        if df is None:
+            df = \
+                self.indicator.df[self.ticker][[self.indicator.indicator_key]].iloc[-self.period:, :]
         else:
-            series = series.iloc[-self.period:, :]
+            df = df.iloc[-self.period:, :]
 
         if label is None:
             label = self.indicator.indicator_key
 
 
 
-        limit_y = self.calculate_limit_y()
-        axis.set_ylim(limit_y[0], limit_y[1])
+        limit_y = self.calculate_limit_y(df)
+        ymin = int(limit_y[0])-1
+        ymax = int(limit_y[1])+1
+        axis.set_ylim(ymin=ymin, ymax=ymax)
 
 
         #  Set the layout of the indicators plot
@@ -53,8 +54,8 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
         axis.spines["left"].set_alpha(1)
 
         axis.plot(
-            series.index,
-            series,
+            df.index,
+            df,
             color=color,
             label=label
         )
@@ -64,8 +65,8 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
         axis.legend(loc=legend_position)
 
         axis.set_xlim(
-            series.iloc[[0]].index,
-            series.iloc[[-1]].index
+            df.iloc[[0]].index,
+            df.iloc[[-1]].index
         )
 
         return self.plotter
@@ -76,10 +77,10 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
 
 
 
-    def calculate_limit_y(self):
+    def calculate_limit_y(self, series):
 
-        max_value = self.indicator.df[self.ticker][self.indicator.indicator_key].max()
-        min_value = self.indicator.df[self.ticker][self.indicator.indicator_key].min()
+        max_value = series.max()
+        min_value = series.min()
 
         return [min_value, max_value]
 

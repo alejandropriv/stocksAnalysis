@@ -14,22 +14,42 @@ class PlotterBollingerBands(PlotterIndicator):
 
 
     def plot(self, axis):
-        super().plot(plotter=plotter, period=period, color=color)
 
-        x = self.df.iloc[:, [0]]
-        index = x.iloc[-period:, :].index
+        print("Plotting Bollinger Bands")
 
-        # put period for the data also
-        df = self.df.iloc[-period:, :]
+        self.plot_indicator(
+            axis=self.plotter.axes_main[Constants.prices_axis],
+            df=self.indicator.df[self.ticker][[self.indicator.bb_down_key]],
+            label="BB",
+            color="tab:red"
+        )
 
-        if plotter.ax_main is None:
-            print("Error: Main Stock has not been plotted, "
-                  "plot a stock and then plot the associated bollinger bands")
-            raise IOError
+        self.plot_indicator(
+            axis=self.plotter.axes_main[Constants.prices_axis],
+            df=self.indicator.df[self.ticker][[self.indicator.bb_up_key]],
+            label="BB",
+            color="tab:red"
+        )
 
-        plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_down_key], color=color)
-        plotter.ax_main[Constants.adj_close].plot(index, df[self.bb_up_key], color=color)
+    def plot_indicator(self, axis, df=None, label=None, color=None):
 
+        print("Plotting Indicator")
+
+        if color is None:
+            color = self.main_color
+
+        df = df.iloc[-self.period:, :]
+
+
+
+        axis.plot(
+            df.index,
+            df,
+            color=color
+        )
+
+
+        return self.plotter
 
 
 

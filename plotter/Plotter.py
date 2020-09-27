@@ -3,11 +3,13 @@ from pandas.plotting import register_matplotlib_converters
 from indicators.MACD import MACD
 from indicators.ATR import ATR
 from indicators.RSI import RSI
+from indicators.BollingerBands import BollingerBands
 
 
 from plotter.PlotterMACD import PlotterMACD
 from plotter.PlotterATR import PlotterATR
 from plotter.PlotterRSI import PlotterRSI
+from plotter.PlotterBollingerBands import PlotterBollingerBands
 
 
 from utilities.Constants import Constants
@@ -16,7 +18,8 @@ from utilities.Constants import Constants
 class Plotter:
 
     legend_id = 0
-    def get_legend_position(self):
+    @staticmethod
+    def get_legend_position():
         legend = [
             "upper left",
             "upper center",
@@ -31,9 +34,11 @@ class Plotter:
         Plotter.legend_id += 1
         return legend_name
 
+
     current_color_indicator = 0
 
-    def get_next_indicator_color(self):
+    @staticmethod
+    def get_next_indicator_color():
         av_colors = ["tab:green",
                      "tab:blue",
                      "tab:purple"]
@@ -85,7 +90,7 @@ class Plotter:
 
     def plot_stock(self, stock, tickers=None, collapse_indicators=True):
 
-        self.legend_id = 0
+        Plotter.legend_id = 0
 
         if stock is None:
             print("There is no ticker Information, nothing to be plot")
@@ -180,8 +185,7 @@ class Plotter:
 
     def set_volume(self, ticker):
 
-        self.legend_id = 0
-
+        Plotter.legend_id = 0
 
         self.axes_main[Constants.volume_axis].set_ylim(0, self.volume_series[ticker].max() * 2)
         self.axes_main[Constants.volume_axis].tick_params(axis='y', rotation=0, labelcolor=self.volume_color)
@@ -269,6 +273,15 @@ class Plotter:
 
             )
 
+        if isinstance(indicator, BollingerBands):
+            plot_indicator = PlotterBollingerBands(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                color=color
+
+            )
+
         if plot_indicator is not None:
             plot_indicator.plot(axis)
 
@@ -286,6 +299,10 @@ class Plotter:
             print("Please call first method plot_main")
             return
 
+        indicator_key = df.columns[0]
+        time_series_indicator = df.iloc[-self.period:, :][indicator_key]
+
+
         #  Set the layout of the indicators plot
         #  Indicator plot layout
         axis.tick_params(axis='y', labelcolor=color, size=20)
@@ -295,9 +312,6 @@ class Plotter:
         axis.spines["right"].set_alpha(0.0)
         axis.spines["left"].set_alpha(1)
 
-        indicator_key = df.columns[0]
-
-        time_series_indicator = df.iloc[-self.period:, :][indicator_key]
 
         axis.plot(
             time_series_indicator.index,
@@ -312,3 +326,7 @@ class Plotter:
             time_series_indicator.iloc[[0]].index,
             time_series_indicator.iloc[[-1]].index
         )
+
+
+
+

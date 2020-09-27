@@ -1,7 +1,5 @@
 import abc
 
-
-
 class PlotterIndicator(metaclass=abc.ABCMeta):
 
 
@@ -26,11 +24,9 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
 
         print("Plotting Indicator")
 
-        max_value = self.indicator.df[self.ticker][self.indicator.indicator_key].max()
-        min_value = self.indicator.df[self.ticker][self.indicator.indicator_key].min()
 
-
-        axis.set_ylim(min_value - 1, max_value + 1)
+        limit_y = self.calculate_limit_y()
+        axis.set_ylim(limit_y[0], limit_y[1])
 
         axis.tick_params(axis='y', labelcolor=self.tick_y_color, size=20)
 
@@ -46,6 +42,11 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
         return self.plotter
 
 
+    def calculate_limit_y(self):
 
+        max_value = self.indicator.df[self.ticker][self.indicator.indicator_key].max()
+        min_value = self.indicator.df[self.ticker][self.indicator.indicator_key].min()
+
+        return [min_value, max_value]
 
 

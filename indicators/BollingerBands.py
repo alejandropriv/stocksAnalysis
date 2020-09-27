@@ -40,8 +40,6 @@ class BollingerBands(Indicator):
         self.bb_down_key = Constants.get_key("BB_down")
         self.bb_width_key = Constants.get_key("BB_width")
 
-        self.df = df[[self.prices_key]].copy()
-
         prices_temp = pd.DataFrame()
 
         df_list = []
@@ -74,7 +72,7 @@ class BollingerBands(Indicator):
         for ticker in self.tickers:
             df_data = self.df[ticker].copy()
 
-            df_data.rename(columns={self.ticker: self.prices_key}, inplace=True)
+            #df_data.rename(columns={self.ticker: self.prices_key}, inplace=True) #TODO: what happens with this
 
             df_data[ma_key] = \
                 df_data[self.prices_key].rolling(self.n).mean()
@@ -90,7 +88,7 @@ class BollingerBands(Indicator):
             df_data[self.bb_width_key] = df_data[self.bb_up_key] - df_data[self.bb_down_key]
             df_data.dropna(inplace=True)
 
-            df_result.append(df_data.loc[:, [self.indicator_key]])
+            df_result.append(df_data.loc[:, [self.bb_up_key, self.bb_down_key]])
 
         self.df = pd.concat(df_result, axis=1, keys=self.tickers)
 

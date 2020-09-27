@@ -18,6 +18,12 @@ class PlotterRSI(PlotterIndicator):
         return self.plotter
 
 
+    def calculate_limit_y(self):
+
+        max_value = 100
+        min_value = 0
+
+        return [min_value, max_value]
 
 
 

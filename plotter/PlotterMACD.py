@@ -18,13 +18,6 @@ class PlotterMACD(PlotterIndicator):
 
         print("Plotting MACD")
 
-        max_value = self.indicator.df[self.ticker][self.indicator.indicator_key].max()
-        min_value = self.indicator.df[self.ticker][self.indicator.indicator_key].min()
-
-        axis.set_ylim(min_value - 1, max_value + 1)
-
-        axis.tick_params(axis='y', labelcolor=self.tick_y_color, size=20)
-
         self.plotter.plot_indicator(
             df=self.indicator.df[self.ticker][[self.indicator.indicator_key]],
             axis=axis,

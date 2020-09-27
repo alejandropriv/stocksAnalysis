@@ -8,8 +8,8 @@ from utilities.Constants import Constants
 
 class PlotterBollingerBands(PlotterIndicator):
 
-    def __init__(self, plotter, indicator, ticker, color="tab:green"):
-        super().__init__(plotter, indicator, ticker, color)
+    def __init__(self, plotter, indicator, ticker, period, color="tab:green"):
+        super().__init__(plotter, indicator, ticker, period, color)
 
 
 

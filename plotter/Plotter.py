@@ -105,7 +105,7 @@ class Plotter:
         else:
             tickers = [tickers]
 
-        # TODO: Check what happens here in the iteration
+
         if self.fig is None or self.axes_main is None or self.axes_indicators is None:
 
             adj_close_key = Constants.get_adj_close_key()
@@ -129,7 +129,6 @@ class Plotter:
                 self.axes_indicators = dict()
 
 
-                subplots = 0
                 if len(stock.indicators) > 0 and collapse_indicators is True:
                     subplots = 2
 
@@ -233,7 +232,7 @@ class Plotter:
         self.axes_main[Constants.prices_axis].spines["left"].set_alpha(1)
 
         handles = self.axes_main[Constants.prices_axis].plot(self.x_series[ticker], self.price_series[ticker], color=color, label=ticker)
-        position = self.get_legend_position()
+        position = Plotter.get_legend_position()
         self.axes_main[Constants.prices_axis].legend(loc=position)
 
 
@@ -254,6 +253,7 @@ class Plotter:
                 self,
                 indicator=indicator,
                 ticker=ticker,
+                period=self.period,
                 color=color
             )
         if isinstance(indicator, ATR):
@@ -261,6 +261,7 @@ class Plotter:
                 self,
                 indicator=indicator,
                 ticker=ticker,
+                period=self.period,
                 color=color
 
             )
@@ -269,6 +270,7 @@ class Plotter:
                 self,
                 indicator=indicator,
                 ticker=ticker,
+                period=self.period,
                 color=color
 
             )
@@ -278,55 +280,14 @@ class Plotter:
                 self,
                 indicator=indicator,
                 ticker=ticker,
+                period=self.period,
                 color=color
 
             )
 
-        if plot_indicator is not None:
+        if plot_indicator is not None or self.fig is None or axis is None:
             plot_indicator.plot(axis)
 
         else:
-            print("Plotter for indicator has not been defined.")
+            print("Plotter for indicator has not been defined, Verify plot configuration")
             raise ValueError
-
-
-    # this has to be called after calling plot_main
-    def plot_indicator(self, df, axis, color="tab:green"):
-
-        self.legend_id = 0
-
-        if self.fig is None or axis is None:
-            print("Please call first method plot_main")
-            return
-
-        indicator_key = df.columns[0]
-        time_series_indicator = df.iloc[-self.period:, :][indicator_key]
-
-
-        #  Set the layout of the indicators plot
-        #  Indicator plot layout
-        axis.tick_params(axis='y', labelcolor=color, size=20)
-        axis.grid(alpha=.4)
-        axis.spines["top"].set_alpha(0.0)
-        axis.spines["bottom"].set_alpha(1)
-        axis.spines["right"].set_alpha(0.0)
-        axis.spines["left"].set_alpha(1)
-
-
-        axis.plot(
-            time_series_indicator.index,
-            time_series_indicator,
-            color=color, label=indicator_key
-        )
-
-        position = self.get_legend_position()
-        axis.legend(loc=position)
-
-        axis.set_xlim(
-            time_series_indicator.iloc[[0]].index,
-            time_series_indicator.iloc[[-1]].index
-        )
-
-
-
-

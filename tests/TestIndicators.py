@@ -68,7 +68,7 @@ class TestIndicators(unittest.TestCase):
         return int(n * 1000) / 1000
 
 
-    def test_macd(self):
+    def test_macd_no_plot(self):
         tickers = ["TSLA", "SPY"]
 
         strategies = [AV_STRATEGY.STRATEGYMACD]

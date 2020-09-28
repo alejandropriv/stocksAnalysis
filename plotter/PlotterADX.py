@@ -7,7 +7,6 @@ class PlotterADX(PlotterIndicator):
         super().__init__(plotter, indicator, ticker, period, color)
 
 
-
     def plot(self, axis):
         self.plot_indicator(axis)
         return self.plotter

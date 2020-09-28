@@ -96,6 +96,7 @@ class Plotter:
     def plot_stock(self, stock, tickers=None, collapse_indicators=True):
 
         Plotter.legend_id = 0
+        Plotter.current_color_indicator = 0
 
         if stock is None:
             print("There is no ticker Information, nothing to be plot")
@@ -138,7 +139,9 @@ class Plotter:
                     subplots = 2
 
                 else:
-                    subplots = len(stock.indicators)+1
+                    # TODO: find a more elegant way of doing this
+                    subplots = len(list(filter(lambda x: isinstance(x, BollingerBands) is False, stock.indicators)))+1
+                    #subplots = len(stock.indicators)+1
 
                 heights_list = [1 for i in range(subplots-1)]
                 heights_list.insert(0, 2)
@@ -168,6 +171,7 @@ class Plotter:
                 i = 0
                 indicator_axis = self.axes_indicators[i]
 
+                Plotter.legend_id = 0
                 for indicator in stock.indicators:
                     if collapse_indicators == True :
 
@@ -178,8 +182,10 @@ class Plotter:
 
                     else:
                         indicator_axis = self.axes_indicators[i]
-                        i += 1
 
+                        # TODO: find a more elegant way of doing this
+                        if isinstance(indicator, BollingerBands) is False:
+                            i += 1
 
                     self.set_plot_indicator(indicator=indicator,
                                             ticker=ticker,
@@ -190,6 +196,8 @@ class Plotter:
     def set_volume(self, ticker):
 
         Plotter.legend_id = 0
+        Plotter.current_color_indicator = 0
+
 
         self.axes_main[Constants.volume_axis].set_ylim(0, self.volume_series[ticker].max() * 2)
         self.axes_main[Constants.volume_axis].tick_params(axis='y', rotation=0, labelcolor=self.volume_color)
@@ -200,7 +208,8 @@ class Plotter:
         self.axes_main[Constants.volume_axis].spines["left"].set_alpha(1)
 
         # Constants.volume
-        handles = self.axes_main[Constants.volume_axis].bar(
+
+        self.axes_main[Constants.volume_axis].bar(
             self.x_series[ticker],
             self.volume_series[ticker],
             color=self.volume_color,
@@ -236,7 +245,7 @@ class Plotter:
         self.axes_main[Constants.prices_axis].spines["right"].set_alpha(0.0)
         self.axes_main[Constants.prices_axis].spines["left"].set_alpha(1)
 
-        handles = self.axes_main[Constants.prices_axis].plot(self.x_series[ticker], self.price_series[ticker], color=color, label=ticker)
+        self.axes_main[Constants.prices_axis].plot(self.x_series[ticker], self.price_series[ticker], color=color, label=ticker)
         position = Plotter.get_legend_position()
         self.axes_main[Constants.prices_axis].legend(loc=position)
 

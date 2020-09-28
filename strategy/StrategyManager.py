@@ -3,30 +3,32 @@ from enum import Enum
 
 
 from stocks_model.StocksFactory import StocksFactory
-from strategy.StrategyI import StrategyI
-from strategy.StrategyMACD import StrategyMACD
-from strategy.StrategyATR import StrategyATR
-from strategy.StrategyMACDRSI import StrategyMACDRSI
-from strategy.StrategyRSI import StrategyRSI
-from strategy.StrategyBB import StrategyBB
-from strategy.StrategyADX import StrategyADX
+from strategy.test_strategies.StrategyI import StrategyI
+from strategy.test_strategies.StrategyII import StrategyII
+from strategy.test_strategies.StrategyIII import StrategyIII
+from strategy.test_strategies.StrategyIV import StrategyIV
+from strategy.test_strategies.StrategyV import StrategyV
+from strategy.test_strategies.StrategyVI import StrategyVI
+from strategy.test_strategies.StrategyXI import StrategyXI
+from strategy.test_strategies.StrategyXII import StrategyXII
 
-from strategy.StrategyX import StrategyX
+
+
+from strategy.test_strategies.StrategyX import StrategyX
 
 
 
 
 class AV_STRATEGY(Enum):
-    STRATEGYBB = 1
-    STRATEGYMACD = 2
-    STRATEGYATR = 3
-    STRATEGYRSI = 4
-    STRATEGYMACDRSI = 5
-    STRATEGYADX = 6
-    STRATEGYX = 10
-    STRATEGYI = 11 # Show only the Stock plot
-
-
+    STRATEGYI = 1  # Show only the Stock plot
+    STRATEGYII = 2  # Bollinger Bands
+    STRATEGYIII = 3  # MACD
+    STRATEGYIV = 4  # ATR
+    STRATEGYV = 5  # RSI
+    STRATEGYVI = 6  # ADX
+    STRATEGYX = 10  # MACD_ATR
+    STRATEGYXI = 11  # MACD_RSI
+    STRATEGYXII = 12  # MACD_RSI_ATR_ADX_OBV_BB
 
 
 class StrategyManager:
@@ -52,22 +54,25 @@ class StrategyManager:
     @staticmethod
     def select_strategy(strategy_type):
 
-        if strategy_type is AV_STRATEGY.STRATEGYBB:
-            return StrategyBB()
         if strategy_type is AV_STRATEGY.STRATEGYI:
             return StrategyI()
-        elif strategy_type is AV_STRATEGY.STRATEGYMACD:
-            return StrategyMACD()
-        elif strategy_type is AV_STRATEGY.STRATEGYATR:
-            return StrategyATR()
-        elif strategy_type is AV_STRATEGY.STRATEGYMACDRSI:
-            return StrategyMACDRSI()
-        elif strategy_type is AV_STRATEGY.STRATEGYRSI:
-            return StrategyRSI()
+        if strategy_type is AV_STRATEGY.STRATEGYII:
+            return StrategyII()
+        elif strategy_type is AV_STRATEGY.STRATEGYIII:
+            return StrategyIII()
+        elif strategy_type is AV_STRATEGY.STRATEGYIV:
+            return StrategyIV()
+        elif strategy_type is AV_STRATEGY.STRATEGYV:
+            return StrategyV()
+        elif strategy_type is AV_STRATEGY.STRATEGYVI:
+            return StrategyVI()
         elif strategy_type is AV_STRATEGY.STRATEGYX:
             return StrategyX()
-        elif strategy_type is AV_STRATEGY.STRATEGYADX:
-            return StrategyADX()
+        elif strategy_type is AV_STRATEGY.STRATEGYXI:
+            return StrategyXI()
+        elif strategy_type is AV_STRATEGY.STRATEGYXII:
+            return StrategyXII()
+
 
 
 

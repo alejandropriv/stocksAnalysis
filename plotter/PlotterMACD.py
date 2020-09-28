@@ -1,4 +1,5 @@
 from plotter.PlotterIndicator import PlotterIndicator
+import plotter.Plotter as Plotter
 
 
 class PlotterMACD(PlotterIndicator):
@@ -21,6 +22,7 @@ class PlotterMACD(PlotterIndicator):
             color=self.signal_color
         )
 
+        Plotter.Plotter.legend_id -= 1
         self.plot_indicator(
             axis=axis
         )

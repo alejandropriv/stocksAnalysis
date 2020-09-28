@@ -60,8 +60,7 @@ class PlotterIndicator(metaclass=abc.ABCMeta):
             label=label
         )
 
-        Plotter.Plotter.legend_id = 0
-        legend_position = self.plotter.get_legend_position()
+        legend_position = Plotter.Plotter.get_legend_position()
         axis.legend(loc=legend_position)
 
         axis.set_xlim(

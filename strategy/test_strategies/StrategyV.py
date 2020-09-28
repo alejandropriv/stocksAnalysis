@@ -1,13 +1,13 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.BollingerBands import BollingerBands
+from indicators.RSI import RSI
 
 
 import datetime
 
 
 
-class StrategyBB(Strategy):
+class StrategyV(Strategy):
 
 
     def __init__(self):
@@ -32,6 +32,6 @@ class StrategyBB(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        bb = BollingerBands(n=20)
+        rsi = RSI(n=14)
 
-        self.indicators = [bb]
+        self.indicators = [rsi]

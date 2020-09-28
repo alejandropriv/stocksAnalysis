@@ -1,13 +1,13 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.ADX import ADX
+from indicators.BollingerBands import BollingerBands
 
 
 import datetime
 
 
 
-class StrategyADX(Strategy):
+class StrategyII(Strategy):
 
 
     def __init__(self):
@@ -32,6 +32,6 @@ class StrategyADX(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        adx = ADX(n=14)
+        bb = BollingerBands(n=20)
 
-        self.indicators = [adx]
+        self.indicators = [bb]

@@ -1,14 +1,13 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
 from indicators.MACD import MACD
-from indicators.ATR import ATR
 
 
 import datetime
 
 
 
-class StrategyATR(Strategy):
+class StrategyIII(Strategy):
 
 
     def __init__(self):
@@ -33,6 +32,5 @@ class StrategyATR(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        atr = ATR(n=14)
-        self.indicators = [atr]
-
+        macd = MACD(fast_period=12, slow_period=26, signal_period=9)
+        self.indicators = [macd]

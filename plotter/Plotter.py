@@ -5,6 +5,9 @@ from indicators.MACD import MACD
 from indicators.ATR import ATR
 from indicators.RSI import RSI
 from indicators.ADX import ADX
+from indicators.OBV import OBV
+from indicators.RENKOIND import RENKOIND
+
 
 from indicators.BollingerBands import BollingerBands
 
@@ -13,6 +16,9 @@ from plotter.PlotterMACD import PlotterMACD
 from plotter.PlotterATR import PlotterATR
 from plotter.PlotterRSI import PlotterRSI
 from plotter.PlotterADX import PlotterADX
+from plotter.PlotterOBV import PlotterOBV
+from plotter.PlotterRENKO import PlotterRENKO
+
 
 from plotter.PlotterBollingerBands import PlotterBollingerBands
 
@@ -181,6 +187,7 @@ class Plotter:
                         i += 1
 
                     else:
+                        Plotter.legend_id = 0
                         indicator_axis = self.axes_indicators[i]
 
                         # TODO: find a more elegant way of doing this
@@ -299,6 +306,24 @@ class Plotter:
             )
         elif isinstance(indicator, ADX):
             plot_indicator = PlotterADX(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
+
+            )
+        elif isinstance(indicator, OBV):
+            plot_indicator = PlotterOBV(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
+
+            )
+        elif isinstance(indicator, RENKOIND):
+            plot_indicator = PlotterRENKO(
                 self,
                 indicator=indicator,
                 ticker=ticker,

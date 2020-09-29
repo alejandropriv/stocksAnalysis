@@ -11,7 +11,6 @@ class ADX(Indicator):
 
     # price is Dataframe
     def __init__(self, df=None, n=14):
-
         super().__init__()
 
         self.n = n

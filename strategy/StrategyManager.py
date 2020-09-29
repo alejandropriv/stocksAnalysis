@@ -9,12 +9,12 @@ from strategy.test_strategies.StrategyIII import StrategyIII
 from strategy.test_strategies.StrategyIV import StrategyIV
 from strategy.test_strategies.StrategyV import StrategyV
 from strategy.test_strategies.StrategyVI import StrategyVI
-from strategy.test_strategies.StrategyXI import StrategyXI
-from strategy.test_strategies.StrategyXII import StrategyXII
+from strategy.test_strategies.StrategyVII import StrategyVII
+from strategy.test_strategies.StrategyVIII import StrategyVIII
 
-
-
-from strategy.test_strategies.StrategyX import StrategyX
+from strategy.test_strategies.StrategyC import StrategyC
+from strategy.test_strategies.StrategyCI import StrategyCI
+from strategy.test_strategies.StrategyCII import StrategyCII
 
 
 
@@ -26,9 +26,12 @@ class AV_STRATEGY(Enum):
     STRATEGYIV = 4  # ATR
     STRATEGYV = 5  # RSI
     STRATEGYVI = 6  # ADX
-    STRATEGYX = 10  # MACD_ATR
-    STRATEGYXI = 11  # MACD_RSI
-    STRATEGYXII = 12  # MACD_RSI_ATR_ADX_OBV_BB
+    STRATEGYVII = 7  # OBV
+    STRATEGYVIII = 8  # RENKO
+
+    STRATEGYC = 10  # MACD_ATR
+    STRATEGYCI = 11  # MACD_RSI
+    STRATEGYCII = 12  # MACD_RSI_ATR_ADX_OBV_BB
 
 
 class StrategyManager:
@@ -66,12 +69,16 @@ class StrategyManager:
             return StrategyV()
         elif strategy_type is AV_STRATEGY.STRATEGYVI:
             return StrategyVI()
-        elif strategy_type is AV_STRATEGY.STRATEGYX:
-            return StrategyX()
-        elif strategy_type is AV_STRATEGY.STRATEGYXI:
-            return StrategyXI()
-        elif strategy_type is AV_STRATEGY.STRATEGYXII:
-            return StrategyXII()
+        elif strategy_type is AV_STRATEGY.STRATEGYVII:
+            return StrategyVII()
+        elif strategy_type is AV_STRATEGY.STRATEGYVIII:
+            return StrategyVIII()
+        elif strategy_type is AV_STRATEGY.STRATEGYC:
+            return StrategyC()
+        elif strategy_type is AV_STRATEGY.STRATEGYCI:
+            return StrategyCI()
+        elif strategy_type is AV_STRATEGY.STRATEGYCII:
+            return StrategyCII()
 
 
 

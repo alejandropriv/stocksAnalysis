@@ -8,23 +8,15 @@ from strategy.StrategyManager import StrategyManager
 from strategy.StrategyManager import AV_STRATEGY
 
 
-from stocks_model.Stock import Stock
-from indicators.OBV import OBV
-from indicators.RENKOIND import RENKOIND
-
-from indicators.Slope import Slope
-
 
 from plotter.Plotter import Plotter
-
-from utilities.Constants import Constants
 
 import datetime
 
 
 
 
-DEVELOPMENT = False
+DEVELOPMENT = True
 
 class TestIndicators(unittest.TestCase):
     apikey = "86VFFOKUNB1M9YQ8"
@@ -83,9 +75,88 @@ class TestIndicators(unittest.TestCase):
         print("Analysis has been run")
 
 
+    def test_bollinger_bands(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=True)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+    def test_bollinger_bands_bulk(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE,
+                bulk=True
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=True)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
 
     def test_macd_plot(self):
-        tickers = ["TSLA", "SNAP"]# , "SPY", "CCL"
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
         strategies = [AV_STRATEGY.STRATEGYIII]
 
@@ -129,7 +200,7 @@ class TestIndicators(unittest.TestCase):
 
 
     def test_macd_bulk(self):
-        tickers = ["TSLA"]#, "SPY", "TSLA", "SNAP"
+        tickers = ["TSLA"]  # , "SPY", "TSLA", "SNAP"
 
         strategies = [AV_STRATEGY.STRATEGYIII]
 
@@ -253,83 +324,6 @@ class TestIndicators(unittest.TestCase):
             i += 1
 
 
-    def test_macd_atr_collapse(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYX]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYX.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
-
-    def test_macd_atr(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYX]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=False)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYX.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
     def test_rsi(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -407,165 +401,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
-
-    def test_macd_rsi(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYXI]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=False)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYXI.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
-
-
-    def test_macd_rsi_collapse(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYXI]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=True)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYXI.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
-
-    def test_bollinger_bands(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYII]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=True)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
-    def test_bollinger_bands_bulk(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYII]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
-                bulk=True
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=True)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
-
 
 
     def test_adx(self):
@@ -647,48 +482,10 @@ class TestIndicators(unittest.TestCase):
             i += 1
 
 
-    def test_macd_rsi_adx_atr_obv_collapse(self):
+    def test_obv(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYXII]
-
-        manager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
-            )
-
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=True)
-
-        print("Analysis has been run")
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-        test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYXII.name][0].price_info
-        ticker = "TSLA"
-        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
-
-        i = 0
-        for metric in ["High", "Low", "Open", "Close", "Volume"]:
-            value = TestIndicators.truncate(
-                test_df[ticker][metric].loc[
-                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
-                    ].iloc[0])
-            assert value == TestIndicators.truncate(values[i]), value
-            i += 1
-
-    def test_macd_rsi_adx_atr_obv(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
-
-        strategies = [AV_STRATEGY.STRATEGYXII]
+        strategies = [AV_STRATEGY.STRATEGYVII]
 
         manager = \
             StrategyManager(
@@ -710,7 +507,319 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYXII.name][0].price_info
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+    def test_obv_bulk(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYVII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE,
+                bulk=True
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=False)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+    def test_renko(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYVIII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=False)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+    def test_macd_rsi(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYCI]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=False)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCI.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+
+    def test_macd_rsi_collapse(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYCI]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=True)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCI.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+    def test_macd_atr_collapse(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYC]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYC.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+    def test_macd_atr(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYC]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=False)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYC.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+    def test_macd_rsi_adx_atr_obv_collapse(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYCII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=True)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCII.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
+
+
+    def test_macd_rsi_adx_atr_obv(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYCII]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=False)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 

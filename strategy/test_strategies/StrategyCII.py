@@ -1,14 +1,21 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
 from indicators.MACD import MACD
+from indicators.RSI import RSI
 from indicators.ATR import ATR
+from indicators.ADX import ADX
+from indicators.OBV import OBV
+
+
+from indicators.BollingerBands import BollingerBands
+
 
 
 import datetime
 
 
 
-class StrategyX(Strategy):
+class StrategyCII(Strategy):
 
 
     def __init__(self):
@@ -34,6 +41,11 @@ class StrategyX(Strategy):
 
     def set_indicators(self):
         macd = MACD(fast_period=12, slow_period=26, signal_period=9)
+        rsi = RSI(n=14)
+        bb = BollingerBands(n=20)
         atr = ATR(n=14)
+        adx = ADX(n=14)
+        obv = OBV(n=14)
 
-        self.indicators = [macd, atr]
+
+        self.indicators = [bb, macd, rsi, atr, adx, obv]

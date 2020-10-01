@@ -70,7 +70,6 @@ class RSI(Indicator):
         avg_loss_key = Constants.get_key( "avg_loss")
         rs_key = Constants.get_key( "RS")
 
-        df_data = pd.DataFrame()
         df_result = []
 
         for ticker in self.tickers:

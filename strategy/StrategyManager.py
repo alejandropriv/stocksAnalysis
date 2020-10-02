@@ -15,6 +15,7 @@ from strategy.test_strategies.StrategyVIII import StrategyVIII
 from strategy.test_strategies.StrategyC import StrategyC
 from strategy.test_strategies.StrategyCI import StrategyCI
 from strategy.test_strategies.StrategyCII import StrategyCII
+from strategy.test_strategies.StrategyCIII import StrategyCIII
 
 
 
@@ -32,6 +33,7 @@ class AV_STRATEGY(Enum):
     STRATEGYC = 10  # MACD_ATR
     STRATEGYCI = 11  # MACD_RSI
     STRATEGYCII = 12  # MACD_RSI_ATR_ADX_OBV_BB
+    STRATEGYCIII = 13 # MACD, RENKO
 
 
 class StrategyManager:
@@ -79,6 +81,8 @@ class StrategyManager:
             return StrategyCI()
         elif strategy_type is AV_STRATEGY.STRATEGYCII:
             return StrategyCII()
+        elif strategy_type is AV_STRATEGY.STRATEGYCIII:
+            return StrategyCIII()
 
 
 

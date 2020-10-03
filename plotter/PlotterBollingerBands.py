@@ -18,14 +18,14 @@ class PlotterBollingerBands(PlotterIndicator):
         print("Plotting Bollinger Bands")
 
         self.plot_indicator(
-            axis=self.plotter.axes_main[Constants.prices_axis],
+            axis=axis,
             df=self.indicator.df[self.ticker][[self.indicator.bb_down_key]],
             label="BB",
             color="tab:red"
         )
 
         self.plot_indicator(
-            axis=self.plotter.axes_main[Constants.prices_axis],
+            axis=axis,
             df=self.indicator.df[self.ticker][[self.indicator.bb_up_key]],
             label="BB",
             color="tab:red"

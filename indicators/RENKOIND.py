@@ -11,6 +11,7 @@ from stocktrends import Renko
 class RENKOIND(Indicator):
     def __init__(self, df=None, n=120):
         super().__init__()
+        self.collapse = False
 
         self.n = n
 

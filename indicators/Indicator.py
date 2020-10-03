@@ -9,6 +9,8 @@ class Indicator(metaclass=abc.ABCMeta):
     def __init__(self):
         self.tickers = None
         self.df = None
+        self.collapse = True
+        self.in_main_plot = False
 
     @abc.abstractmethod
     def set_input_data(self, df):

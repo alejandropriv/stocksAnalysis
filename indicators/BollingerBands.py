@@ -11,6 +11,7 @@ class BollingerBands(Indicator):
     def __init__(self, df=None, n=20):
         super().__init__()
 
+        self.in_main_plot = True
         self.n = n
 
         # Set dataframe keys

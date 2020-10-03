@@ -99,7 +99,7 @@ class Plotter:
         self.volume_color = volume_color
         self.volume_alpha = volume_alpha
 
-    def plot_stock(self, stock, tickers=None, collapse_indicators=True):
+    def plot_stock(self, stock, tickers=None, collapse_indicators=False):
 
         Plotter.legend_id = 0
         Plotter.current_color_indicator = 0
@@ -141,16 +141,22 @@ class Plotter:
                 self.axes_indicators = dict()
 
 
-                if len(stock.indicators) > 0 and collapse_indicators is True:
-                    subplots = 2
+                if len(stock.indicators) == 0:
+                    subplots = 1
+
+                elif len(stock.indicators) > 0 and collapse_indicators is True:
+
+                    extra = len(list(filter(lambda x: x.collapse is False, stock.indicators)))
+                    subplots = 2 + extra
 
                 else:
-                    # TODO: find a more elegant way of doing this
-                    subplots = len(list(filter(lambda x: isinstance(x, BollingerBands) is False, stock.indicators)))+1
-                    #subplots = len(stock.indicators)+1
+                    subplots = len(list(filter(lambda x: x.in_main_plot is False, stock.indicators)))+1
 
                 heights_list = [1 for i in range(subplots-1)]
-                heights_list.insert(0, 2)
+                if subplots == 1:
+                    heights_list.insert(0, 1)
+                else:
+                    heights_list.insert(0, 2)
 
                 self.fig = plt.figure(figsize=(8, 6), dpi=80)
                 axes = \
@@ -161,8 +167,13 @@ class Plotter:
                         gridspec_kw={'height_ratios': heights_list}
                     )
 
-                self.axes_main[Constants.volume_axis] = axes[0]
-                self.axes_indicators = axes[1:]
+                if subplots == 1:
+                    self.axes_main[Constants.volume_axis] = axes
+                else:
+                    self.axes_main[Constants.volume_axis] = axes[0]
+                    self.axes_indicators = axes[1:]
+
+
 
 
                 self.set_volume(
@@ -175,24 +186,34 @@ class Plotter:
                 )
 
                 i = 0
-                indicator_axis = self.axes_indicators[i]
+                indicator_axis = None
 
                 Plotter.legend_id = 0
                 for indicator in stock.indicators:
-                    if collapse_indicators == True :
+
+                    if indicator.in_main_plot == True:
+                        indicator_axis = self.axes_main[Constants.prices_axis]
+
+
+                    if collapse_indicators == True:
 
                         if i > 0:
-                            indicator_axis = indicator_axis.twinx()
+                            if indicator.collapse is False:
+                                indicator_axis = self.axes_indicators[i]
+                            else:
+                                indicator_axis = indicator_axis.twinx()
 
                         i += 1
 
                     else:
                         Plotter.legend_id = 0
-                        indicator_axis = self.axes_indicators[i]
 
-                        # TODO: find a more elegant way of doing this
-                        if isinstance(indicator, BollingerBands) is False:
+
+                        if indicator.in_main_plot is False:
+                            indicator_axis = self.axes_indicators[i]
                             i += 1
+
+
 
                     self.set_plot_indicator(indicator=indicator,
                                             ticker=ticker,

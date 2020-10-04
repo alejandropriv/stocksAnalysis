@@ -37,4 +37,4 @@ class StrategyCIII(Strategy):
         macd = MACD(fast_period=12, slow_period=26, signal_period=9)
 
 
-        self.indicators = [renko, macd]
+        self.indicators = [macd, renko ]

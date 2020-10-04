@@ -160,38 +160,15 @@ class Plotter:
                 else:
                     subplots = len(list(filter(lambda x: x.in_main_plot is False, stock.indicators)))+1
 
-                heights_list = [1 for i in range(subplots-1)]
-                if subplots == 1:
-                    heights_list.insert(0, 3)
-                else:
-                    heights_list.insert(0, 2)
-
-                #sharex = 'col'
-                #if indicator.collapse is False:
-                    #sharex=False
 
                 self.fig = plt.figure(figsize=(8, 6), dpi=80)
+                self.fig.add_gridspec(ncols=1,
+                                      nrows=subplots,
+                                      height_ratios=heights)
+                # gridspec_kw = {'height_ratios': heights_list}
 
                 num = subplots*100+10+1
                 self.axes_main[Constants.volume_axis] = self.fig.add_subplot(num)
-                # axes = \
-                #     self.fig.subplots(
-                #         subplots,
-                #         1,
-                #         sharex='col',
-                #         gridspec_kw={'height_ratios': heights_list}
-                #     )
-
-                if subplots == 1:
-                    pass
-                    #self.axes_main[Constants.volume_axis] = axes
-                else:
-                   #self.axes_main[Constants.volume_axis] = axes[0]
-                    #self.axes_indicators = axes[1:]
-
-                   self.axes_indicators = None
-
-
 
 
                 self.set_volume(
@@ -203,10 +180,9 @@ class Plotter:
                     color=self.stock_color
                 )
 
-                i = 2 # Indicator axis begins in 2
+                i = 2  # Indicator axis begins in 2
 
 
-                #indicator_axis = self.axes_indicators[i]
                 indicator_axis = None
 
                 Plotter.legend_id = 0
@@ -225,11 +201,12 @@ class Plotter:
 
                             else:# Executed first
                                 num = subplots * 100 + 10 + i * 1
-                                self.axes_indicators = self.fig.add_subplot(num, sharex=self.axes_main[Constants.prices_axis])
+                                self.axes_indicators = \
+                                    self.fig.add_subplot(
+                                        num,
+                                        sharex=self.axes_main[Constants.prices_axis])
 
                                 indicator_axis = self.axes_indicators
-
-
 
                         else:
                             Plotter.legend_id = 0
@@ -239,7 +216,10 @@ class Plotter:
                             if indicator.collapse is True:
                                 sharex = self.axes_main[Constants.prices_axis]
 
-                            self.axes_indicators = self.fig.add_subplot(num, sharex=sharex)
+                            self.axes_indicators = \
+                                self.fig.add_subplot(
+                                    num,
+                                    sharex=sharex)
 
                             indicator_axis = self.axes_indicators
 
@@ -256,7 +236,8 @@ class Plotter:
                                             axis=indicator_axis)
 
 
-        print("plot")
+        plt.tight_layout()
+
 
     def set_volume(self, ticker):
 
@@ -265,7 +246,10 @@ class Plotter:
 
 
         self.axes_main[Constants.volume_axis].set_ylim(0, self.volume_series[ticker].max() * 2)
-        self.axes_main[Constants.volume_axis].tick_params(axis='y', rotation=0, labelcolor=self.volume_color)
+        self.axes_main[Constants.volume_axis].tick_params(
+            axis='y',
+            rotation=0,
+            labelcolor=self.volume_color)
 
         self.axes_main[Constants.volume_axis].spines["top"].set_alpha(0.0)
         self.axes_main[Constants.volume_axis].spines["bottom"].set_alpha(1)

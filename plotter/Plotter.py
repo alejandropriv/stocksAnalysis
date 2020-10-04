@@ -158,6 +158,10 @@ class Plotter:
                 else:
                     heights_list.insert(0, 2)
 
+                #sharex = 'col'
+                #if indicator.collapse is False:
+                    #sharex=False
+
                 self.fig = plt.figure(figsize=(8, 6), dpi=80)
                 axes = \
                     self.fig.subplots(
@@ -186,17 +190,17 @@ class Plotter:
                 )
 
                 i = 0
+
+
+                #indicator_axis = self.axes_indicators[i]
                 indicator_axis = None
 
                 Plotter.legend_id = 0
                 for indicator in stock.indicators:
 
-                    if indicator.in_main_plot == True:
-                        indicator_axis = self.axes_main[Constants.prices_axis]
-
-
                     if collapse_indicators == True:
 
+                        indicator_axis = self.axes_indicators[i]
                         if i > 0:
                             if indicator.collapse is False:
                                 indicator_axis = self.axes_indicators[i]
@@ -209,9 +213,14 @@ class Plotter:
                         Plotter.legend_id = 0
 
 
-                        if indicator.in_main_plot is False:
+                    if indicator.in_main_plot == True:
+                        indicator_axis = self.axes_main[Constants.prices_axis]
+
+                    else: #indicator.in_main_plot is False:
+                        if indicator_axis is None:
                             indicator_axis = self.axes_indicators[i]
-                            i += 1
+
+                        i += 1
 
 
 

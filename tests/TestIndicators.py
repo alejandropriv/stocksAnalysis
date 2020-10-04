@@ -92,7 +92,7 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
                 plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=False)
+                plotter.plot_stock(stock, collapse_indicators=True)
 
         print("Analysis has been run")
 

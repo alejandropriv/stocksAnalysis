@@ -17,8 +17,6 @@ class MACD(Indicator):
         self.signal_period = signal_period
 
         # Set dataframe keys
-        self.prices_key = None
-
         self.indicator_key = None
         self.signal_key = None
 
@@ -29,15 +27,7 @@ class MACD(Indicator):
     def set_input_data(self, df):
         super().set_input_data(df)
 
-        # Set dataFrame keys
-        adj_close_key = Constants.get_adj_close_key()
-        close_key = Constants.get_close_key()
 
-        if adj_close_key in df.columns is True:
-            self.prices_key = adj_close_key
-
-        else:
-            self.prices_key = close_key
 
         self.indicator_key = Constants.get_key("MACD")
         self.signal_key = Constants.get_key("Signal")

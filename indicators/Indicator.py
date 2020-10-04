@@ -1,5 +1,7 @@
 import abc
 import pandas as pd
+from utilities.Constants import Constants
+
 
 
 class Indicator(metaclass=abc.ABCMeta):
@@ -11,6 +13,7 @@ class Indicator(metaclass=abc.ABCMeta):
         self.df = None
         self.collapse = True
         self.in_main_plot = False
+        self.prices_key = None
 
     @abc.abstractmethod
     def set_input_data(self, df):
@@ -21,6 +24,17 @@ class Indicator(metaclass=abc.ABCMeta):
         df.columns = pd.MultiIndex.from_tuples(df.columns.values)
 
         self.tickers = df.columns.levels[0]
+
+        # Set dataFrame keys
+        adj_close_key = Constants.get_adj_close_key()
+        close_key = Constants.get_close_key()
+
+        if adj_close_key in df.columns is True:
+            self.prices_key = adj_close_key
+
+        else:
+            self.prices_key = close_key
+
 
     @abc.abstractmethod
     def calculate(self):

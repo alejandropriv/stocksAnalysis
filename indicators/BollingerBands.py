@@ -28,15 +28,6 @@ class BollingerBands(Indicator):
         super().set_input_data(df)
 
         # Set dataFrame keys
-        adj_close_key = Constants.get_adj_close_key()
-        close_key = Constants.get_close_key()
-
-        if adj_close_key in df.columns is True:
-            self.prices_key = adj_close_key
-
-        else:
-            self.prices_key = close_key
-
         self.bb_up_key = Constants.get_key("BB_up")
         self.bb_down_key = Constants.get_key("BB_down")
         self.bb_width_key = Constants.get_key("BB_width")

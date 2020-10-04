@@ -75,7 +75,6 @@ class PlotterRENKO(PlotterIndicator):
         axis.tick_params(axis='y', labelcolor=color, size=20)
 
         legend_position = Plotter.Plotter.get_legend_position()
-        #axis.legend(loc=legend_position)
 
 
         # Use the pyplot interface to change just one subplot...

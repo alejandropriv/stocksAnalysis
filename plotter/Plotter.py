@@ -198,7 +198,7 @@ class Plotter:
 
                             if i > 1:
                                 if indicator.collapse is False:
-                                    self.axes_indicators = self.fig.add_subplot(gridspec[i, 1])
+                                    self.axes_indicators = self.fig.add_subplot(gridspec[i, 0])
                                     indicator_axis = self.axes_indicators
 
                                 else:
@@ -207,7 +207,7 @@ class Plotter:
                             else:  # Executed first
                                 self.axes_indicators = \
                                     self.fig.add_subplot(
-                                        gridspec[i, 1],
+                                        gridspec[i, 0],
                                         sharex=self.axes_main[Constants.prices_axis])
 
                                 indicator_axis = self.axes_indicators

@@ -10,7 +10,7 @@ class Slope(Indicator):
 
     # price is Dataframe
     # n number of consecutive points to calculate the slope
-    def __init__(self, df=None, n=5, plotter=None):
+    def __init__(self, df=None, n=5):
 
         super().__init__()
 
@@ -18,10 +18,8 @@ class Slope(Indicator):
         self.n = n
         self.ser = None
 
-        self.plotter = plotter
-
-        self.adj_close_key = None
-        self.slope_key = None
+        self.prices_key = None
+        self.indicator_key = None
 
         if df is not None:
             self.set_input_data(df)

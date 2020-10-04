@@ -25,16 +25,6 @@ class RSI(Indicator):
         super().set_input_data(df)
 
         # Set dataframe keys
-        adj_close_key = Constants.get_adj_close_key()
-        close_key = Constants.get_close_key()
-
-        if adj_close_key in df.columns is True:
-            self.prices_key = adj_close_key
-
-        else:
-            self.prices_key = close_key
-
-
         self.indicator_key = Constants.get_key("RSI")
 
         prices_temp = pd.DataFrame()

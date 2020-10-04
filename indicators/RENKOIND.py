@@ -41,19 +41,8 @@ class RENKOIND(Indicator):
         self.open_key = Constants.get_open_key()
 
         # Set dataframe keys
-        adj_close_key = Constants.get_adj_close_key()
-        close_key = Constants.get_close_key()
-
-        if adj_close_key in df.columns is True:
-            self.prices_key = adj_close_key
-
-        else:
-            self.prices_key = close_key
-
-
         prices_temp = pd.DataFrame()
 
-        # TODO: Make a proper call to function
         df_list = []
         for ticker in self.tickers:
             df_temp = df[ticker].loc[:, [self.high_key, self.low_key, self.open_key, self.prices_key]]

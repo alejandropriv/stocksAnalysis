@@ -1,5 +1,7 @@
 from utilities.Constants import Constants
 from indicators.Indicator import Indicator
+import pandas as pd
+
 
 import numpy as np
 
@@ -29,17 +31,29 @@ class Slope(Indicator):
 
         super().set_input_data(df)
 
-
         # Set dataframe keys
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
-        self.slope_key = Constants.get_key(self.ticker, "SLOPE")
-        self.ser = df[self.adj_close_key]
-        self.ser.ticker = self.ticker
+        self.indicator_key = Constants.get_key("SLOPE")
 
+        prices_temp = pd.DataFrame()
 
+        df_list = []
+        for ticker in self.tickers:
+            self.ser[ticker] = df[ticker][self.prices_key]
 
-        self.df = df[[self.adj_close_key]].copy()
-        self.df.ticker = df.ticker
+            df_list.append(
+                pd.concat(
+                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
+                    axis=1,
+                    keys=[ticker]
+                )
+            )
+
+        df_indicator = pd.concat(
+            df_list,
+            axis=1
+        )
+
+        self.df = df_indicator.copy()
 
     def calculate(self):
         """function to calculate the slope of n consecutive points on a plot"""

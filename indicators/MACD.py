@@ -3,8 +3,6 @@ from indicators.Indicator import Indicator
 import pandas as pd
 
 
-
-
 class MACD(Indicator):
 
     # price is DataFrame, = adj_close
@@ -26,8 +24,6 @@ class MACD(Indicator):
 
     def set_input_data(self, df):
         super().set_input_data(df)
-
-
 
         self.indicator_key = Constants.get_key("MACD")
         self.signal_key = Constants.get_key("Signal")

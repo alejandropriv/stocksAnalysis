@@ -63,11 +63,6 @@ class RENKOIND(Indicator):
         self.df = df_indicator.copy()
 
 
-        # self.df = df.copy()
-        # self.df_t = df.copy()
-
-
-
         prices_temp = pd.DataFrame()
 
         df_list = []

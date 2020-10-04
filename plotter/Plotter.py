@@ -146,15 +146,23 @@ class Plotter:
 
                 elif len(stock.indicators) > 0 and collapse_indicators is True:
 
-                    extra = len(list(filter(lambda x: x.collapse is False, stock.indicators)))
-                    subplots = 2 + extra
+                    extra = len(list(filter(lambda x: x.collapse is False or x.in_main_plot is False, stock.indicators)))
+                    no_collapse = len(list(filter(lambda x: x.collapse is False and x.in_main_plot is False, stock.indicators)))
+                    if no_collapse > 0:
+                        no_collapse = no_collapse - 1
+
+                    fixed = 2
+                    if extra == 0:
+                        fixed = 1
+
+                    subplots = fixed + no_collapse
 
                 else:
                     subplots = len(list(filter(lambda x: x.in_main_plot is False, stock.indicators)))+1
 
                 heights_list = [1 for i in range(subplots-1)]
                 if subplots == 1:
-                    heights_list.insert(0, 1)
+                    heights_list.insert(0, 3)
                 else:
                     heights_list.insert(0, 2)
 
@@ -163,19 +171,25 @@ class Plotter:
                     #sharex=False
 
                 self.fig = plt.figure(figsize=(8, 6), dpi=80)
-                axes = \
-                    self.fig.subplots(
-                        subplots,
-                        1,
-                        sharex='col',
-                        gridspec_kw={'height_ratios': heights_list}
-                    )
+
+                num = subplots*100+10+1
+                self.axes_main[Constants.volume_axis] = self.fig.add_subplot(num)
+                # axes = \
+                #     self.fig.subplots(
+                #         subplots,
+                #         1,
+                #         sharex='col',
+                #         gridspec_kw={'height_ratios': heights_list}
+                #     )
 
                 if subplots == 1:
-                    self.axes_main[Constants.volume_axis] = axes
+                    pass
+                    #self.axes_main[Constants.volume_axis] = axes
                 else:
-                    self.axes_main[Constants.volume_axis] = axes[0]
-                    self.axes_indicators = axes[1:]
+                   #self.axes_main[Constants.volume_axis] = axes[0]
+                    #self.axes_indicators = axes[1:]
+
+                   self.axes_indicators = None
 
 
 
@@ -189,7 +203,7 @@ class Plotter:
                     color=self.stock_color
                 )
 
-                i = 0
+                i = 2 # Indicator axis begins in 2
 
 
                 #indicator_axis = self.axes_indicators[i]
@@ -198,35 +212,49 @@ class Plotter:
                 Plotter.legend_id = 0
                 for indicator in stock.indicators:
 
-                    if collapse_indicators == True:
+                    if indicator.in_main_plot is False:
+                        if collapse_indicators == True:
 
-                        indicator_axis = self.axes_indicators[i]
-                        if i > 0:
-                            if indicator.collapse is False:
-                                indicator_axis = self.axes_indicators[i]
-                            else:
-                                indicator_axis = indicator_axis.twinx()
+                            if i > 2:
+                                if indicator.collapse is False:
+                                    self.axes_indicators = self.fig.add_subplot(num)
+                                    indicator_axis = self.axes_indicators
+
+                                else:
+                                    indicator_axis = indicator_axis.twinx()
+
+                            else:# Executed first
+                                num = subplots * 100 + 10 + i * 1
+                                self.axes_indicators = self.fig.add_subplot(num, sharex=self.axes_main[Constants.prices_axis])
+
+                                indicator_axis = self.axes_indicators
+
+
+
+                        else:
+                            Plotter.legend_id = 0
+                            num = subplots * 100 + 10 + i * 1
+
+                            sharex = None
+                            if indicator.collapse is True:
+                                sharex = self.axes_main[Constants.prices_axis]
+
+                            self.axes_indicators = self.fig.add_subplot(num, sharex=sharex)
+
+                            indicator_axis = self.axes_indicators
+
+                        if indicator_axis is None:
+                            indicator_axis = self.axes_indicators
 
                         i += 1
 
                     else:
-                        Plotter.legend_id = 0
-
-
-                    if indicator.in_main_plot == True:
                         indicator_axis = self.axes_main[Constants.prices_axis]
-
-                    else: #indicator.in_main_plot is False:
-                        if indicator_axis is None:
-                            indicator_axis = self.axes_indicators[i]
-
-                        i += 1
-
-
 
                     self.set_plot_indicator(indicator=indicator,
                                             ticker=ticker,
                                             axis=indicator_axis)
+
 
         print("plot")
 

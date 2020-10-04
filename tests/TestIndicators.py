@@ -837,7 +837,7 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-    def test_macd_rsi_adx_atr_obv_collapse(self):
+    def test_macd_rsi_adx_atr_obv_bb_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
         strategies = [AV_STRATEGY.STRATEGYCII]

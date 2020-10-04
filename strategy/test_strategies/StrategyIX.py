@@ -1,14 +1,14 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.MACD import MACD
 from indicators.RSI import RSI
+from indicators.Slope import Slope
 
 
 import datetime
 
 
 
-class StrategyCI(Strategy):
+class StrategyIX(Strategy):
 
 
     def __init__(self):
@@ -17,8 +17,6 @@ class StrategyCI(Strategy):
         self.set_data_source_required_parameters()
         self.set_date_parameters()
         self.set_indicators()
-
-
 
     def set_data_source_required_parameters(self):
         self.historical = True
@@ -33,7 +31,8 @@ class StrategyCI(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        macd = MACD(fast_period=12, slow_period=26, signal_period=9)
         rsi = RSI(n=14)
+        slope = Slope(n=5)
 
-        self.indicators = [rsi, macd]
+
+        self.indicators = [rsi, slope]

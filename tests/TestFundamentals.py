@@ -15,7 +15,7 @@ class TestBasics(unittest.TestCase):
     stock = None
 
 
-    def test_fundamentals(self):
+    def test_fundamentals_OLD(self):
 
         self.tickers = ["TSLA"]  # , "TSLA", "UBER"]
 
@@ -41,6 +41,45 @@ class TestBasics(unittest.TestCase):
     def get_historical_data(self):
         if self.historical_data:
             self.stock.get_historical_data()
+
+
+    def test_fundamentals(self):
+        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+
+        strategies = [AV_STRATEGY.STRATEGYCI]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                data_source_type=DATASOURCETYPE.YFINANCE
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+                plotter = Plotter(period=1000)
+                plotter.plot_stock(stock, collapse_indicators=False)
+
+        print("Analysis has been run")
+
+        if DEVELOPMENT == True:
+            plt.show()
+
+        test_date = "14/07/2020"
+        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCI.name][0].price_info
+        ticker = "TSLA"
+        values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
+
+        i = 0
+        for metric in ["High", "Low", "Open", "Close", "Volume"]:
+            value = TestIndicators.truncate(
+                test_df[ticker][metric].loc[
+                    test_df[ticker][metric].index == datetime.datetime.strptime(test_date, "%d/%m/%Y")
+                    ].iloc[0])
+            assert value == TestIndicators.truncate(values[i]), value
+            i += 1
 
 
 if __name__ == '__main__':

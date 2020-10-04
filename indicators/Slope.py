@@ -18,7 +18,7 @@ class Slope(Indicator):
 
 
         self.n = n
-        self.ser = None
+        self.ser = dict()
 
         self.prices_key = None
         self.indicator_key = None
@@ -57,47 +57,30 @@ class Slope(Indicator):
 
     def calculate(self):
         """function to calculate the slope of n consecutive points on a plot"""
-        slopes = [i * 0 for i in range(self.n - 1)]
-        for i in range(self.n, len(self.ser) + 1):
-            y = self.ser[i - self.n:i]
-            x = np.array(range(self.    n))
-            y_scaled = (y - y.min()) / (y.max() - y.min())
-            x_scaled = (x - x.min()) / (x.max() - x.min())
-            x_scaled = sm.add_constant(x_scaled)
-            model = sm.OLS(y_scaled, x_scaled)
-            results = model.fit()
-            slopes.append(results.params[-1])
 
-        slope_angle = (np.rad2deg(np.arctan(np.array(slopes))))
+        super().calculate()
 
-        # self.df = pd.DataFrame()
-        self.df[self.slope_key] = np.array(slope_angle) # +300
-        # return np.array(slope_angle)
+        df_result = []
 
+        for ticker in self.tickers:
 
-    # expect Stock, volume, Indicator
-    def plot(self, plotter=None, period=100, color="tab:green"):
+            df_data = self.df[ticker].copy()
 
-        super().plot(plotter=plotter, period=period, color=color)
+            slopes = [i * 0 for i in range(self.n - 1)]
+            for i in range(self.n, len(self.ser[ticker]) + 1):
+                y = self.ser[ticker][i - self.n:i]
+                x = np.array(range(self.n))
+                y_scaled = (y - y.min()) / (y.max() - y.min())
+                x_scaled = (x - x.min()) / (x.max() - x.min())
+                x_scaled = sm.add_constant(x_scaled)
+                model = sm.OLS(y_scaled, x_scaled)
+                results = model.fit()
+                slopes.append(results.params[-1])
 
-        self.plot_indicator(
-            plotter=plotter,
-            period=period,
-            key=self.slope_key,
-            color=color,
-            legend_position=None
-        )
-        # super().plot(plotter=plotter, period=period, color=color)
-        #
-        # x = self.df.iloc[:, [0]]
-        # index = x.iloc[-period:, :].index
-        #
-        # # put period for the data also
-        # df = self.df.iloc[-period:, :]
-        #
-        # if plotter.ax_main is None:
-        #     print("Error: Main Stock has not been plotted, "
-        #           "plot a stock and then plot the associated bollinger bands")
-        #     raise IOError
-        #
-        # plotter.ax_main[Constants.adj_close].plot(index, df[self.slope_key]+250, color=color)
+            slope_angle = (np.rad2deg(np.arctan(np.array(slopes))))
+            df_data[self.indicator_key] = np.array(slope_angle)
+            df_result.append(df_data.loc[:, [self.indicator_key]])
+
+        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+
+        return self.df

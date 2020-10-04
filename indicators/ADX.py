@@ -56,11 +56,7 @@ class ADX(Indicator):
 
     def calculate(self):
         """"function to calculate ADX"""
-
-        if self.df is None:
-            print("DF has not been set, there is no data to calculate the indicator, "
-                  "please verify the indicator constructor")
-            raise ValueError
+        super().calculate()
 
 
         tr_key = Constants.get_key("TR")

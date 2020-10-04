@@ -65,10 +65,7 @@ class ATR(Indicator):
     def calculate(self):
         """function to calculate True Range and Average True Range"""
 
-        if self.df is None:
-            print("DF has not been set, there is no data to calculate the indicator, "
-                  "please verify the indicator constructor")
-            raise ValueError
+        super().calculate()
 
         # Set temp dataframe keys
         h_l_key = Constants.get_key("H-L")

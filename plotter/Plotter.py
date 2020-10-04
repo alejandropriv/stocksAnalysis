@@ -6,6 +6,7 @@ from indicators.ATR import ATR
 from indicators.RSI import RSI
 from indicators.ADX import ADX
 from indicators.OBV import OBV
+from indicators.Slope import Slope
 from indicators.RENKOIND import RENKOIND
 
 
@@ -17,6 +18,7 @@ from plotter.PlotterATR import PlotterATR
 from plotter.PlotterRSI import PlotterRSI
 from plotter.PlotterADX import PlotterADX
 from plotter.PlotterOBV import PlotterOBV
+from plotter.PlotterSlope import PlotterSlope
 from plotter.PlotterRENKO import PlotterRENKO
 
 
@@ -360,6 +362,15 @@ class Plotter:
             )
         elif isinstance(indicator, OBV):
             plot_indicator = PlotterOBV(
+                self,
+                indicator=indicator,
+                ticker=ticker,
+                period=self.period,
+                color=color
+
+            )
+        elif isinstance(indicator, Slope):
+            plot_indicator = PlotterSlope(
                 self,
                 indicator=indicator,
                 ticker=ticker,

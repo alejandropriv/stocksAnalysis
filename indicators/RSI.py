@@ -52,6 +52,7 @@ class RSI(Indicator):
         """function to calculate RSI
            typical values n=14"""
 
+        super().calculate()
 
         delta_key = Constants.get_key( "delta")
         gain_key = Constants.get_key( "gain")

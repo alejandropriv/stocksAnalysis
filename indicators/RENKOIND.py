@@ -101,6 +101,8 @@ class RENKOIND(Indicator):
     def calculate(self):
         """function to convert ohlc data into renko bricks"""
 
+        super().calculate()
+
         df_result = []
 
         for ticker in self.tickers:

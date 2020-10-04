@@ -58,10 +58,7 @@ class OBV(Indicator):
     def calculate(self):
         """function to calculate On Balance Volume"""
 
-        if self.df is None:
-            print("DF has not been set, there is no data to calculate the indicator, "
-                  "please verify the indicator constructor")
-            raise ValueError
+        super().calculate()
 
         daily_ret_key = Constants.get_key("daily_ret")
         direction_key = Constants.get_key("direction")

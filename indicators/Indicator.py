@@ -40,6 +40,7 @@ class Indicator(metaclass=abc.ABCMeta):
     def calculate(self):
         """function to calculate the indicator"""
         if self.df is None:
-            print("Error: DF has not been set Data not found to calculate the requested operation")
+            print("Error: DF has not been set, there is no data to calculate the indicator. "
+                  "Please verify the indicator constructor")
             raise IOError
 

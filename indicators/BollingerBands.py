@@ -55,6 +55,8 @@ class BollingerBands(Indicator):
     def calculate(self):
         """function to calculate Bollinger Bands"""
 
+        super().calculate()
+
         # Set temp dataframe keys
         ma_key = Constants.get_key("MA")
 

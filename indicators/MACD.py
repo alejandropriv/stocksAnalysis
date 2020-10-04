@@ -56,10 +56,7 @@ class MACD(Indicator):
         """function to calculate MACD
            typical values a = 12; b =26, c =9"""
 
-        if self.df is None:
-            print("DF has not been set, there is no data to calculate the indicator, "
-                  "please verify the indicator constructor")
-            raise ValueError
+        super().calculate()
 
         # Set temp dataframe keys
         fast_key = Constants.get_key("MA_Fast")

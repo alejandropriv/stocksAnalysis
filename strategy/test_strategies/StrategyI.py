@@ -8,6 +8,7 @@ import datetime
 
 class StrategyI(Strategy):
 
+    name = "StrategyI"
 
     def __init__(self):
 

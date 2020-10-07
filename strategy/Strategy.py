@@ -12,6 +12,8 @@ class Strategy(metaclass=abc.ABCMeta):
         self.interval = None
         self.indicators = []
         self.kpi = []
+        self.fundamentals = False
+
 
 
     def set_data_source_required_parameters(self):

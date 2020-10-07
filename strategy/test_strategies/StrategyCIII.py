@@ -10,6 +10,7 @@ import datetime
 
 class StrategyCIII(Strategy):
 
+    name = "StrategyCIII"
 
     def __init__(self):
 

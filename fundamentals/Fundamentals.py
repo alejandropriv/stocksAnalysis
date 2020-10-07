@@ -3,10 +3,6 @@ from fundamentals.BalanceSheet import BalanceSheet
 from fundamentals.CashFlow import CashFlow
 from fundamentals.Statistics import Statistics
 
-import pandas as pd
-
-
-
 
 class Fundamentals:
 

@@ -1,15 +1,14 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.OBV import OBV
 
 
 import datetime
 
 
 
-class StrategyVII(Strategy):
+class StrategyXI(Strategy):
 
-    name = "StrategyVII"
+    name = "StrategyXI"
 
     def __init__(self):
 
@@ -17,8 +16,7 @@ class StrategyVII(Strategy):
         self.set_data_source_required_parameters()
         self.set_date_parameters()
         self.set_indicators()
-
-
+        self.fundamentals = True
 
     def set_data_source_required_parameters(self):
         self.historical = True
@@ -33,6 +31,4 @@ class StrategyVII(Strategy):
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        obv = OBV(n=14)
-
-        self.indicators = [obv]
+        self.indicators = []

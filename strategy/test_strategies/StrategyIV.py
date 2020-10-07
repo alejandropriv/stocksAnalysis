@@ -1,6 +1,5 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.MACD import MACD
 from indicators.ATR import ATR
 
 
@@ -10,6 +9,7 @@ import datetime
 
 class StrategyIV(Strategy):
 
+    name = "StrategyIV"
 
     def __init__(self):
 

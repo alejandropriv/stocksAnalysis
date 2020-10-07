@@ -17,6 +17,8 @@ import datetime
 
 class StrategyCII(Strategy):
 
+    name = "StrategyCII"
+
 
     def __init__(self):
 

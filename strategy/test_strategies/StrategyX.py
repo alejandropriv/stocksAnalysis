@@ -7,8 +7,9 @@ import datetime
 
 
 
-class StrategyVIII(Strategy):
+class StrategyX(Strategy):
 
+    name = "StrategyX"
 
     def __init__(self):
 

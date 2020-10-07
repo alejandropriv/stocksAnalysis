@@ -5,8 +5,21 @@ import matplotlib.pyplot as plt
 from data.DataSource import DATASOURCETYPE
 
 from strategy.StrategyManager import StrategyManager
-from strategy.StrategyManager import AV_STRATEGY
 
+from strategy.test_strategies.StrategyI import StrategyI
+from strategy.test_strategies.StrategyII import StrategyII
+from strategy.test_strategies.StrategyIII import StrategyIII
+from strategy.test_strategies.StrategyIV import StrategyIV
+from strategy.test_strategies.StrategyV import StrategyV
+from strategy.test_strategies.StrategyVI import StrategyVI
+from strategy.test_strategies.StrategyVII import StrategyVII
+from strategy.test_strategies.StrategyVIII import StrategyVIII
+from strategy.test_strategies.StrategyIX import StrategyIX
+
+from strategy.test_strategies.StrategyC import StrategyC
+from strategy.test_strategies.StrategyCI import StrategyCI
+from strategy.test_strategies.StrategyCII import StrategyCII
+from strategy.test_strategies.StrategyCIII import StrategyCIII
 
 
 from plotter.Plotter import Plotter
@@ -37,7 +50,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_no_plot(self):
         tickers = ["TSLA", "SPY"]
 
-        strategies = [AV_STRATEGY.STRATEGYIII]
+        strategies = [StrategyIII()]
 
         smanager = \
             StrategyManager(
@@ -58,7 +71,7 @@ class TestIndicators(unittest.TestCase):
 
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -76,9 +89,9 @@ class TestIndicators(unittest.TestCase):
 
 
     def test_bollinger_bands(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+        tickers = ["TSLA", "SNAP"]
 
-        strategies = [AV_STRATEGY.STRATEGYII]
+        strategies = [StrategyII()]
 
         manager = \
             StrategyManager(
@@ -100,7 +113,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -117,7 +130,7 @@ class TestIndicators(unittest.TestCase):
     def test_bollinger_bands_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYII]
+        strategies = [StrategyII()]
 
         manager = \
             StrategyManager(
@@ -140,7 +153,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -158,7 +171,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYIII]
+        strategies = [StrategyIII()]
 
         manager = \
             StrategyManager(
@@ -183,7 +196,7 @@ class TestIndicators(unittest.TestCase):
 
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -200,7 +213,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYIII]
+        strategies = [StrategyIII()]
 
         manager = \
             StrategyManager(
@@ -225,7 +238,7 @@ class TestIndicators(unittest.TestCase):
 
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -243,7 +256,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_bulk(self):
         tickers = ["TSLA"]  # , "SPY", "TSLA", "SNAP"
 
-        strategies = [AV_STRATEGY.STRATEGYIII]
+        strategies = [StrategyIII()]
 
         manager = \
             StrategyManager(
@@ -270,7 +283,7 @@ class TestIndicators(unittest.TestCase):
 
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -287,7 +300,7 @@ class TestIndicators(unittest.TestCase):
     def test_atr(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYIV]
+        strategies = [StrategyIV()]
 
         manager = \
             StrategyManager(
@@ -310,7 +323,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIV.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIV.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -327,7 +340,7 @@ class TestIndicators(unittest.TestCase):
     def test_atr_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYIV]
+        strategies = [StrategyIV()]
 
         manager = \
             StrategyManager(
@@ -351,7 +364,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIV.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIV().name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -368,7 +381,7 @@ class TestIndicators(unittest.TestCase):
     def test_rsi(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYV]
+        strategies = [StrategyV()]
 
         manager = \
             StrategyManager(
@@ -390,7 +403,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYV.name][0].price_info
+        test_df = stocks_per_strategy[StrategyV.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -407,7 +420,7 @@ class TestIndicators(unittest.TestCase):
     def test_rsi_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYV]
+        strategies = [StrategyV()]
 
         manager = \
             StrategyManager(
@@ -430,7 +443,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYV.name][0].price_info
+        test_df = stocks_per_strategy[StrategyV.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -447,7 +460,7 @@ class TestIndicators(unittest.TestCase):
     def test_adx(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYVI]
+        strategies = [StrategyVI()]
 
         manager = \
             StrategyManager(
@@ -469,7 +482,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVI.name][0].price_info
+        test_df = stocks_per_strategy[StrategyVI.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -486,7 +499,7 @@ class TestIndicators(unittest.TestCase):
     def test_adx_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYVI]
+        strategies = [StrategyVI()]
 
         manager = \
             StrategyManager(
@@ -509,7 +522,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVI.name][0].price_info
+        test_df = stocks_per_strategy[StrategyVI.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -526,7 +539,7 @@ class TestIndicators(unittest.TestCase):
     def test_obv(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYVII]
+        strategies = [StrategyVII()]
 
         manager = \
             StrategyManager(
@@ -548,7 +561,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyVII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -565,7 +578,7 @@ class TestIndicators(unittest.TestCase):
     def test_obv_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYVII]
+        strategies = [StrategyVII()]
 
         manager = \
             StrategyManager(
@@ -588,7 +601,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyVII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -601,10 +614,11 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
+
     def test_slope(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYIX]
+        strategies = [StrategyIX()]
 
         manager = \
             StrategyManager(
@@ -626,7 +640,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYIX.name][0].price_info
+        test_df = stocks_per_strategy[StrategyIX.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -644,7 +658,7 @@ class TestIndicators(unittest.TestCase):
     def test_renko(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYVIII]
+        strategies = [StrategyVIII()]
 
         manager = \
             StrategyManager(
@@ -666,7 +680,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYVIII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyVIII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -684,7 +698,7 @@ class TestIndicators(unittest.TestCase):
     def test_renko_macd(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYCIII]
+        strategies = [StrategyCIII()]
 
         manager = \
             StrategyManager(
@@ -706,7 +720,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCIII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyCIII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -723,7 +737,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_rsi(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYCI]
+        strategies = [StrategyCI()]
 
         manager = \
             StrategyManager(
@@ -745,7 +759,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCI.name][0].price_info
+        test_df = stocks_per_strategy[StrategyCI.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -763,7 +777,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_rsi_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYCI]
+        strategies = [StrategyCI()]
 
         manager = \
             StrategyManager(
@@ -785,7 +799,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCI.name][0].price_info
+        test_df = stocks_per_strategy[StrategyCI.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -802,7 +816,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_atr_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYC]
+        strategies = [StrategyC()]
 
         manager = \
             StrategyManager(
@@ -824,7 +838,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYC.name][0].price_info
+        test_df = stocks_per_strategy[StrategyC.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -841,7 +855,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_atr(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYC]
+        strategies = [StrategyC()]
 
         manager = \
             StrategyManager(
@@ -863,7 +877,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYC.name][0].price_info
+        test_df = stocks_per_strategy[StrategyC().name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -879,7 +893,7 @@ class TestIndicators(unittest.TestCase):
     def test_macd_rsi_adx_atr_obv_bb_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
-        strategies = [AV_STRATEGY.STRATEGYCII]
+        strategies = [StrategyCII()]
 
         manager = \
             StrategyManager(
@@ -901,7 +915,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyCII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 
@@ -915,10 +929,10 @@ class TestIndicators(unittest.TestCase):
             i += 1
 
 
-    def test_macd_rsi_adx_atr_obv(self):
-        tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
+    def test_macd_rsi_adx_atr_obv_bb(self):
+        tickers = ["TSLA", "SNAP"]
 
-        strategies = [AV_STRATEGY.STRATEGYCII]
+        strategies = [StrategyCII()]
 
         manager = \
             StrategyManager(
@@ -940,7 +954,7 @@ class TestIndicators(unittest.TestCase):
             plt.show()
 
         test_date = "14/07/2020"
-        test_df = stocks_per_strategy[AV_STRATEGY.STRATEGYCII.name][0].price_info
+        test_df = stocks_per_strategy[StrategyCII.name][0].price_info
         ticker = "TSLA"
         values = [318.0, 286.2, 311.2, 303.359, 117090500.0]
 

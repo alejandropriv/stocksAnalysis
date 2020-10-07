@@ -9,6 +9,7 @@ import datetime
 
 class StrategyIII(Strategy):
 
+    name = "StrategyIII"
 
     def __init__(self):
 

@@ -2,6 +2,8 @@ from data.DataSource import DATASOURCETYPE
 
 from data.PandasDataReaderDataSource import PandasDataReaderDataSource
 from data.YFinanceDataSource import YFinanceDataSource
+from data.AlphaAPIDataSource import AlphaAPIDataSource
+
 
 import datetime
 
@@ -12,7 +14,8 @@ class DataCollector:
 
     def __init__(self,
                  tickers,
-                 data_source_type=DATASOURCETYPE.YFINANCE,
+                 data_source_type_historic,
+                 data_source_type_fundamentals,
                  fundamentals=True,
                  historical=True,
                  start_date=datetime.date.today() - datetime.timedelta(1),
@@ -26,8 +29,12 @@ class DataCollector:
             print("Error: Define your tickers first !!!.")
             raise ValueError
 
-        self.data_source = None
-        self.set_data_source(data_source_type, tickers)
+        self.data_source_historic = self.set_data_source(data_source_type_historic, tickers)
+        self.data_source_fundamentals = self.set_data_source(data_source_type_fundamentals, tickers)
+
+        self.data_source_fundamentals = None
+
+        self.set_data_source(data_source_type_historic, tickers)
 
         self.start_date = None
         self.end_date = None
@@ -58,34 +65,34 @@ class DataCollector:
 
 
 
-    def set_data_source(self, data_source_type, tickers):
+    @staticmethod
+    def set_data_source(data_source_type, tickers):
         if data_source_type is DATASOURCETYPE.PANDASDATAREADER:
-            self.data_source = PandasDataReaderDataSource()
+            data_source = PandasDataReaderDataSource()
 
         elif data_source_type is DATASOURCETYPE.YFINANCE:
-            self.data_source = YFinanceDataSource(tickers)
+            data_source = YFinanceDataSource(tickers)
 
         elif data_source_type is DATASOURCETYPE.ALPHA:
-            self.data_source = None  # TODO
+            data_source = AlphaAPIDataSource(tickers)
 
-        elif data_source_type is DATASOURCETYPE.YAHOOFINANCIALS:
-            self.data_source = None  # TODO
 
-        self.data_source.tickers = tickers
+        data_source.tickers = tickers
+        return data_source
 
 
     def extract_historical_data(self):
 
 
-        self.data_source.extract_historical_data(
+        self.data_source_historic.extract_historical_data(
             start_date=self.start_date,
             end_date=self.end_date,
             period=self.period,
             interval=self.interval
         )
 
-        return self.data_source
+        return self.data_source_historic
 
     def extract_fundamentals(self):
-        #self.data_source.extract_fundamentals()
-        pass
+        self.data_source_historic.extract_fundamentals()
+

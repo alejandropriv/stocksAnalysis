@@ -24,18 +24,10 @@ class YFinanceDataSource(DataSource):
         super().extract_historical_data(
             start_date=start_date,
             end_date=end_date,
+            time_delta=time_delta,
             period=period,
             interval=interval
         )
-
-        self.start_date = start_date
-        self.end_date = end_date
-        self.time_delta = time_delta
-        self.period = period
-        self.interval = interval
-        self.interval_str = interval.name
-
-
 
 
         if self.validate_parameters() is True:
@@ -43,43 +35,6 @@ class YFinanceDataSource(DataSource):
 
         else:
             print("Verify parameters according to logs")
-
-
-    def validate_dates(self):
-
-        if self.end_date is None:
-            print("Error: end_date is None, Set a valid end date.")
-            return False
-
-        if self.period is None and self.start_date is None:
-            print("Error: Please set start_date or period")
-            return False
-
-
-        if self.period is None:
-            self.period = "max"
-        else:
-            self.start_date = None
-            self.end_date = None
-
-
-        if self.start_date is not None:
-            if self.start_date > self.end_date:
-
-                print("Error:  Start_date should be earlier than end date")
-                return False
-
-
-        elif self.time_delta is not None and self.time_delta > 0:
-            self.start_date = datetime.datetime.today() - datetime.timedelta(self.time_delta)
-
-
-        else:
-            print("Error: Neither the Start_date nor the time_delta were defined ")
-            return False
-
-        return True
-
 
 
     def validate_parameters(self):
@@ -115,6 +70,10 @@ class YFinanceDataSource(DataSource):
                     result = False
 
         return result
+
+    def extract_fundamentals(self):
+        pass
+
 
     def extract_data(self):
 
@@ -163,8 +122,9 @@ class YFinanceDataSource(DataSource):
 
         self.prices.bfill(axis=0, inplace=True)
 
-#TODO put a debug flag for this print
-        #print(self.prices)
+
+    def extract_fundamentals(self):
+        pass
 
     def get_prices(self, tickers, key_titles):
         available_titles = [Constants.get_open_key(),
@@ -198,4 +158,3 @@ class YFinanceDataSource(DataSource):
 
         self.prices = prices_temp.copy()
         return self.prices
-    #TODO Add bulk case

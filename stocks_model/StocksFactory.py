@@ -24,7 +24,8 @@ class StocksFactory:
     @staticmethod
     def create_stocks(
             tickers,
-            data_source_type,
+            data_source_type_historic,
+            data_source_type_fundamentals,
             start_date=datetime.date.today() - datetime.timedelta(1),
             end_date=datetime.date.today(),
             period=None,
@@ -41,7 +42,8 @@ class StocksFactory:
         data_collector = \
             DataCollector(
                 tickers=tickers,
-                data_source_type=data_source_type,
+                data_source_type_historic=data_source_type_historic,
+                data_source_type_fundamentals=data_source_type_fundamentals,
                 fundamentals=fundamentals,
                 historical=historical,
                 start_date=start_date,
@@ -50,15 +52,17 @@ class StocksFactory:
                 interval=interval
             )
 
+        data_source_historical = None
+        data_source_fundamentals = None
         if historical is True:
-            data_source = \
+            data_source_historical = \
                 data_collector.extract_historical_data()
 
-            stocks = StocksFactory.load_stocks(data_source, bulk, indicators)
-
-
         if fundamentals is True:
-            pass
+            data_source_fundamentals = \
+                data_collector.extract_fundamentals()
+
+        stocks = StocksFactory.load_stocks(data_source_historical, data_source_fundamentals,   bulk, indicators)
 
         return stocks
 

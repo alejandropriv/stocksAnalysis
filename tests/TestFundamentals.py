@@ -16,7 +16,6 @@ import datetime
 DEVELOPMENT = True
 
 class TestBasics(unittest.TestCase):
-    apikey = "86VFFOKUNB1M9YQ8"
     data_source_type = None
     tickers = None
     fundamentals = True
@@ -63,7 +62,7 @@ class TestBasics(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
             )
 
@@ -97,7 +96,7 @@ class TestBasics(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy

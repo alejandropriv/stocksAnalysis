@@ -56,7 +56,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = smanager.stocks_per_strategy
@@ -97,7 +97,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -136,7 +136,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
             )
 
@@ -177,7 +177,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -219,7 +219,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -262,7 +262,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
             )
 
@@ -306,7 +306,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
 
             )
 
@@ -346,7 +346,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
 
             )
@@ -387,7 +387,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -426,7 +426,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
             )
 
@@ -466,7 +466,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -505,7 +505,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
             )
 
@@ -545,7 +545,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -584,7 +584,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE,
+                data_source_type_historic=DATASOURCETYPE.YFINANCE,
                 bulk=True
             )
 
@@ -624,7 +624,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -664,7 +664,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -704,7 +704,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -743,7 +743,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -783,7 +783,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -822,7 +822,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -861,7 +861,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -899,7 +899,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy
@@ -938,7 +938,7 @@ class TestIndicators(unittest.TestCase):
             StrategyManager(
                 strategies=strategies,
                 tickers=tickers,
-                data_source_type=DATASOURCETYPE.YFINANCE
+                data_source_type_historic=DATASOURCETYPE.YFINANCE
             )
 
         stocks_per_strategy = manager.stocks_per_strategy

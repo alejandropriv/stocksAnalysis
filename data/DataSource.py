@@ -9,7 +9,6 @@ class DATASOURCETYPE(Enum):
     YFINANCE = 1
     PANDASDATAREADER = 2
     ALPHA = 3
-    # YAHOOFINANCIALS = 4
 
 
 class DataSource(metaclass=abc.ABCMeta):
@@ -34,6 +33,45 @@ class DataSource(metaclass=abc.ABCMeta):
         self.daily_return = None
 
 
+    def validate_dates(self):
+
+        if self.end_date is None:
+            print("Error: end_date is None, Set a valid end date.")
+            return False
+
+        if self.period is None and self.start_date is None:
+            print("Error: Please set start_date or period")
+            return False
+
+
+        if self.period is None:
+            self.period = "max"
+        else:
+            self.start_date = None
+            self.end_date = None
+
+
+        if self.start_date is not None:
+            if self.start_date > self.end_date:
+
+                print("Error:  Start_date should be earlier than end date")
+                return False
+
+
+        elif self.time_delta is not None and self.time_delta > 0:
+            self.start_date = datetime.datetime.today() - datetime.timedelta(self.time_delta)
+
+
+        else:
+            print("Error: Neither the Start_date nor the time_delta were defined ")
+            return False
+
+        return True
+
+
+
+
+
     def get_tickers_str(self):
 
         tickers_str = ""
@@ -44,11 +82,18 @@ class DataSource(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def extract_historical_data(self,
-                                start_date=datetime.date.today() - datetime.timedelta(365),
+                                start_date=None,
                                 end_date=(datetime.date.today()),
+                                time_delta=None,
                                 period=None,
                                 interval=Constants.INTERVAL.DAY):
-        pass
+
+        self.start_date = start_date
+        self.end_date = end_date
+        self.time_delta = time_delta
+        self.period = period
+        self.interval = interval
+        self.interval_str = interval.name
 
 
 
@@ -61,6 +106,9 @@ class DataSource(metaclass=abc.ABCMeta):
     def get_prices(self, tickers, key_titles):
         pass
 
+    @abc.abstractmethod
+    def extract_fundamentals(self):
+        pass
 
 
 

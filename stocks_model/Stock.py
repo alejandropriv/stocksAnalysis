@@ -49,12 +49,6 @@ class Stock:
         self.fundamentals[self.ticker].get_data()
 
 
-    def get_prices_info(self, cached=False, keys=None):
-        if cached is True:
-            return self.price_info
-        else:
-            return self.get_prices_data(keys=keys)
-
     def get_key_titles(self, keys):
 
         key_titles=[]
@@ -89,6 +83,13 @@ class Stock:
                 key_titles.append(key)
 
         return key_titles
+
+
+    def get_prices_info(self, cached=False, keys=None):
+        if cached is True:
+            return self.price_info
+        else:
+            return self.get_prices_data(keys=keys)
 
 
     # Tickers parameter should be a sub-set of self.tickers
@@ -146,31 +147,13 @@ class Stock:
         return prices
 
 
-    def get_historical_data(self,
-                            end_date=datetime.datetime.now(),
-                            start_date=None,
-                            time_delta=None,
-                            period=None,
-                            interval=Constants.INTERVAL.DAY):
 
-
-
-
-        if self.data_source.prices is None or self.data_source.prices.empty == True:
-            self.data_source.extract_historical_data(
-                start_date=start_date,
-                end_date=end_date,
-                time_delta=time_delta,
-                period=period,
-                interval=interval)
-
-        self.price_info = self.get_prices_data()
 
 
     def append_indicator(self, new_indicator=None):
 
         # if get_historical_data has already been called it returns the cached data
-        self.get_historical_data()
+        #self.get_historical_data()
 
         new_indicator.set_input_data(self.price_info)
         new_indicator.calculate()
@@ -188,3 +171,23 @@ class Stock:
         #
         # self.daily_return = DailyReturn(self.get_prices_close_adj(), period)
         # self.daily_return.get_statistical_data()
+
+    # def get_historical_data(self,
+    #                         end_date=datetime.datetime.now(),
+    #                         start_date=None,
+    #                         time_delta=None,
+    #                         period=None,
+    #                         interval=Constants.INTERVAL.DAY):
+    #
+    #
+    #
+    #
+    #     if self.data_source.prices is None or self.data_source.prices.empty == True:
+    #         self.data_source.extract_historical_data(
+    #             start_date=start_date,
+    #             end_date=end_date,
+    #             time_delta=time_delta,
+    #             period=period,
+    #             interval=interval)
+    #
+    #     self.price_info = self.get_prices_data()

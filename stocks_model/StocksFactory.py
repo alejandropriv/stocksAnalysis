@@ -1,4 +1,3 @@
-
 from utilities.Constants import Constants
 from stocks_model.Stock import Stock
 
@@ -7,6 +6,7 @@ from data.DataCollector import DataCollector
 import datetime
 import pandas as pd
 import copy
+
 
 class StocksFactory:
 
@@ -20,87 +20,92 @@ class StocksFactory:
         tickers.append("^GSPC")
         return tickers
 
-
     @staticmethod
     def create_stocks(
+            strategy,
             tickers,
-            data_source_type_historic,
-            data_source_type_fundamentals,
-            start_date=datetime.date.today() - datetime.timedelta(1),
-            end_date=datetime.date.today(),
-            period=None,
-            interval=Constants.INTERVAL.DAY,
-            fundamentals=True,
-            historical=True,
-            indicators=None,
-            bulk=False
+            bulk=True,
+
     ):
 
         tickers = StocksFactory.add_SPI500_ticker(tickers=tickers)
-        stocks = None
 
+
+# TODO: Check if still Getting prices is being executed twice
         data_collector = \
             DataCollector(
                 tickers=tickers,
-                data_source_type_historic=data_source_type_historic,
-                data_source_type_fundamentals=data_source_type_fundamentals,
-                fundamentals=fundamentals,
-                historical=historical,
-                start_date=start_date,
-                end_date=end_date,
-                period=period,
-                interval=interval
+                strategy=strategy
             )
 
         data_source_historical = None
         data_source_fundamentals = None
-        if historical is True:
+
+        if data_collector.data_source_historical is not None:
             data_source_historical = \
                 data_collector.extract_historical_data()
 
-        if fundamentals is True:
+        if data_collector.data_source_fundamentals is not None:
             data_source_fundamentals = \
                 data_collector.extract_fundamentals()
 
-        stocks = StocksFactory.load_stocks(data_source_historical, data_source_fundamentals,   bulk, indicators)
+
+        indicators = strategy.indicators
+        stocks = StocksFactory.load_stocks(data_source_historical=data_source_historical,
+                                           data_source_fundamentals=data_source_fundamentals,
+                                           bulk=bulk,
+                                           indicators=indicators)
 
         return stocks
 
-
-
     @staticmethod
-    def load_stocks(data_source=None, bulk=False, indicators=None):
+    def load_stocks(data_source_historical=None, data_source_fundamentals=None, bulk=False, indicators=None):
 
         stocks = []
-        if data_source is None:
-            print("Error: Define your data source first !!!.")
+        if data_source_historical is None and data_source_fundamentals is None:
+            print("Error: Define your data sources first !!!.")
             return
 
-        if data_source.tickers is None:
+        if data_source_historical is not None:
+            tickers = data_source_historical.tickers
+
+        elif data_source_fundamentals is not None:
+            tickers = data_source_fundamentals.tickers
+
+        else:
             print("Error: Set Historical data")
             return
 
+
         if bulk is True:  # print("This option has not been already programmed! wait for next release")
 
-            stock = Stock(ticker=data_source.tickers, data_source=data_source)
+            stock = Stock(ticker=tickers,
+                          data_source_historical=data_source_historical,
+                          data_source_fundamentals=data_source_fundamentals)
+
             stock = StocksFactory.load_indicators(stock, indicators)
             stocks.append(stock)
 
         else:
-            for ticker in data_source.tickers:
+            for ticker in tickers:
 
-                data_source_stock = copy.copy(data_source)
-                data_source_stock.prices = pd.DataFrame()
-                data_source_stock.prices = pd.concat([data_source.prices[ticker]], axis=1, keys=[ticker])
+                data_source_stock = None
+                if data_source_historical is not None:
+                    data_source_stock = copy.copy(data_source_historical)
+                    data_source_stock.prices = pd.DataFrame()
 
-                stock = Stock(ticker=[ticker], data_source=data_source_stock)
+                    data_source_stock.prices = pd.concat([data_source_historical.prices[ticker]], axis=1, keys=[ticker])
+
+
+                stock = Stock(ticker=[ticker],
+                              data_source_historical=data_source_stock,
+                              data_source_fundamentals=data_source_fundamentals)
+
                 stock = StocksFactory.load_indicators(stock, indicators)
 
                 stocks.append(stock)
 
         return stocks
-
-
 
     @staticmethod
     def load_indicators(stock, indicators):

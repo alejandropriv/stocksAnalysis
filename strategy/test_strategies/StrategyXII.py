@@ -1,26 +1,31 @@
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
 
+from data.DataSource import DATASOURCETYPE
+from fundamentals.Fundamentals import FUNDAMENTALSTYPE
+
 
 import datetime
 
 
 
-class StrategyXI(Strategy):
+class StrategyXII(Strategy):
 
-    name = "StrategyXI"
+    name = "StrategyXII"
 
     def __init__(self):
 
         super().__init__()
-        self.set_data_source_required_parameters()
+        self.set_data_source_types()
         self.set_date_parameters()
         self.set_indicators()
-        self.fundamentals = True
+        self.fundamentals_options = [FUNDAMENTALSTYPE.BALANCESHEET,
+                                     FUNDAMENTALSTYPE.INCOMESTATEMENT,
+                                     FUNDAMENTALSTYPE.CASHFLOW]
 
-    def set_data_source_required_parameters(self):
-        self.historical = False
-        self.fundamentals = True
+    def set_data_source_types(self):
+        self.data_source_type_historical = None
+        self.data_source_type_fundamentals = DATASOURCETYPE.ALPHA
 
     # If period is not None it will precede over date
     def set_date_parameters(self):

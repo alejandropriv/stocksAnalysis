@@ -2,6 +2,7 @@ from strategy.Strategy import Strategy
 from utilities.Constants import Constants
 from indicators.RSI import RSI
 from indicators.Slope import Slope
+from data.DataSource import DATASOURCETYPE
 
 
 import datetime
@@ -15,13 +16,13 @@ class StrategyIX(Strategy):
     def __init__(self):
 
         super().__init__()
-        self.set_data_source_required_parameters()
+        self.set_data_source_types()
         self.set_date_parameters()
         self.set_indicators()
 
-    def set_data_source_required_parameters(self):
-        self.historical = True
-        self.fundamentals = True
+    def set_data_source_types(self):
+        self.data_source_type_historical = DATASOURCETYPE.YFINANCE
+        self.data_source_type_fundamentals = None
 
     # If period is not None it will precede over date
     def set_date_parameters(self):

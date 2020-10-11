@@ -3,6 +3,15 @@ from fundamentals.BalanceSheet import BalanceSheet
 from fundamentals.CashFlow import CashFlow
 from fundamentals.Statistics import Statistics
 
+from enum import Enum
+
+
+
+class FUNDAMENTALSTYPE(Enum):
+    OVERVIEW = 1
+    BALANCE_SHEET = 2
+    CASH_FLOW = 2
+    INCOME_STATEMENT = 3
 
 class Fundamentals:
 

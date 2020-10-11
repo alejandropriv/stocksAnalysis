@@ -1,11 +1,7 @@
 import requests
 
-from utilities.Constants import Constants
 
-
-
-
-class RequestHttp:
+class HttpRequest:
 
 
     def __init__(self ):

@@ -2,24 +2,14 @@ from fundamentals.Fundamentals import Fundamentals
 
 from utilities.Constants import Constants
 
-import datetime
-
 
 class Stock:
 
     # Put here an enum and a case with the enum
     def __init__(self,
                  ticker=None,
-                 data_source=None):
-
-        self.error = None
-        self.fundamentals = None
-        self.data_source = None
-        self.daily_return = None
-
-        self.price_info = None
-
-        self.indicators = []
+                 data_source_historical=None,
+                 data_source_fundamentals=None):
 
         if ticker is None:
             print("Error: Define your tickers first !!!.")
@@ -27,19 +17,28 @@ class Stock:
 
         self.ticker = ticker
 
+        self.error = None
+        self.fundamentals = None
+        self.data_source_historical = data_source_historical
+
+        self.daily_return = None
+
+        self.price_info = None
+
+        self.indicators = []
+
+        if data_source_historical is not None:
+            self.get_prices_data()
+
+        self.data_source_fundamentals = data_source_fundamentals
+        if data_source_fundamentals is not None:
+            self.get_fundamentals()
 
 
-        self.set_data_source(data_source)
+
+
 
         print("Stock {} created".format(ticker))
-
-    def set_data_source(self, data_source):
-        if data_source is None:
-            print("Error: Please Specify a DataSource object !!!.")
-            raise ValueError
-
-        self.data_source = data_source
-        self.get_prices_data()
 
 
 
@@ -85,12 +84,6 @@ class Stock:
         return key_titles
 
 
-    def get_prices_info(self, cached=False, keys=None):
-        if cached is True:
-            return self.price_info
-        else:
-            return self.get_prices_data(keys=keys)
-
 
     # Tickers parameter should be a sub-set of self.tickers
     def get_prices_data(self,
@@ -111,8 +104,8 @@ class Stock:
         method_tag = "get_prices_data"
 
 
-        if self.data_source is not None:
-            if self.data_source.prices is None or self.data_source.prices.empty is True:
+        if self.data_source_historical is not None:
+            if self.data_source_historical.prices is None or self.data_source_historical.prices.empty is True:
                 print("No historical data available, call method self.get_historical_data() first")
                 raise NotImplementedError  # here there should be an error object
 
@@ -122,7 +115,7 @@ class Stock:
             if len(key_titles) > 0:
 
                 # self.data_source.prices = self.data_source.prices.sort_index()
-                prices = self.data_source.get_prices(self.ticker, key_titles)
+                prices = self.data_source_historical.get_prices(self.ticker, key_titles)
 
 
             else:
@@ -141,20 +134,14 @@ class Stock:
             raise ValueError
 
 
-
-
         self.price_info = prices
         return prices
-
-
 
 
 
     def append_indicator(self, new_indicator=None):
 
         # if get_historical_data has already been called it returns the cached data
-        #self.get_historical_data()
-
         new_indicator.set_input_data(self.price_info)
         new_indicator.calculate()
 

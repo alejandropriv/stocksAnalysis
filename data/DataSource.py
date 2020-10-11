@@ -14,57 +14,43 @@ class DATASOURCETYPE(Enum):
 class DataSource(metaclass=abc.ABCMeta):
 
 
-    @abc.abstractmethod
-    def __init__(self, tickers):
-
-        if tickers is None:
-            print("Tickers are None, please define your tickers")
-            raise AttributeError
-
-        self.tickers = tickers
-        self.tickers_str = self.get_tickers_str()
-        self.start_date = None
-        self.end_date = None
-        self.period = None
-        self.time_delta = None
-        self.interval = None
-        self.interval_str = None
-
-        self.daily_return = None
+    def __init__(self):
+        pass
 
 
-    def validate_dates(self):
-
-        if self.end_date is None:
-            print("Error: end_date is None, Set a valid end date.")
-            return False
-
-        if self.period is None and self.start_date is None:
-            print("Error: Please set start_date or period")
-            return False
 
 
-        if self.period is None:
-            self.period = "max"
+    @staticmethod
+    def validate_dates(dates=None):
+
+        if dates is None:
+            raise ValueError("Wrong input parameters, Verify your code!!!")
+
+        if dates["end_date"] is None:
+            raise ValueError("Error: end_date is None, Set a valid end date.")
+
+        if dates["period"] is None and dates["start_date"] is None:
+            raise ValueError("Error: Please set start_date or period")
+
+
+        if dates["period"] is None:
+            dates["period"] = "max"
         else:
-            self.start_date = None
-            self.end_date = None
+            dates["start_date"] = None
+            dates["end_date"] = None
 
 
-        if self.start_date is not None:
-            if self.start_date > self.end_date:
-
-                print("Error:  Start_date should be earlier than end date")
-                return False
+        if dates["start_date"] is not None:
+            if dates["start_date"] > dates["end_date"]:
+                raise ValueError("Error:  Start_date should be earlier than end date")
 
 
-        elif self.time_delta is not None and self.time_delta > 0:
-            self.start_date = datetime.datetime.today() - datetime.timedelta(self.time_delta)
+        elif dates["time_delta"] is not None and dates["time_delta"]  > 0:
+            dates["start_date"] = datetime.datetime.today() - datetime.timedelta(dates["time_delta"] )
 
 
         else:
-            print("Error: Neither the Start_date nor the time_delta were defined ")
-            return False
+            raise ValueError("Error: Neither the Start_date nor the time_delta were defined ")
 
         return True
 
@@ -72,31 +58,28 @@ class DataSource(metaclass=abc.ABCMeta):
 
 
 
-    def get_tickers_str(self):
+    @staticmethod
+    def get_tickers_str(tickers):
 
         tickers_str = ""
-        for ticker in self.tickers:
+        for ticker in tickers:
             tickers_str = tickers_str + " " + ticker
 
         return tickers_str
 
     @abc.abstractmethod
     def extract_historical_data(self,
+                                tickers=None,
                                 start_date=None,
                                 end_date=(datetime.date.today()),
-                                time_delta=None,
                                 period=None,
-                                interval=Constants.INTERVAL.DAY):
+                                interval=Constants.INTERVAL.DAY,
+                                time_delta=None,
+                                ):
 
-        self.start_date = start_date
-        self.end_date = end_date
-        self.time_delta = time_delta
-        self.period = period
-        self.interval = interval
-        self.interval_str = interval.name
-
-
-
+        if tickers is None:
+            print("Tickers are None, please define your tickers")
+            raise AttributeError
 
 
 

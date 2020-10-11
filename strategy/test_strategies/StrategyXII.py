@@ -19,9 +19,13 @@ class StrategyXII(Strategy):
         self.set_data_source_types()
         self.set_date_parameters()
         self.set_indicators()
-        self.fundamentals_options = [FUNDAMENTALSTYPE.BALANCESHEET,
-                                     FUNDAMENTALSTYPE.INCOMESTATEMENT,
-                                     FUNDAMENTALSTYPE.CASHFLOW]
+        self.fundamentals_options = \
+            [
+                FUNDAMENTALSTYPE.OVERVIEW,
+                FUNDAMENTALSTYPE.BALANCE_SHEET,
+                FUNDAMENTALSTYPE.INCOME_STATEMENT,
+                FUNDAMENTALSTYPE.CASH_FLOW
+            ]
 
     def set_data_source_types(self):
         self.data_source_type_historical = None

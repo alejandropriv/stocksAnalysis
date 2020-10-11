@@ -43,7 +43,6 @@ class Fundamentals:
         self.clean_data()
 
 
-
     def clean_data(self):
 
         fundamentals = self.income_statement.get_data()

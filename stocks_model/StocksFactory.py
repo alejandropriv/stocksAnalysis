@@ -1,9 +1,7 @@
-from utilities.Constants import Constants
 from stocks_model.Stock import Stock
 
 from data.DataCollector import DataCollector
 
-import datetime
 import pandas as pd
 import copy
 
@@ -16,7 +14,7 @@ class StocksFactory:
     # Fix this was created to fix the problem of having only one stock (input dataframe is different)
     # This should be removed and dataframe handled accordingly
     @staticmethod
-    def add_SPI500_ticker(tickers):
+    def add_spi500_ticker(tickers):
         tickers.append("^GSPC")
         return tickers
 
@@ -28,38 +26,55 @@ class StocksFactory:
 
     ):
 
-        tickers = StocksFactory.add_SPI500_ticker(tickers=tickers)
+        tickers = StocksFactory.add_spi500_ticker(tickers=tickers)
 
 
 # TODO: Check if still Getting prices is being executed twice
-        data_collector = \
-            DataCollector(
-                tickers=tickers,
-                strategy=strategy
-            )
 
         data_source_historical = None
         data_source_fundamentals = None
 
-        if data_collector.data_source_historical is not None:
-            data_source_historical = \
-                data_collector.extract_historical_data()
+        data_sources = \
+            DataCollector.get_data_sources(
+                strategy.data_source_type_historical,
+                strategy.data_source_type_fundamentals
+            )
 
-        if data_collector.data_source_fundamentals is not None:
-            data_source_fundamentals = \
-                data_collector.extract_fundamentals()
+        if DataCollector.HISTORICAL_KEY in data_sources.keys():
+            data_source_historical = data_sources[DataCollector.HISTORICAL_KEY]
+
+
+            if data_source_historical is not None:
+                data_source_historical.extract_historical_data(
+                    tickers=tickers,
+                    start_date=strategy.start_date,
+                    end_date=strategy.end_date,
+                    period=strategy.period,
+                    interval=strategy.interval
+
+                )
+
+        if DataCollector.FUNDAMENTALS_KEY in data_sources.keys():
+            data_source_fundamentals = data_sources[DataCollector.FUNDAMENTALS_KEY]
+
+            if data_source_fundamentals is not None:
+                data_source_fundamentals.extract_fundamentals(
+                    tickers=tickers,
+                    required_elements=strategy.fundamentals_options)
 
 
         indicators = strategy.indicators
-        stocks = StocksFactory.load_stocks(data_source_historical=data_source_historical,
-                                           data_source_fundamentals=data_source_fundamentals,
-                                           bulk=bulk,
-                                           indicators=indicators)
+        stocks = StocksFactory.load_stocks(
+            tickers=tickers,
+            data_source_historical=data_source_historical,
+            data_source_fundamentals=data_source_fundamentals,
+            bulk=bulk,
+            indicators=indicators)
 
         return stocks
 
     @staticmethod
-    def load_stocks(data_source_historical=None, data_source_fundamentals=None, bulk=False, indicators=None):
+    def load_stocks(tickers=None, data_source_historical=None, data_source_fundamentals=None, bulk=False, indicators=None):
 
         stocks = []
         if data_source_historical is None and data_source_fundamentals is None:
@@ -67,10 +82,10 @@ class StocksFactory:
             return
 
         if data_source_historical is not None:
-            tickers = data_source_historical.tickers
+            tickers = tickers
 
         elif data_source_fundamentals is not None:
-            tickers = data_source_fundamentals.tickers
+            tickers = tickers
 
         else:
             print("Error: Set Historical data")

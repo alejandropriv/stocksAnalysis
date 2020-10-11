@@ -4,78 +4,39 @@ from data.YFinanceDataSource import YFinanceDataSource
 from data.AlphaAPIDataSource import AlphaAPIDataSource
 
 
-import datetime
-
-from utilities.Constants import Constants
-
 
 class DataCollector:
 
-    def __init__(self, tickers, strategy):
+    HISTORICAL_KEY = "historical"
+    FUNDAMENTALS_KEY = "fundamentals"
 
+    def __init__(self):
         super().__init__()
 
-        if tickers is None:
-            print("Error: Define your tickers first !!!.")
-            raise ValueError
 
-        self.data_source_historical = self.set_data_source(strategy.data_source_type_historical, tickers)
-        self.data_source_fundamentals = self.set_data_source(strategy.data_source_type_fundamentals, tickers)
-
-        self.start_date = None
-        self.end_date = None
-        self.period = None
-        self.interval = None
-
-        self.set_parameters(strategy.start_date, strategy.end_date, strategy.period, strategy.interval)
-
-
-
-    def set_parameters(
-            self,
-            start_date=datetime.date.today() - datetime.timedelta(1),
-            end_date=datetime.date.today(),
-            period=None,
-            interval=Constants.INTERVAL.DAY
-    ):
-
-        self.start_date = start_date
-        self.end_date = end_date
-        self.period = period
-        self.interval = interval
 
 
 
     @staticmethod
-    def set_data_source(data_source_type, tickers):
+    def set_data_source(data_source_type):
 
         if data_source_type is DATASOURCETYPE.YFINANCE:
-            data_source = YFinanceDataSource(tickers)
+            data_source = YFinanceDataSource()
 
         elif data_source_type is DATASOURCETYPE.ALPHA:
-            data_source = AlphaAPIDataSource(tickers)
+            data_source = AlphaAPIDataSource()
 
         else:
             return None
 
-
-        data_source.tickers = tickers
         return data_source
 
 
-    def extract_historical_data(self):
+    @staticmethod
+    def get_data_sources(data_source_type_historical, data_source_type_fundamentals):
+        data_sources = dict()
 
+        data_sources[DataCollector.HISTORICAL_KEY] = DataCollector.set_data_source(data_source_type_historical)
+        data_sources[DataCollector.FUNDAMENTALS_KEY] = DataCollector.set_data_source(data_source_type_fundamentals)
 
-        self.data_source_historical.extract_historical_data(
-            start_date=self.start_date,
-            end_date=self.end_date,
-            period=self.period,
-            interval=self.interval
-        )
-
-        return self.data_source_historical
-
-    def extract_fundamentals(self):
-        self.data_source_fundamentals.extract_fundamentals()
-        return self.data_source_fundamentals
-
+        return data_sources

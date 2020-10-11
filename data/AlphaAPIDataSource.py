@@ -15,18 +15,13 @@ class AlphaAPIDataSource(DataSource):
     _ALPHA_VANTAGE_KEY = "86VFFOKUNB1M9YQ8"
 
     def __init__(self,
-                 tickers,
                  api_key=None,
-                 required_items=None,
                  proxy=None
                  ):
 
-        super().__init__(tickers)
+        super().__init__()
 
-        if required_items is None:
-            required_items = []
 
-        self.required_items = required_items
 
         self.prices = pd.DataFrame()
 
@@ -49,8 +44,9 @@ class AlphaAPIDataSource(DataSource):
         self.url = "{}{}{}{}".format(
             AlphaAPIDataSource._ALPHA_VANTAGE_API_URL,
             AlphaAPIDataSource._FUNCTION,
-            function,
+            function.name,
             AlphaAPIDataSource._ALPHA_VANTAGE_KEY
+
         )
 
         return "https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=IBM&apikey=demo"
@@ -59,11 +55,15 @@ class AlphaAPIDataSource(DataSource):
 
 
 
-    def extract_fundamentals(self, tickers, required_elements):
+    def extract_fundamentals(self, tickers, required_elements=None):
 
-        for element in self.required_items:
+        if required_elements is None:
+            raise ValueError("No fundamentals selected, please check your code")
 
-            url = self.calculate_url()
+        url = ""
+        for element in required_elements:
+
+            url = self.calculate_url(element)
 
         response = HttpRequest.execute(url=url,
                                        proxy=self.proxy,
@@ -74,6 +74,7 @@ class AlphaAPIDataSource(DataSource):
 
 
     def extract_historical_data(self,
+                                tickers=None,
                                 start_date=None,
                                 end_date=(datetime.date.today()),
                                 time_delta=None,
@@ -81,26 +82,7 @@ class AlphaAPIDataSource(DataSource):
                                 interval=Constants.INTERVAL.DAY):
 
 
-        super().extract_historical_data(
-            start_date=start_date,
-            end_date=end_date,
-            period=period,
-            interval=interval
-        )
-
-        # self.start_date = start_date
-        # self.end_date = end_date
-        # self.time_delta = time_delta
-        # self.period = period
-        # self.interval = interval
-        # self.interval_str = interval.name
-        #
-        #
-        # if self.validate_parameters() is True:
-        #     self.extract_data()
-        #
-        # else:
-        #     print("Verify parameters according to logs")
+        pass
 
 
     def validate_parameters(self):

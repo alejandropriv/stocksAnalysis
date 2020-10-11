@@ -48,7 +48,8 @@ class Stock:
         self.fundamentals[self.ticker].get_data()
 
 
-    def get_key_titles(self, keys):
+    @staticmethod
+    def get_key_titles(keys):
 
         key_titles=[]
         if keys["has_high_key"] == True:
@@ -106,8 +107,8 @@ class Stock:
 
         if self.data_source_historical is not None:
             if self.data_source_historical.prices is None or self.data_source_historical.prices.empty is True:
-                print("No historical data available, call method self.get_historical_data() first")
-                raise NotImplementedError  # here there should be an error object
+                raise ValueError("No historical data available, call method self.get_historical_data() first")
+
 
             key_titles = self.get_key_titles(keys)
 

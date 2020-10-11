@@ -8,8 +8,6 @@ import copy
 
 class StocksFactory:
 
-    def __init__(self):
-        pass
 
     # Fix this was created to fix the problem of having only one stock (input dataframe is different)
     # This should be removed and dataframe handled accordingly

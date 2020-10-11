@@ -10,9 +10,11 @@ from utilities.Constants import Constants
 
 class AlphaAPIDataSource(DataSource):
 
-    _ALPHA_VANTAGE_API_URL = "https://www.alphavantage.co/query?"
-    _FUNCTION = "function="
-    _ALPHA_VANTAGE_KEY = "86VFFOKUNB1M9YQ8"
+    _AV_API_URL = "https://www.alphavantage.co/query"
+    _FUNCTION = "function"
+    _SYMBOL = "symbol"
+    _API_KEY = "apikey"
+    _AV_API_KEY = "86VFFOKUNB1M9YQ8"
 
     def __init__(self,
                  api_key=None,
@@ -25,12 +27,6 @@ class AlphaAPIDataSource(DataSource):
 
         self.prices = pd.DataFrame()
 
-        if api_key is None:
-            self.api_key = AlphaAPIDataSource._ALPHA_VANTAGE_KEY
-        else:
-            self.api_key = api_key._ALPHA_VANTAGE_KEY
-
-        self.api_url = AlphaAPIDataSource._ALPHA_VANTAGE_API_URL
 
         self.proxy = proxy
 
@@ -39,18 +35,24 @@ class AlphaAPIDataSource(DataSource):
     # Form the base url, the original function called must return
     # the function name defined in the alpha vantage api and the data
     # key for it and for its meta data.
-    def calculate_url(self, function):
+    @staticmethod
+    def calculate_url(ticker, function):
 
-        self.url = "{}{}{}{}".format(
-            AlphaAPIDataSource._ALPHA_VANTAGE_API_URL,
+        url = "{}?{}={}&{}={}&{}={}".format(
+            AlphaAPIDataSource._AV_API_URL,
             AlphaAPIDataSource._FUNCTION,
             function.name,
-            AlphaAPIDataSource._ALPHA_VANTAGE_KEY
+            AlphaAPIDataSource._SYMBOL,
+            ticker,
+            AlphaAPIDataSource._API_KEY,
+            AlphaAPIDataSource._AV_API_KEY
 
         )
+        print(url)
 
-        return "https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=IBM&apikey=demo"
 
+        return url
+        #         return "https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=IBM&apikey=demo"
 
 
 
@@ -60,17 +62,16 @@ class AlphaAPIDataSource(DataSource):
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
 
-        url = ""
         for element in required_elements:
+            for ticker in tickers:
+                url = self.calculate_url(ticker, element)
 
-            url = self.calculate_url(element)
-
-        response = HttpRequest.execute(url=url,
-                                       proxy=self.proxy,
-                                       treat_info_as_error=True
-                                       )
-        print(response)
-
+                response = HttpRequest.execute(url=url,
+                                               proxy=self.proxy,
+                                               treat_info_as_error=True
+                                               )
+                print(response)
+                # TODO: Mirar que pasa con los retries y los caracteres especiales
 
 
     def extract_historical_data(self,

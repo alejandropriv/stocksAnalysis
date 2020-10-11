@@ -33,7 +33,7 @@ class YFinanceDataSource(DataSource):
         )
 
         valid_parameters =\
-            self.validate_parameters(
+            YFinanceDataSource.validate_parameters(
                 start_date=start_date,
                 end_date=end_date,
                 time_delta=time_delta,
@@ -91,8 +91,8 @@ class YFinanceDataSource(DataSource):
 
 
 
-    def validate_parameters(self,
-                            start_date=None,
+    @staticmethod
+    def validate_parameters(start_date=None,
                             end_date=datetime.date.today(),
                             time_delta=None,
                             period=None,

@@ -10,11 +10,6 @@ class DataCollector:
     HISTORICAL_KEY = "historical"
     FUNDAMENTALS_KEY = "fundamentals"
 
-    def __init__(self):
-        super().__init__()
-
-
-
 
 
     @staticmethod

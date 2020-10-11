@@ -89,7 +89,7 @@ class YFinanceDataSource(DataSource):
 
         self.prices.bfill(axis=0, inplace=True)
 
-
+        return self.prices
 
     @staticmethod
     def validate_parameters(start_date=None,

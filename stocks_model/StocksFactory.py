@@ -9,7 +9,7 @@ import copy
 class StocksFactory:
 
 
-    # Fix this was created to fix the problem of having only one stock (input dataframe is different)
+    # TODO: Fix this was created to fix the problem of having only one stock (input dataframe is different)
     # This should be removed and dataframe handled accordingly
     @staticmethod
     def add_spi500_ticker(tickers):

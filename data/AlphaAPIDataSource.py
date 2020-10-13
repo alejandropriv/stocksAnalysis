@@ -1,6 +1,9 @@
 from data.DataSource import DataSource
 from http_request.HttpRequest import HttpRequest
+
+from fundamentals.Fundamentals import Fundamentals
 import pandas as pd
+
 import datetime
 
 from utilities.Constants import Constants
@@ -26,6 +29,7 @@ class AlphaAPIDataSource(DataSource):
 
 
         self.prices = pd.DataFrame()
+        self.fundamentals = None
 
 
         self.proxy = proxy
@@ -62,15 +66,25 @@ class AlphaAPIDataSource(DataSource):
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
 
+        fundamentals = Fundamentals()
+
         for element in required_elements:
+
+
+
             for ticker in tickers:
                 url = self.calculate_url(ticker, element)
+                try:
+                    response = \
+                        HttpRequest.execute(
+                            url=url,
+                            proxy=self.proxy,
+                            treat_info_as_error=True
+                        )
 
-                response = HttpRequest.execute(url=url,
-                                               proxy=self.proxy,
-                                               treat_info_as_error=True
-                                               )
-                print(response)
+                    print(response)
+                except Exception as e:
+                    print(e)
                 # TODO: Mirar que pasa con los retries y los caracteres especiales
 
 
@@ -88,37 +102,38 @@ class AlphaAPIDataSource(DataSource):
 
     def validate_parameters(self):
 
-        result = self.validate_dates()
-
-        # Intra-day intervals
-        if self.interval is Constants.INTERVAL.MINUTE or \
-                self.interval is Constants.INTERVAL.MINUTE2 or \
-                self.interval is Constants.INTERVAL.MINUTE5 or \
-                self.interval is Constants.INTERVAL.MINUTE15 or \
-                self.interval is Constants.INTERVAL.MINUTE30 or \
-                self.interval is Constants.INTERVAL.MINUTE60 or \
-                self.interval is Constants.INTERVAL.MINUTE90 or \
-                self.interval is Constants.INTERVAL.HOUR:
-
-            if self.start_date is None and self.end_date is None:
-
-                if self.period is not Constants.PERIOD.DAY or \
-                        self.period is not Constants.PERIOD.DAY5 or \
-                        self.period is not Constants.PERIOD.MONTH:
-
-                    print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
-                    result = False
-
-
-            else:
-                delta = (self.end_date - self.start_date).seconds
-
-                max_days = 60 * 24 * 60 * 60
-                if delta > max_days:
-                    print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
-                    result = False
-
-        return result
+        pass
+        # result = self.validate_dates()
+        #
+        # # Intra-day intervals
+        # if self.interval is Constants.INTERVAL.MINUTE or \
+        #         self.interval is Constants.INTERVAL.MINUTE2 or \
+        #         self.interval is Constants.INTERVAL.MINUTE5 or \
+        #         self.interval is Constants.INTERVAL.MINUTE15 or \
+        #         self.interval is Constants.INTERVAL.MINUTE30 or \
+        #         self.interval is Constants.INTERVAL.MINUTE60 or \
+        #         self.interval is Constants.INTERVAL.MINUTE90 or \
+        #         self.interval is Constants.INTERVAL.HOUR:
+        #
+        #     if self.start_date is None and self.end_date is None:
+        #
+        #         if self.period is not Constants.PERIOD.DAY or \
+        #                 self.period is not Constants.PERIOD.DAY5 or \
+        #                 self.period is not Constants.PERIOD.MONTH:
+        #
+        #             print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
+        #             result = False
+        #
+        #
+        #     else:
+        #         delta = (self.end_date - self.start_date).seconds
+        #
+        #         max_days = 60 * 24 * 60 * 60
+        #         if delta > max_days:
+        #             print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
+        #             result = False
+        #
+        # return result
 
 
 

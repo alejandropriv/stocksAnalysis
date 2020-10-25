@@ -5,9 +5,12 @@ from fundamentals.Fundamentals import Fundamentals
 import pandas as pd
 
 import datetime
+import sys
+import time
 
 from utilities.Constants import Constants
-
+from pprint import pprint
+import traceback
 
 
 
@@ -18,6 +21,8 @@ class AlphaAPIDataSource(DataSource):
     _SYMBOL = "symbol"
     _API_KEY = "apikey"
     _AV_API_KEY = "86VFFOKUNB1M9YQ8"
+
+    _QA_API_KEY = False
 
     def __init__(self,
                  api_key=None,
@@ -63,16 +68,19 @@ class AlphaAPIDataSource(DataSource):
 
     def extract_fundamentals(self, tickers, required_elements=None):
 
+        num_requests = 1
+
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
 
-        fundamentals = Fundamentals()
+        fundamental = Fundamentals()
 
         for element in required_elements:
 
-
-
             for ticker in tickers:
+                if ticker.startswith("^"):
+                    continue
+
                 url = self.calculate_url(ticker, element)
                 try:
                     response = \
@@ -81,12 +89,19 @@ class AlphaAPIDataSource(DataSource):
                             proxy=self.proxy,
                             treat_info_as_error=True
                         )
-
+                    fundamental.process_data(element, response)
                     print(response)
-                except Exception as e:
-                    print(e)
-                # TODO: Mirar que pasa con los retries y los caracteres especiales
 
+                except Exception:
+                    exc_type, exc_value, exc_tb = sys.exc_info()
+                    pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
+                    # TODO: Mirar que pasa con los retries y los caracteres especiales
+
+                # TODO: This can be severrely optimized and in a thread run
+                if num_requests <= 5 and AlphaAPIDataSource._QA_API_KEY is True:
+                    time.sleep(12)
+
+                num_requests += 1
 
     def extract_historical_data(self,
                                 tickers=None,

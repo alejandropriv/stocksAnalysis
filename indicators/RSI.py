@@ -54,12 +54,12 @@ class RSI(Indicator):
 
         super().calculate()
 
-        delta_key = Constants.get_key( "delta")
-        gain_key = Constants.get_key( "gain")
-        loss_key = Constants.get_key( "loss")
-        avg_gain_key = Constants.get_key( "avg_gain")
-        avg_loss_key = Constants.get_key( "avg_loss")
-        rs_key = Constants.get_key( "RS")
+        delta_key = Constants.get_key("delta")
+        gain_key = Constants.get_key("gain")
+        loss_key = Constants.get_key("loss")
+        avg_gain_key = Constants.get_key("avg_gain")
+        avg_loss_key = Constants.get_key("avg_loss")
+        rs_key = Constants.get_key("RS")
 
         df_result = []
 

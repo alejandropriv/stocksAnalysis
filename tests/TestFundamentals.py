@@ -2,13 +2,9 @@ import unittest
 
 from strategy.test_strategies.StrategyXII import StrategyXII
 from strategy.StrategyManager import StrategyManager
-from data.DataSource import DATASOURCETYPE
+from data.AlphaAPIDataSource import AlphaAPIDataSource
 
 from plotter.Plotter import Plotter
-
-
-import pprint
-import datetime
 
 
 
@@ -24,6 +20,7 @@ class TestBasics(unittest.TestCase):
 
 
     def test_fundamentals(self):
+        AlphaAPIDataSource._QA_API_KEY = True
         tickers = ["TSLA", "SNAP"]
 
         strategies = [StrategyXII()]

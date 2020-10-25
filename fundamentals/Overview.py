@@ -1,8 +1,11 @@
+import pandas as pd
 
 class Overview:
 
     def __init__(self, data):
         self.data = data
+        self.data = pd.DataFrame.from_dict(data, orient='index')
+
 
         self.set_data()
 

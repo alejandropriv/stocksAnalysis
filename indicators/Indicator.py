@@ -12,8 +12,10 @@ class Indicator(metaclass=abc.ABCMeta):
         self.tickers = None
         self.df = None
         self.collapse = True
-        self.in_main_plot = False
         self.prices_key = None
+
+        # TODO: this is UI related, can this be removed from here? painless?
+        self.in_main_plot = False
 
     @abc.abstractmethod
     def set_input_data(self, df):

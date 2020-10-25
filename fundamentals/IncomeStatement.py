@@ -1,42 +1,23 @@
-from bs4 import BeautifulSoup
-from utilities.RequestHandler import RequestHandler
+import pandas as pd
 
 
 class IncomeStatement:
 
-    def __init__(self, ticker):
+    def __init__(self, data):
+        self.quarterly_reports = pd.DataFrame()
+        self.annual_reports = pd.DataFrame()
 
-        self.ticker = ticker
-        self.data = {}
-        self.datapy = {}
-        self.datapy2 = {}
+        for report in data["quarterlyReports"]:
+            self.quarterly_reports[report['fiscalDateEnding']] = pd.DataFrame.from_dict(report, orient='index', columns=["data"])["data"]
 
-
-        print("\n\n--- Scrapping the Income Statement - Ticker: "+self.ticker+" ---")
-
-        webpage = "https://finance.yahoo.com/quote/"+ticker+"/financials?p="+ticker
-
-        request_handler = RequestHandler()
-
-        src = request_handler.load_webpage(webpage)
+        for report in data["annualReports"]:
+            self.annual_reports[report['fiscalDateEnding']] = pd.DataFrame.from_dict(report, orient='index', columns=["data"])["data"]
+        self.set_data()
 
 
-        self.set_income_statement_data(src.content)
 
+    def set_data(self):
+        pass
 
-    def set_income_statement_data(self, page_content):
-
-        soup = BeautifulSoup(page_content, 'html.parser')
-        tabl = soup.find_all("div", {"class": "M(0) Mb(10px) Whs(n) BdEnd Bdc($seperatorColor) D(itb)"})
-        for t in tabl:
-            rows = t.find_all("div", {"class": "rw-expnded"})
-            for row in rows:
-                self.data[row.get_text(separator='|').split("|")[0]] = row.get_text(separator='|').split("|")[1:6]
-
-        print("Finished")
-
-
-    def get_data(self):
-        return self.data
 
 

@@ -22,13 +22,21 @@ class Fundamentals:
 
     def __init__(self):
         self.error = None
-
         self.data = {}
 
 
     def process_data(self, type_fundamentals, data):
         if type_fundamentals is FUNDAMENTALSTYPE.OVERVIEW:
-            self.data[FUNDAMENTALSTYPE.OVERVIEW] = Overview(dict=data)
+            self.data[FUNDAMENTALSTYPE.OVERVIEW] = Overview(data)
+
+        if type_fundamentals is FUNDAMENTALSTYPE.BALANCE_SHEET:
+            self.data[FUNDAMENTALSTYPE.BALANCE_SHEET] = BalanceSheet(data)
+
+        if type_fundamentals is FUNDAMENTALSTYPE.INCOME_STATEMENT:
+            self.data[FUNDAMENTALSTYPE.INCOME_STATEMENT] = IncomeStatement(data)
+
+        if type_fundamentals is FUNDAMENTALSTYPE.CASH_FLOW:
+            self.data[FUNDAMENTALSTYPE.CASH_FLOW] = CashFlow(data)
 
 
     def get_data(self):

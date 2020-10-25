@@ -42,7 +42,7 @@ class Stock:
 
 
 
-
+    # TODO FIX HERE TO MAKE FUNDAMENTALS GREATAGAIN!!!!
     def get_fundamentals(self):
         self.fundamentals = {self.ticker: Fundamentals(self.ticker)}
         self.fundamentals[self.ticker].get_data()

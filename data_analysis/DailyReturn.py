@@ -3,7 +3,7 @@ from enum import Enum
 
 
 
-class DailyReturn():
+class DailyReturn:
 
     class DATASOURCETYPE(Enum):
 

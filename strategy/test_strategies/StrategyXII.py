@@ -31,6 +31,7 @@ class StrategyXII(Strategy):
         self.data_source_type_historical = None
         self.data_source_type_fundamentals = DATASOURCETYPE.ALPHA
 
+    # TODO: Right now this one does not have any influence over fundamentals
     # If period is not None it will precede over date
     def set_date_parameters(self):
         self.period = None

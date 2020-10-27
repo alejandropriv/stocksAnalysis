@@ -97,11 +97,13 @@ class AlphaAPIDataSource(DataSource):
                     pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
                     # TODO: Mirar que pasa con los retries y los caracteres especiales
 
-                # TODO: This can be severrely optimized and in a thread run
+                # TODO: This can be severely optimized and in a thread run and with a production api key
                 if num_requests <= 5 and AlphaAPIDataSource._QA_API_KEY is True:
                     time.sleep(12)
 
                 num_requests += 1
+
+        print()
 
     def extract_historical_data(self,
                                 tickers=None,

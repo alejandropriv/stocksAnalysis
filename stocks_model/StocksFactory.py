@@ -92,7 +92,7 @@ class StocksFactory:
 
         if bulk is True:  # print("This option has not been already programmed! wait for next release")
 
-            stock = Stock(ticker=tickers,
+            stock = Stock(tickers=tickers,
                           data_source_historical=data_source_historical,
                           data_source_fundamentals=data_source_fundamentals)
 
@@ -110,7 +110,7 @@ class StocksFactory:
                     data_source_stock.prices = pd.concat([data_source_historical.prices[ticker]], axis=1, keys=[ticker])
 
 
-                stock = Stock(ticker=[ticker],
+                stock = Stock(tickers=[ticker],
                               data_source_historical=data_source_stock,
                               data_source_fundamentals=data_source_fundamentals)
 

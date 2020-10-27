@@ -111,7 +111,7 @@ class Plotter:
             return
 
         if tickers is None:
-            tickers = stock.ticker
+            tickers = stock.tickers
 
         elif isinstance(tickers, list) is True:
             tickers = tickers

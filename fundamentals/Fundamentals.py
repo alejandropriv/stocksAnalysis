@@ -5,7 +5,6 @@ from fundamentals.Overview import Overview
 
 import pandas as pd
 
-from fundamentals.Statistics import Statistics
 
 from enum import Enum
 
@@ -23,11 +22,14 @@ class Fundamentals:
     def __init__(self):
         self.error = None
         self.data = {}
+        self.overview_df = pd.DataFrame()
 
 
     def process_data(self, type_fundamentals, data):
         if type_fundamentals is FUNDAMENTALSTYPE.OVERVIEW:
-            self.data[FUNDAMENTALSTYPE.OVERVIEW] = Overview(data)
+            overview = Overview(data)
+            self.overview_df.insert(len(self.overview_df.columns),overview.get_ticker(), overview.data[overview.get_ticker()])
+
 
         if type_fundamentals is FUNDAMENTALSTYPE.BALANCE_SHEET:
             self.data[FUNDAMENTALSTYPE.BALANCE_SHEET] = BalanceSheet(data)
@@ -39,20 +41,7 @@ class Fundamentals:
             self.data[FUNDAMENTALSTYPE.CASH_FLOW] = CashFlow(data)
 
 
-    def get_data(self):
 
-
-        print("\nGetting Fundamentals for:" + self.ticker + " ticker.")
-
-        self.income_statement = IncomeStatement(self.ticker)
-
-        self.balance_sheet = BalanceSheet(self.ticker)
-
-        self.cash_flow = CashFlow(self.ticker)
-
-        self.statistics = Statistics(self.ticker)
-
-        self.clean_data()
 
 
 

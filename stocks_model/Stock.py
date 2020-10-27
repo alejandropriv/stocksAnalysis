@@ -7,15 +7,15 @@ class Stock:
 
     # Put here an enum and a case with the enum
     def __init__(self,
-                 ticker=None,
+                 tickers=None,
                  data_source_historical=None,
                  data_source_fundamentals=None):
 
-        if ticker is None:
+        if tickers is None:
             print("Error: Define your tickers first !!!.")
             raise ValueError
 
-        self.ticker = ticker
+        self.tickers = tickers
 
         self.error = None
         self.fundamentals = None
@@ -38,14 +38,14 @@ class Stock:
 
 
 
-        print("Stock {} created".format(ticker))
+        print("Stock {} created".format(tickers))
 
 
 
     # TODO FIX HERE TO MAKE FUNDAMENTALS GREATAGAIN!!!!
     def get_fundamentals(self):
-        self.fundamentals = {self.ticker: Fundamentals(self.ticker)}
-        self.fundamentals[self.ticker].get_data()
+
+        self.fundamentals = self.data_source_fundamentals
 
 
     @staticmethod
@@ -115,12 +115,11 @@ class Stock:
 
             if len(key_titles) > 0:
 
-                # self.data_source.prices = self.data_source.prices.sort_index()
-                prices = self.data_source_historical.get_prices(self.ticker, key_titles)
+                prices = self.data_source_historical.get_prices(self.tickers, key_titles)
 
 
             else:
-                print("{} - There are no prices information, for ticker:{}".format(method_tag, self.ticker))
+                print("{} - There are no prices information, for ticker:{}".format(method_tag, self.tickers))
                 raise ValueError
 
 

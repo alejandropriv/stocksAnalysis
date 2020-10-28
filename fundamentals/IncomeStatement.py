@@ -3,7 +3,7 @@ import pandas as pd
 
 class IncomeStatement:
 
-    def __init__(self, data):
+    def __init__(self, ticker, data):
         self.quarterly_reports = pd.DataFrame()
         self.annual_reports = pd.DataFrame()
 

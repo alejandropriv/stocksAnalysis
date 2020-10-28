@@ -122,6 +122,9 @@ class Plotter:
 
         if self.fig is None or self.axes_main is None or self.axes_indicators is None:
 
+            if stock.price_info is None or stock.price_info[tickers]:
+                raise ValueError("There is no price information for this stock")
+
             adj_close_key = Constants.get_adj_close_key()
             volume_key = Constants.get_volume_key()
 

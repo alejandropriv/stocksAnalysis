@@ -61,8 +61,6 @@ class AlphaAPIDataSource(DataSource):
 
 
         return url
-        #         return "https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=IBM&apikey=demo"
-
 
 
 
@@ -73,7 +71,7 @@ class AlphaAPIDataSource(DataSource):
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
 
-        fundamental = Fundamentals()
+        self.fundamentals = Fundamentals()
 
         for element in required_elements:
 
@@ -89,7 +87,7 @@ class AlphaAPIDataSource(DataSource):
                             proxy=self.proxy,
                             treat_info_as_error=True
                         )
-                    fundamental.process_data(element, response)
+                    self.fundamentals.process_data(ticker, element, response)
                     print(response)
 
                 except Exception:

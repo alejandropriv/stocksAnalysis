@@ -2,10 +2,10 @@ import pandas as pd
 
 class Overview:
 
-    def __init__(self, data):
+    def __init__(self, ticker, data):
         self.data = pd.DataFrame.from_dict(data, orient='index', columns=["data"])
 
-        self.data.columns = pd.MultiIndex.from_product([[self.data.loc["Symbol"]["data"]], self.data.columns])
+        self.data.columns = pd.MultiIndex.from_product([[ticker], self.data.columns])
 
         self.set_data()
 
@@ -13,7 +13,7 @@ class Overview:
         pass
 
     def get_ticker(self):
-        return self.data.loc["Symbol"].to_string()
+        return self.data.loc["Symbol"][0]
     def get_AssetType(self):
         return self.data["AssetType"]
 

@@ -4,8 +4,6 @@ from strategy.test_strategies.StrategyXII import StrategyXII
 from strategy.StrategyManager import StrategyManager
 from data.AlphaAPIDataSource import AlphaAPIDataSource
 
-from plotter.Plotter import Plotter
-
 
 
 DEVELOPMENT = True
@@ -19,7 +17,7 @@ class TestBasics(unittest.TestCase):
     stock = None
 
 
-    def test_fundamentals(self):
+    def test_fundamentals(self): # TODO: save the data to files and first query the files then the API
         AlphaAPIDataSource._QA_API_KEY = True
         tickers = ["TSLA", "SNAP"]
 
@@ -35,14 +33,10 @@ class TestBasics(unittest.TestCase):
         for stock_per_strategy in stocks_per_strategy:
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
-                plotter = Plotter(period=1000)
-                plotter.plot_stock(stock, collapse_indicators=True)
 
-        print("Analysis has been run")
 
-        if DEVELOPMENT == True:
-            pass
-            #plt.show()
+        print("Fundamentals has been queried")
+
 
 
 

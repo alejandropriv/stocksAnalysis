@@ -14,6 +14,7 @@ class BalanceSheet:
 
 
         self.quarterly_reports.columns = pd.MultiIndex.from_product([[ticker], self.quarterly_reports.columns])
+        self.annual_reports.columns = pd.MultiIndex.from_product([[ticker], self.annual_reports.columns])
 
         self.set_data()
 

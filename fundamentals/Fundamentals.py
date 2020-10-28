@@ -53,7 +53,6 @@ class Fundamentals:
                 axis=1
             )
         if type_fundamentals is FUNDAMENTALSTYPE.INCOME_STATEMENT:
-            self.data[FUNDAMENTALSTYPE.INCOME_STATEMENT] = IncomeStatement(data)
             income_statement = IncomeStatement(ticker, data)
 
             self.is_quarterly_report_df = pd.concat(
@@ -67,15 +66,15 @@ class Fundamentals:
             )
 
         if type_fundamentals is FUNDAMENTALSTYPE.CASH_FLOW:
-            self.data[FUNDAMENTALSTYPE.CASH_FLOW] = CashFlow(data)
+            cashflow = CashFlow(ticker, data)
 
-            self.bs_quarterly_report_df = pd.concat(
-                [balance_sheet.quarterly_reports, self.bs_quarterly_report_df],
+            self.cf_quarterly_report_df = pd.concat(
+                [cashflow.quarterly_reports, self.cf_quarterly_report_df],
                 axis=1
             )
 
-            self.bs_annual_report_df = pd.concat(
-                [balance_sheet.annual_reports, self.bs_annual_report_df],
+            self.cf_annual_report_df = pd.concat(
+                [cashflow.annual_reports, self.cf_annual_report_df],
                 axis=1
             )
 

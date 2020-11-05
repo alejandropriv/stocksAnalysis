@@ -1,99 +1,57 @@
-from fundamentals.BalanceSheet import BalanceSheet
-from fundamentals.CashFlow import CashFlow
-from fundamentals.Statistics import Statistics
-from fundamentals.IncomeStatement import IncomeStatement
+import pandas as pd
+from value_investment.ValueInvestmentMetric import ValueInvestmentMetric
 
 
-class MagicFormula:
+class MagicFormula(ValueInvestmentMetric):
 
-    def __init__(self, ticker):
-        pass
+    def __init__(self, fundamentals=None):
+        super().__init__()
+        self.fundamentals_df = None
+        self.fields = pd.DataFrame()
 
+        if fundamentals is not None:
+            self.set_input_data(fundamentals)
+
+    def set_input_data(self, fundamentals):
+        super().set_input_data(fundamentals)
+
+        fundamentals_temp = pd.DataFrame()
+
+        for ticker in self.tickers:
+            fundamentals_temp = self.concat_df(old_df=fundamentals_temp,
+                                               df=fundamentals.balance_sheet_ar_df,
+                                               ticker=ticker)
+
+        self.fundamentals_df = fundamentals_temp.copy()
+
+
+    @staticmethod
+    def concat_df(old_df, df, ticker):
+
+        df_concat = pd.concat(
+            [df[ticker].loc[:, [0]], old_df],
+            axis=1,
+            keys=[ticker]
+        )
+        return df_concat
 
     def calculate(self):
-        pass
+        ebit_key = "ebit"
+        self.fields[ebit_key] = self.fundamentals_df.income_statement_ar_df.loc["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
+        self.fields["ebit"] = self.fundamentals_df.income_statement_ar_df["ebit"]
 
-
-# creating dataframe with relevant financial information for each stock using fundamental data
-stats = ["Earnings before interest and taxes",
-         "Market cap (intra-day)",
-         "Net income applicable to common shares",
-         "Total cash flow from operating activities",
-         "Capital expenditure",
-         "Total current assets",
-         "Total current liabilities",
-         "Property plant and equipment",
-         "Total stockholder equity",
-         "Long-term debt",
-         "Preferred stock",
-         "Minority interest",
-         "Forward annual dividend yield"] # change as required
-
-indx = ["EBIT","MarketCap","NetIncome","CashFlowOps","Capex","CurrAsset",
-        "CurrLiab","PPE","BookValue","TotDebt","PrefStock","MinInterest","DivYield"]
-all_stats = {}
-for ticker in tickers:
-    try:
-        temp = combined_financials[ticker]
-        ticker_stats = []
-        for stat in stats:
-            ticker_stats.append(temp.loc[stat])
-        all_stats['{}'.format(ticker)] = ticker_stats
-    except:
-        print("can't read data for ",ticker)
-
-all_stats_df = pd.DataFrame(all_stats,index=indx)
-
-# cleansing of fundamental data imported in dataframe
-all_stats_df.iloc[1,:] = [x.replace("M","E+03") for x in all_stats_df.iloc[1,:].values]
-all_stats_df.iloc[1,:] = [x.replace("B","E+06") for x in all_stats_df.iloc[1,:].values]
-all_stats_df.iloc[1,:] = [x.replace("T","E+09") for x in all_stats_df.iloc[1,:].values]
-all_stats_df.iloc[-1,:] = [str(x).replace("%","E-02") for x in all_stats_df.iloc[-1,:].values]
-all_stats_df[tickers] = all_stats_df[tickers].replace({',': ''}, regex=True)
-for ticker in all_stats_df.columns:
-    all_stats_df[ticker] = pd.to_numeric(all_stats_df[ticker].values,errors='coerce')
-
-# calculating relevant financial metrics for each stock
-transpose_df = all_stats_df.transpose()
-final_stats_df = pd.DataFrame()
-final_stats_df["EBIT"] = transpose_df["EBIT"]
-final_stats_df["TEV"] =  transpose_df["MarketCap"].fillna(0) \
-                         +transpose_df["TotDebt"].fillna(0) \
-                         +transpose_df["PrefStock"].fillna(0) \
-                         +transpose_df["MinInterest"].fillna(0) \
-                         -(transpose_df["CurrAsset"].fillna(0)-transpose_df["CurrLiab"].fillna(0))
-final_stats_df["EarningYield"] =  final_stats_df["EBIT"]/final_stats_df["TEV"]
-final_stats_df["FCFYield"] = (transpose_df["CashFlowOps"]-transpose_df["Capex"])/transpose_df["MarketCap"]
-final_stats_df["ROC"]  = transpose_df["EBIT"]/(transpose_df["PPE"]+transpose_df["CurrAsset"]-transpose_df["CurrLiab"])
-final_stats_df["BookToMkt"] = transpose_df["BookValue"]/transpose_df["MarketCap"]
-final_stats_df["DivYield"] = transpose_df["DivYield"]
-
-
-################################Output Dataframes##############################
-
-# finding value stocks based on Magic Formula
-final_stats_val_df = final_stats_df.loc[tickers,:]
-final_stats_val_df["CombRank"] = final_stats_val_df["EarningYield"].rank(ascending=False,na_option='bottom')+final_stats_val_df["ROC"].rank(ascending=False,na_option='bottom')
-final_stats_val_df["MagicFormulaRank"] = final_stats_val_df["CombRank"].rank(method='first')
-value_stocks = final_stats_val_df.sort_values("MagicFormulaRank").iloc[:,[2,4,8]]
-print("------------------------------------------------")
-print("Value stocks based on Greenblatt's Magic Formula")
-print(value_stocks)
-
-
-# finding highest dividend yield stocks
-high_dividend_stocks = final_stats_df.sort_values("DivYield",ascending=False).iloc[:,6]
-print("------------------------------------------------")
-print("Highest dividend paying stocks")
-print(high_dividend_stocks)
-
-
-# # Magic Formula & Dividend yield combined
-final_stats_df["CombRank"] = final_stats_df["EarningYield"].rank(ascending=False,method='first') \
-                              +final_stats_df["ROC"].rank(ascending=False,method='first')  \
-                              +final_stats_df["DivYield"].rank(ascending=False,method='first')
-final_stats_df["CombinedRank"] = final_stats_df["CombRank"].rank(method='first')
-value_high_div_stocks = final_stats_df.sort_values("CombinedRank").iloc[:,[2,4,6,8]]
-print("------------------------------------------------")
-print("Magic Formula and Dividend Yield combined")
-print(value_high_div_stocks)
+        print("BalanceSheet")
+        print(self.fundamentals_df.balance_sheet_ar_df)
+        print("IncomeStatement")
+        print(self.fundamentals_df.income_statement_ar_df)
+        print("CashFlow")
+        print(self.fundamentals_df.cashflow_ar_df)
+        print("Overview")
+        print(self.fundamentals_df.overview_df)

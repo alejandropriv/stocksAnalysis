@@ -21,6 +21,7 @@ class Strategy(metaclass=abc.ABCMeta):
         self.fundamentals_options = [FUNDAMENTALSTYPE.BALANCE_SHEET,
                                      FUNDAMENTALSTYPE.INCOME_STATEMENT,
                                      FUNDAMENTALSTYPE.CASH_FLOW]
+        self.value_investing_metrics = []
 
     @abc.abstractmethod
     def set_data_source_types(self):

@@ -19,16 +19,18 @@ class FUNDAMENTALSTYPE(Enum):
 class Fundamentals:
 
 
-    def __init__(self):
+    def __init__(self, tickers):
         self.error = None
         self.data = {}
         self.overview_df = pd.DataFrame()
-        self.bs_quarterly_report_df = pd.DataFrame()
-        self.bs_annual_report_df = pd.DataFrame()
-        self.is_quarterly_report_df = pd.DataFrame()
-        self.is_annual_report_df = pd.DataFrame()
-        self.cf_quarterly_report_df = pd.DataFrame()
-        self.cf_annual_report_df = pd.DataFrame()
+        self.balance_sheet_qr_df = pd.DataFrame()
+        self.balance_sheet_ar_df = pd.DataFrame()
+        self.income_statement_qr_df = pd.DataFrame()
+        self.income_statement_ar_df = pd.DataFrame()
+        self.cashflow_qr_df = pd.DataFrame()
+        self.cashflow_ar_df = pd.DataFrame()
+
+        self.tickers = tickers
 
 
     def process_data(self, ticker, type_fundamentals, data):
@@ -43,38 +45,38 @@ class Fundamentals:
         if type_fundamentals is FUNDAMENTALSTYPE.BALANCE_SHEET:
             balance_sheet = BalanceSheet(ticker, data)
 
-            self.bs_quarterly_report_df = pd.concat(
-                [balance_sheet.quarterly_reports, self.bs_quarterly_report_df],
+            self.balance_sheet_qr_df = pd.concat(
+                [balance_sheet.quarterly_reports, self.balance_sheet_qr_df],
                 axis=1
             )
 
-            self.bs_annual_report_df = pd.concat(
-                [balance_sheet.annual_reports, self.bs_annual_report_df],
+            self.balance_sheet_ar_df = pd.concat(
+                [balance_sheet.annual_reports, self.balance_sheet_ar_df],
                 axis=1
             )
         if type_fundamentals is FUNDAMENTALSTYPE.INCOME_STATEMENT:
             income_statement = IncomeStatement(ticker, data)
 
-            self.is_quarterly_report_df = pd.concat(
-                [income_statement.quarterly_reports, self.is_quarterly_report_df],
+            self.income_statement_qr_df = pd.concat(
+                [income_statement.quarterly_reports, self.income_statement_qr_df],
                 axis=1
             )
 
-            self.is_annual_report_df = pd.concat(
-                [income_statement.annual_reports, self.is_annual_report_df],
+            self.income_statement_ar_df = pd.concat(
+                [income_statement.annual_reports, self.income_statement_ar_df],
                 axis=1
             )
 
         if type_fundamentals is FUNDAMENTALSTYPE.CASH_FLOW:
             cashflow = CashFlow(ticker, data)
 
-            self.cf_quarterly_report_df = pd.concat(
-                [cashflow.quarterly_reports, self.cf_quarterly_report_df],
+            self.cashflow_qr_df = pd.concat(
+                [cashflow.quarterly_reports, self.cashflow_qr_df],
                 axis=1
             )
 
-            self.cf_annual_report_df = pd.concat(
-                [cashflow.annual_reports, self.cf_annual_report_df],
+            self.cashflow_ar_df = pd.concat(
+                [cashflow.annual_reports, self.cashflow_ar_df],
                 axis=1
             )
 

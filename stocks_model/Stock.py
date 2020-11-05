@@ -26,6 +26,7 @@ class Stock:
         self.price_info = None
 
         self.indicators = []
+        self.value_investing_metrics = []
 
         if data_source_historical is not None:
             self.get_prices_data()
@@ -41,11 +42,9 @@ class Stock:
         print("Stock {} created".format(tickers))
 
 
-
-    # TODO FIX HERE TO MAKE FUNDAMENTALS GREATAGAIN!!!!
     def get_fundamentals(self):
 
-        self.fundamentals = self.data_source_fundamentals
+        self.fundamentals = self.data_source_fundamentals.fundamentals
 
 
     @staticmethod
@@ -146,6 +145,15 @@ class Stock:
         new_indicator.calculate()
 
         self.indicators.append(new_indicator)
+
+
+    def append_value_investing_metric(self, new_metric=None):
+
+        # if get_historical_data has already been called it returns the cached data
+        new_metric.set_input_data(self.fundamentals)
+        new_metric.calculate()
+
+        self.value_investing_metrics.append(new_metric)
 
 
 

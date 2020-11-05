@@ -4,6 +4,8 @@ from utilities.Constants import Constants
 from data.DataSource import DATASOURCETYPE
 from fundamentals.Fundamentals import FUNDAMENTALSTYPE
 
+from value_investment.MagicFormula import MagicFormula
+
 
 import datetime
 
@@ -19,6 +21,7 @@ class StrategyXII(Strategy):
         self.set_data_source_types()
         self.set_date_parameters()
         self.set_indicators()
+        self.set_value_investing_metrics()
         self.fundamentals_options = \
             [
                 FUNDAMENTALSTYPE.OVERVIEW,
@@ -42,3 +45,7 @@ class StrategyXII(Strategy):
 
     def set_indicators(self):
         self.indicators = []
+
+    def set_value_investing_metrics(self):
+        magic_formula = MagicFormula()
+        self.value_investing_metrics = [magic_formula]

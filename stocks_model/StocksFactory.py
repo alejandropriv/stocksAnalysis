@@ -17,12 +17,7 @@ class StocksFactory:
         return tickers
 
     @staticmethod
-    def create_stocks(
-            strategy,
-            tickers,
-            bulk=True,
-
-    ):
+    def create_stocks(strategy, tickers, bulk=True):
 
         tickers = StocksFactory.add_spi500_ticker(tickers=tickers)
 
@@ -62,17 +57,25 @@ class StocksFactory:
 
 
         indicators = strategy.indicators
+        value_investing_metrics = strategy.value_investing_metrics
         stocks = StocksFactory.load_stocks(
             tickers=tickers,
             data_source_historical=data_source_historical,
             data_source_fundamentals=data_source_fundamentals,
             bulk=bulk,
-            indicators=indicators)
+            indicators=indicators,
+            value_investing_metrics=value_investing_metrics
+        )
 
         return stocks
 
     @staticmethod
-    def load_stocks(tickers=None, data_source_historical=None, data_source_fundamentals=None, bulk=False, indicators=None):
+    def load_stocks(tickers=None,
+                    data_source_historical=None,
+                    data_source_fundamentals=None,
+                    bulk=False,
+                    indicators=None,
+                    value_investing_metrics=None):
 
         stocks = []
         if data_source_historical is None and data_source_fundamentals is None:
@@ -97,6 +100,7 @@ class StocksFactory:
                           data_source_fundamentals=data_source_fundamentals)
 
             stock = StocksFactory.load_indicators(stock, indicators)
+            stock = StocksFactory.load_value_investing_metrics(stock, indicators)
             stocks.append(stock)
 
         else:
@@ -115,6 +119,7 @@ class StocksFactory:
                               data_source_fundamentals=data_source_fundamentals)
 
                 stock = StocksFactory.load_indicators(stock, indicators)
+                stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)
 
                 stocks.append(stock)
 
@@ -128,5 +133,17 @@ class StocksFactory:
 
         for indicator in indicators:
             stock.append_indicator(copy.copy(indicator))
+
+        return stock
+
+
+    @staticmethod
+    def load_value_investing_metrics(stock, value_investing_metrics):
+
+        if value_investing_metrics is None:
+            value_investing_metrics = []
+
+        for metric in value_investing_metrics:
+            stock.append_value_investing_metric(copy.copy(metric))
 
         return stock

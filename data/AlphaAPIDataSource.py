@@ -24,14 +24,9 @@ class AlphaAPIDataSource(DataSource):
 
     _QA_API_KEY = False
 
-    def __init__(self,
-                 api_key=None,
-                 proxy=None
-                 ):
+    def __init__(self, proxy=None):
 
         super().__init__()
-
-
 
         self.prices = pd.DataFrame()
         self.fundamentals = None
@@ -71,7 +66,7 @@ class AlphaAPIDataSource(DataSource):
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
 
-        self.fundamentals = Fundamentals()
+        self.fundamentals = Fundamentals(tickers)
 
         for element in required_elements:
 
@@ -97,11 +92,11 @@ class AlphaAPIDataSource(DataSource):
 
                 # TODO: This can be severely optimized and in a thread run and with a production api key
                 if num_requests <= 5 and AlphaAPIDataSource._QA_API_KEY is True:
-                    time.sleep(12)
+                    time.sleep(14)
 
                 num_requests += 1
 
-        print()
+        #print()
 
     def extract_historical_data(self,
                                 tickers=None,
@@ -116,40 +111,7 @@ class AlphaAPIDataSource(DataSource):
 
 
     def validate_parameters(self):
-
         pass
-        # result = self.validate_dates()
-        #
-        # # Intra-day intervals
-        # if self.interval is Constants.INTERVAL.MINUTE or \
-        #         self.interval is Constants.INTERVAL.MINUTE2 or \
-        #         self.interval is Constants.INTERVAL.MINUTE5 or \
-        #         self.interval is Constants.INTERVAL.MINUTE15 or \
-        #         self.interval is Constants.INTERVAL.MINUTE30 or \
-        #         self.interval is Constants.INTERVAL.MINUTE60 or \
-        #         self.interval is Constants.INTERVAL.MINUTE90 or \
-        #         self.interval is Constants.INTERVAL.HOUR:
-        #
-        #     if self.start_date is None and self.end_date is None:
-        #
-        #         if self.period is not Constants.PERIOD.DAY or \
-        #                 self.period is not Constants.PERIOD.DAY5 or \
-        #                 self.period is not Constants.PERIOD.MONTH:
-        #
-        #             print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
-        #             result = False
-        #
-        #
-        #     else:
-        #         delta = (self.end_date - self.start_date).seconds
-        #
-        #         max_days = 60 * 24 * 60 * 60
-        #         if delta > max_days:
-        #             print("For Intra-day you have a maximum of 60 days of data, please adjust your dates!")
-        #             result = False
-        #
-        # return result
-
 
 
     def get_prices(self, tickers, key_titles):

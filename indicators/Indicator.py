@@ -20,8 +20,7 @@ class Indicator(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def set_input_data(self, df):
         if df is None:
-            print("Error: data not found")
-            raise IOError
+            raise ValueError("Error: data not found")
 
         df.columns = pd.MultiIndex.from_tuples(df.columns.values)
 

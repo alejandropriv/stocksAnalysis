@@ -113,10 +113,26 @@ class StocksFactory:
 
                     data_source_stock.prices = pd.concat([data_source_historical.prices[ticker]], axis=1, keys=[ticker])
 
+                if data_source_fundamentals is not None:
+                    data_source_fundamentals_stock = copy.copy(data_source_fundamentals)
+                    data_source_fundamentals_stock.fundamentals = copy.copy(data_source_fundamentals.fundamentals)
+
+                    data_source_fundamentals_stock.fundamentals.overview_df = pd.DataFrame()
+                    data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.DataFrame()
+                    data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.DataFrame()
+                    data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.DataFrame()
+
+                    data_source_fundamentals_stock.fundamentals.overview_df = pd.concat([data_source_fundamentals.fundamentals.overview_df[ticker]], axis=1, keys=[ticker])
+                    data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.concat([data_source_fundamentals.fundamentals.income_statement_ar_df[ticker]], axis=1, keys=[ticker])
+                    data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.concat([data_source_fundamentals.fundamentals.balance_sheet_qr_df[ticker]], axis=1, keys=[ticker])
+                    data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.concat([data_source_fundamentals.fundamentals.cashflow_ar_df[ticker]], axis=1, keys=[ticker])
+
+                else:
+                    data_source_fundamentals_stock = None
 
                 stock = Stock(tickers=[ticker],
                               data_source_historical=data_source_stock,
-                              data_source_fundamentals=data_source_fundamentals)
+                              data_source_fundamentals=data_source_fundamentals_stock)
 
                 stock = StocksFactory.load_indicators(stock, indicators)
                 stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)

@@ -21,9 +21,6 @@ class StocksFactory:
 
         tickers = StocksFactory.add_spi500_ticker(tickers=tickers)
 
-
-# TODO: Check if still Getting prices is being executed twice
-
         data_source_historical = None
         data_source_fundamentals = None
 
@@ -100,7 +97,7 @@ class StocksFactory:
                           data_source_fundamentals=data_source_fundamentals)
 
             stock = StocksFactory.load_indicators(stock, indicators)
-            stock = StocksFactory.load_value_investing_metrics(stock, indicators)
+            stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)
             stocks.append(stock)
 
         else:
@@ -121,7 +118,7 @@ class StocksFactory:
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.DataFrame()
-
+                    # TODO: put an if to verify if the dataframe is empty
                     data_source_fundamentals_stock.fundamentals.overview_df = pd.concat([data_source_fundamentals.fundamentals.overview_df[ticker]], axis=1, keys=[ticker])
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.concat([data_source_fundamentals.fundamentals.income_statement_ar_df[ticker]], axis=1, keys=[ticker])
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.concat([data_source_fundamentals.fundamentals.balance_sheet_qr_df[ticker]], axis=1, keys=[ticker])

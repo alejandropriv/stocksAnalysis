@@ -45,14 +45,14 @@ class ATR(Indicator):
 
         df_list = []
         for ticker in self.tickers:
-
-            df_list.append(
-                pd.concat(
-                    [df[ticker].loc[:, [self.low_key, self.high_key, self.prices_key]], prices_temp],
-                    axis=1,
-                    keys=[ticker]
+            if ticker in df:
+                df_list.append(
+                    pd.concat(
+                        [df[ticker].loc[:, [self.low_key, self.high_key, self.prices_key]], prices_temp],
+                        axis=1,
+                        keys=[ticker]
+                    )
                 )
-            )
 
         df_indicator = pd.concat(
             df_list,

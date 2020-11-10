@@ -31,7 +31,7 @@ class RSI(Indicator):
 
         df_list = []
         for ticker in self.tickers:
-            if ticker in df:  #TODO: Put this in all the other indicators
+            if ticker in df:
                 df_list.append(
                     pd.concat(
                         [df[ticker].loc[:, [self.prices_key]], prices_temp],

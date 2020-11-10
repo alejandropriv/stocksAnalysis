@@ -97,7 +97,7 @@
 #
 #                     temp.dropna(inplace=True)
 #
-#                     # TODO: Validate and put the code to handle a sub-set of columns
+
 #                     if self.data_columns[0] == "all":
 #                         self.prices[high_key] = temp["High"]
 #                         self.prices[low_key] = temp["Low"]

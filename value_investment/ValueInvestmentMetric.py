@@ -21,8 +21,10 @@ class ValueInvestmentMetric(metaclass=abc.ABCMeta):
             raise ValueError("Error: data not found")
 
         # TODO: create function get_ticker to get ticker and validate data
+        # TODO: put a property on the fundamentals and on the prices that update the ticker value anytime the
+        #  main DF is updated
 
-        self.tickers = fundamentals_df.columns.levels[0]
+        self.tickers = fundamentals.columns.levels[0]
 
 
     @abc.abstractmethod

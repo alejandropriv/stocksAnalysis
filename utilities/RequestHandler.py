@@ -29,7 +29,7 @@ class RequestHandler:
                     print("webpage: {0} not loaded with Status Code: {1} sleeping: {2}".format(webpage, status_code, time_to_sleep))
                     time.sleep(time_to_sleep)
 
-            raise TimeoutError  # TODO: change this to a specific error
+            raise TimeoutError
 
 
         else:

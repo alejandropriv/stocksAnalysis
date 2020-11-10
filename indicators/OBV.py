@@ -8,9 +8,7 @@ from indicators.Indicator import Indicator
 
 
 class OBV(Indicator):
-    #TODO verify the correct data is present
-    # df requires:  price adjusted close
-    #               volume
+
     def __init__(self, df=None, n=14):
         super().__init__()
 
@@ -38,13 +36,14 @@ class OBV(Indicator):
 
         df_list = []
         for ticker in self.tickers:
-            df_list.append(
-                pd.concat(
-                    [df[ticker].loc[:, [self.volume_key, self.prices_key]], prices_temp],
-                    axis=1,
-                    keys=[ticker]
+            if ticker in df:
+                df_list.append(
+                    pd.concat(
+                        [df[ticker].loc[:, [self.volume_key, self.prices_key]], prices_temp],
+                        axis=1,
+                        keys=[ticker]
+                    )
                 )
-            )
 
         df_indicator = pd.concat(
             df_list,
@@ -72,9 +71,7 @@ class OBV(Indicator):
 
             df_data[daily_ret_key] = df_data[self.prices_key].pct_change()
             df_data[direction_key] = np.where(df_data[daily_ret_key] >= 0, 1, -1)
-            #df_data.loc[0, direction_key] = 0
             df_data.iloc[0].at[direction_key] = 0
-            #df_data[direction_key][0] = 0 #TODO check this for copy vs
             df_data[volume_adjusted_key] = df_data[self.volume_key] * df_data[direction_key]
             df_data[self.indicator_key] = df_data[volume_adjusted_key].cumsum()
 

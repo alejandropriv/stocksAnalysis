@@ -38,15 +38,17 @@ class Slope(Indicator):
 
         df_list = []
         for ticker in self.tickers:
-            self.ser[ticker] = df[ticker][self.prices_key]
 
-            df_list.append(
-                pd.concat(
-                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
-                    axis=1,
-                    keys=[ticker]
+            if ticker in df:
+                self.ser[ticker] = df[ticker][self.prices_key]
+
+                df_list.append(
+                    pd.concat(
+                        [df[ticker].loc[:, [self.prices_key]], prices_temp],
+                        axis=1,
+                        keys=[ticker]
+                    )
                 )
-            )
 
         df_indicator = pd.concat(
             df_list,

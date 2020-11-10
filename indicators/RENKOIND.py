@@ -45,15 +45,16 @@ class RENKOIND(Indicator):
 
         df_list = []
         for ticker in self.tickers:
-            df_temp = df[ticker].loc[:, [self.high_key, self.low_key, self.open_key, self.prices_key]]
+            if ticker in df:
+                df_temp = df[ticker].loc[:, [self.high_key, self.low_key, self.open_key, self.prices_key]]
 
-            df_list.append(
-                pd.concat(
-                    [df_temp, prices_temp],
-                    axis=1,
-                    keys=[ticker]
+                df_list.append(
+                    pd.concat(
+                        [df_temp, prices_temp],
+                        axis=1,
+                        keys=[ticker]
+                    )
                 )
-            )
 
         df_indicator = pd.concat(
             df_list,

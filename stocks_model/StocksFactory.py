@@ -2,6 +2,7 @@ from stocks_model.Stock import Stock
 
 from data.DataCollector import DataCollector
 
+
 import pandas as pd
 import copy
 
@@ -79,16 +80,6 @@ class StocksFactory:
             print("Error: Define your data sources first !!!.")
             return
 
-        if data_source_historical is not None:
-            tickers = tickers
-
-        elif data_source_fundamentals is not None:
-            tickers = tickers
-
-        else:
-            print("Error: Set Historical data")
-            return
-
 
         if bulk is True:  # print("This option has not been already programmed! wait for next release")
 
@@ -112,17 +103,37 @@ class StocksFactory:
 
                 if data_source_fundamentals is not None:
                     data_source_fundamentals_stock = copy.copy(data_source_fundamentals)
-                    data_source_fundamentals_stock.fundamentals = copy.copy(data_source_fundamentals.fundamentals)
+                    # TOdo is this copy really nneded or is rebundant, check if fundamentals is not none
+                    #data_source_fundamentals_stock.fundamentals = copy.copy(data_source_fundamentals.fundamentals)
 
                     data_source_fundamentals_stock.fundamentals.overview_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.DataFrame()
-                    # TODO: put an if to verify if the dataframe is empty
-                    data_source_fundamentals_stock.fundamentals.overview_df = pd.concat([data_source_fundamentals.fundamentals.overview_df[ticker]], axis=1, keys=[ticker])
-                    data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.concat([data_source_fundamentals.fundamentals.income_statement_ar_df[ticker]], axis=1, keys=[ticker])
-                    data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.concat([data_source_fundamentals.fundamentals.balance_sheet_qr_df[ticker]], axis=1, keys=[ticker])
-                    data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.concat([data_source_fundamentals.fundamentals.cashflow_ar_df[ticker]], axis=1, keys=[ticker])
+                    # TODO: put an if to verify if the dataframe is empty,
+
+                    data_source_fundamentals_stock.fundamentals.overview_df = \
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals_stock.fundamentals.overview_df, ticker)
+
+                    data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df =\
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_ar_df, ticker)
+
+                    data_source_fundamentals_stock.fundamentals.balance_sheet_qr_df =\
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_qr_df, ticker)
+
+                    data_source_fundamentals_stock.fundamentals.income_statement_ar_df = \
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.income_statement_ar_df, ticker)
+
+                    data_source_fundamentals_stock.fundamentals.income_statement_qr_df = \
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals_stock.fundamentals.income_statement_qr_df)
+
+                    data_source_fundamentals_stock.fundamentals.cashflow_ar_df = \
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.cashflow_ar_df, ticker)
+
+                    data_source_fundamentals_stock.fundamentals.cashflow_qr_df =\
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.cashflow_qr_df, ticker)
+
+
 
                 else:
                     data_source_fundamentals_stock = None
@@ -137,6 +148,11 @@ class StocksFactory:
                 stocks.append(stock)
 
         return stocks
+
+    @staticmethod
+    def set_df_per_ticker(df, ticker):
+        if df is not None:
+            return pd.concat([df[ticker]], axis=1, keys=[ticker])
 
     @staticmethod
     def load_indicators(stock, indicators):

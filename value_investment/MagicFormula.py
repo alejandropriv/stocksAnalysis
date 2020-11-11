@@ -56,12 +56,13 @@ class MagicFormula(ValueInvestmentMetric):
             axis=1
         )
 
-        #TODO: Verify if this copy is rebundant
-        self.overview = df_overview.copy()
-        self.balance_sheet = df_balance_sheet.copy()
-        self.income_statement = df_income_statement.copy()
-        self.cashflow = df_cashflow.copy()
+        #TODO: Verify if copy is rebundant
+        self.overview = df_overview
+        self.balance_sheet = df_balance_sheet
+        self.income_statement = df_income_statement
+        self.cashflow = df_cashflow   # .copy()
 
+        self.get_tickers()
 
 
     @staticmethod

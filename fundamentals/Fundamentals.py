@@ -30,8 +30,6 @@ class Fundamentals:
         self.cashflow_qr_df = pd.DataFrame()
         self.cashflow_ar_df = pd.DataFrame()
 
-        self.tickers = tickers
-
 
     def process_data(self, ticker, type_fundamentals, data):
         if type_fundamentals is FUNDAMENTALSTYPE.OVERVIEW:

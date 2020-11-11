@@ -7,7 +7,7 @@ class ValueInvestmentMetric(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __init__(self):
         self.tickers = None
-
+        # TODO what is this, removee it!!
         self.overview = None
         self.balance_sheet = None
         self.income_statement = None
@@ -20,11 +20,8 @@ class ValueInvestmentMetric(metaclass=abc.ABCMeta):
         if fundamentals is None:
             raise ValueError("Error: data not found")
 
-        # TODO: create function get_ticker to get ticker and validate data
-        # TODO: put a property on the fundamentals and on the prices that update the ticker value anytime the
-        #  main DF is updated
 
-        self.tickers = fundamentals.columns.levels[0]
+
 
 
     @abc.abstractmethod
@@ -35,8 +32,8 @@ class ValueInvestmentMetric(metaclass=abc.ABCMeta):
                 self.income_statement is None and \
                 self.cashflow is None:
 
-            print("Error: Data has not been set, there is no data to calculate the metric. "
-                  "Please verify the metric constructor")
-            raise IOError
+
+            raise ValueError("Error: Data has not been set, there is no data to calculate the metric. "
+                             "Please verify the metric constructor")
 
 

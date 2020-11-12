@@ -7,11 +7,8 @@ class ValueInvestmentMetric(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __init__(self):
         self.tickers = None
-        # TODO what is this, removee it!!
-        self.overview = None
-        self.balance_sheet = None
-        self.income_statement = None
-        self.cashflow = None
+        self.data_df = None
+
         self.metric_df = pd.DataFrame()
 
 
@@ -27,10 +24,7 @@ class ValueInvestmentMetric(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def calculate(self):
         """function to calculate the indicator"""
-        if self.overview is None and\
-                self.balance_sheet is None and\
-                self.income_statement is None and \
-                self.cashflow is None:
+        if self.data_df is None or self.data_df.empty is True:
 
 
             raise ValueError("Error: Data has not been set, there is no data to calculate the metric. "

@@ -89,10 +89,12 @@ class AlphaAPIDataSource(DataSource):
                     exc_type, exc_value, exc_tb = sys.exc_info()
                     pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
                     # TODO: Mirar que pasa con los retries y los caracteres especiales
+                    time.sleep(61)
 
                 # TODO: This can be severely optimized and in a thread run and with a production api key
-                if num_requests <= 5 and AlphaAPIDataSource._QA_API_KEY is True:
-                    time.sleep(14)
+                if num_requests >= 5 and AlphaAPIDataSource._QA_API_KEY is True:
+                    time.sleep(61)
+                    num_requests = 0
 
                 num_requests += 1
 
@@ -116,44 +118,3 @@ class AlphaAPIDataSource(DataSource):
 
     def get_prices(self, tickers, key_titles):
         pass
-
-
-        # function_name, data_key, meta_data_key = func(
-        #     self, *args, **kwargs)
-        # base_url = AlphaVantage._RAPIDAPI_URL if self.rapidapi else AlphaVantage._ALPHA_VANTAGE_API_URL
-        # url = "{}function={}".format(base_url, function_name)
-        # for idx, arg_name in enumerate(argspec.args[1:]):
-        #     try:
-        #         arg_value = args[idx]
-        #     except IndexError:
-        #         arg_value = used_kwargs[arg_name]
-        #     if 'matype' in arg_name and arg_value:
-        #         # If the argument name has matype, we gotta map the string
-        #         # or the integer
-        #         arg_value = self.map_to_matype(arg_value)
-        #     if arg_value:
-        #         # Discard argument in the url formation if it was set to
-        #         # None (in other words, this will call the api with its
-        #         # internal defined parameter)
-        #         if isinstance(arg_value, tuple) or isinstance(arg_value, list):
-        #             # If the argument is given as list, then we have to
-        #             # format it, you gotta format it nicely
-        #             arg_value = ','.join(arg_value)
-        #         url = '{}&{}={}'.format(url, arg_name, arg_value)
-        # # Allow the output format to be json or csv (supported by
-        # # alphavantage api). Pandas is simply json converted.
-        # if 'json' in self.output_format.lower() or 'csv' in self.output_format.lower():
-        #     oformat = self.output_format.lower()
-        # elif 'pandas' in self.output_format.lower():
-        #     oformat = 'json'
-        # else:
-        #     raise ValueError("Output format: {} not recognized, only json,"
-        #                      "pandas and csv are supported".format(
-        #         self.output_format.lower()))
-        # apikey_parameter = "" if self.rapidapi else "&apikey={}".format(
-        #     self.key)
-        # if self._append_type:
-        #     url = '{}{}&datatype={}'.format(url, apikey_parameter, oformat)
-        # else:
-        #     url = '{}{}'.format(url, apikey_parameter)
-        # return self._handle_api_call(url), data_key, meta_data_key

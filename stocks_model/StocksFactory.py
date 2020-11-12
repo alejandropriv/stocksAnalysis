@@ -94,6 +94,9 @@ class StocksFactory:
         else:
             for ticker in tickers:
 
+                if ticker.startswith("^"):
+                    continue
+
                 data_source_stock = None
                 if data_source_historical is not None:
                     data_source_stock = copy.copy(data_source_historical)
@@ -103,17 +106,18 @@ class StocksFactory:
 
                 if data_source_fundamentals is not None:
                     data_source_fundamentals_stock = copy.copy(data_source_fundamentals)
-                    # TOdo is this copy really nneded or is rebundant, check if fundamentals is not none
-                    #data_source_fundamentals_stock.fundamentals = copy.copy(data_source_fundamentals.fundamentals)
+
+                    data_source_fundamentals_stock.fundamentals = copy.copy(data_source_fundamentals.fundamentals)
 
                     data_source_fundamentals_stock.fundamentals.overview_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.DataFrame()
-                    # TODO: put an if to verify if the dataframe is empty,
+                    # TODO: put an if to verify if the dataframe is empty, whats happening here ?????? heeeeelp????? wuahhhhhh
+                    #       chaos, mierda sceissemerd
 
                     data_source_fundamentals_stock.fundamentals.overview_df = \
-                        StocksFactory.set_df_per_ticker(data_source_fundamentals_stock.fundamentals.overview_df, ticker)
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.overview_df, ticker)
 
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df =\
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_ar_df, ticker)
@@ -125,7 +129,7 @@ class StocksFactory:
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.income_statement_ar_df, ticker)
 
                     data_source_fundamentals_stock.fundamentals.income_statement_qr_df = \
-                        StocksFactory.set_df_per_ticker(data_source_fundamentals_stock.fundamentals.income_statement_qr_df)
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals_stock.fundamentals.income_statement_qr_df, ticker)
 
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = \
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.cashflow_ar_df, ticker)

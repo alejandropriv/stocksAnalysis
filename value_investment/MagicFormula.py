@@ -13,7 +13,8 @@ class MagicFormula(ValueInvestmentMetric):
     def set_input_data(self, fundamentals):
         super().set_input_data(fundamentals)
 
-        if fundamentals.balance_sheet_ar_df is None or \
+        if fundamentals.overview_df is None or \
+                fundamentals.balance_sheet_ar_df is None or \
                 fundamentals.income_statement_ar_df is None or \
                 fundamentals.cashflow_ar_df is None:
 
@@ -29,10 +30,10 @@ class MagicFormula(ValueInvestmentMetric):
 
 
         for ticker in self.tickers:
-            # df_list_overview.append(
-            #    MagicFormula.add_level(ticker,
-            #                           fundamentals.overview_df)
-            # )
+            df_list_data.append(
+                MagicFormula.add_level(ticker,
+                                       fundamentals.overview_df)
+            )
             df_list_data.append(
                 MagicFormula.add_level(ticker,
                                        fundamentals.balance_sheet_ar_df)
@@ -80,6 +81,19 @@ class MagicFormula(ValueInvestmentMetric):
         print(self.data_df.index)
         print(self.data_df)
 
-        required_data = ["ebit", "???marketcap??", "netIncome", "","", "totalCurrentAssets", "totalCurrentLiabilities", "propertyPlantEquipment", "", "totalLiabilities", "", "dividendPayout"]
+        required_data = \
+            ["ebit",
+             "MarkedCapitalization",
+             "netIncomeApplicableToCommonShares",
+             "operatingCashflow",
+             "capitalExpenditures",
+             "totalCurrentAssets",
+             "totalCurrentLiabilities",
+             "propertyPlantEquipment",
+             "BookValue",
+             "Long-term debt",
+             "preferredStockAndOtherAdjustments",
+             "minorityIInterest",
+             "ForwardAnnualDividendYield"]
 
 

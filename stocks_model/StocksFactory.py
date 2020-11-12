@@ -113,8 +113,7 @@ class StocksFactory:
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.DataFrame()
-                    # TODO: put an if to verify if the dataframe is empty, whats happening here ?????? heeeeelp????? wuahhhhhh
-                    #       chaos, mierda sceissemerd
+                    
 
                     data_source_fundamentals_stock.fundamentals.overview_df = \
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.overview_df, ticker)

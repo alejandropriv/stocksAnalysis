@@ -17,7 +17,7 @@ class TestBasics(unittest.TestCase):
     stock = None
 
 
-    def test_fundamentals(self): # TODO: save the data to files and first query the files then the API
+    def test_magic_formula(self): # TODO: save the data to files and first query the files then the API
         AlphaAPIDataSource._QA_API_KEY = True
         tickers = ["TSLA", "SNAP"]
 
@@ -38,7 +38,26 @@ class TestBasics(unittest.TestCase):
         print("Fundamentals has been queried")
 
 
+    def test_magic_formula_bulk(self):
+        AlphaAPIDataSource._QA_API_KEY = True
+        tickers = ["TSLA", "SNAP"]
 
+        strategies = [StrategyXII()]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                bulk=True
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+
+
+        print("Fundamentals has been queried")
 
 if __name__ == '__main__':
     unittest.main()

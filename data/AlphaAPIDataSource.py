@@ -70,7 +70,8 @@ class AlphaAPIDataSource(DataSource):
 
         for element in required_elements:
 
-            for ticker in tickers:
+            for i in range(0, len(tickers)):
+                ticker = tickers[i]
                 if ticker.startswith("^"):
                     continue
 
@@ -84,6 +85,7 @@ class AlphaAPIDataSource(DataSource):
                         )
                     self.fundamentals.process_data(ticker, element, response)
                     print(response)
+                    i += 1
 
                 except Exception:
                     exc_type, exc_value, exc_tb = sys.exc_info()

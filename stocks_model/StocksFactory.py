@@ -51,7 +51,9 @@ class StocksFactory:
             if data_source_fundamentals is not None:
                 data_source_fundamentals.extract_fundamentals(
                     tickers=tickers,
-                    required_elements=strategy.fundamentals_options)
+                    required_elements=strategy.fundamentals_options,
+                    force=strategy.force_fundamentals
+                )
 
 
         indicators = strategy.indicators

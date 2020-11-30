@@ -23,6 +23,11 @@ class Strategy(metaclass=abc.ABCMeta):
                                      FUNDAMENTALSTYPE.CASH_FLOW]
         self.value_investing_metrics = []
 
+        # 0: run the normal flow
+        # 1: force new data to be requested from server
+        # 2. force cached data
+        self.force_fundamentals = 0
+
     @abc.abstractmethod
     def set_data_source_types(self):
         self.data_source_type_historical = DATASOURCETYPE.YFINANCE

@@ -4,6 +4,10 @@ from http_request.HttpRequest import HttpRequest
 from fundamentals.Fundamentals import Fundamentals
 import pandas as pd
 
+import json
+
+import os
+
 import datetime
 import sys
 import time
@@ -11,6 +15,8 @@ import time
 from utilities.Constants import Constants
 from pprint import pprint
 import traceback
+
+import config
 
 
 
@@ -58,8 +64,20 @@ class AlphaAPIDataSource(DataSource):
         return url
 
 
+    def save_record(self, ticker, element, response):
+        data = {'ticker': ticker, 'element': element.value, 'response': response}
 
-    def extract_fundamentals(self, tickers, required_elements=None):
+        file_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache', '{}_{}.txt'.format(ticker, element))
+        with open(file_path, 'w') as outfile:
+            json.dump(data, outfile)
+
+
+    def load_cached_data(self, ticker, element):
+        file_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache', '{}_{}.txt'.format(ticker, element))
+        with open(file_path, 'w') as json_data_file:
+            json.load(json_data_file)
+
+    def extract_fundamentals(self, tickers, required_elements=None, force=0):
 
         num_requests = 1
 
@@ -75,6 +93,11 @@ class AlphaAPIDataSource(DataSource):
                 if ticker.startswith("^"):
                     continue
 
+                if force == 0 or force == 2:
+                    self.load_cached_data(ticker, element)
+
+
+
                 url = self.calculate_url(ticker, element)
                 try:
                     response = \
@@ -84,13 +107,14 @@ class AlphaAPIDataSource(DataSource):
                             treat_info_as_error=True
                         )
                     self.fundamentals.process_data(ticker, element, response)
+                    self.save_record(ticker, element, response)
                     print(response)
                     i += 1
 
                 except Exception:
                     exc_type, exc_value, exc_tb = sys.exc_info()
                     pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
-                    # TODO: Mirar que pasa con los retries y los caracteres especiales
+                    # TODO: Mirar un timeout o un maximo de excepciones
                     time.sleep(61)
 
                 # TODO: This can be severely optimized and in a thread run and with a production api key

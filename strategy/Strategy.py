@@ -28,6 +28,9 @@ class Strategy(metaclass=abc.ABCMeta):
         # 2. force cached data
         self.force_fundamentals = 0
 
+        # Force bulk- i.e. Magic formula
+        self.bulk = None
+
     @abc.abstractmethod
     def set_data_source_types(self):
         self.data_source_type_historical = DATASOURCETYPE.YFINANCE

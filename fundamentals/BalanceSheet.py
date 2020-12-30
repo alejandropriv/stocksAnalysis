@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class BalanceSheet:
 
     def __init__(self, ticker, data):

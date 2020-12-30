@@ -1,59 +1,81 @@
-from fundamentals.BalanceSheet import BalanceSheet
-from fundamentals.CashFlow import CashFlow
-from fundamentals.Statistics import Statistics
-from fundamentals.IncomeStatement import IncomeStatement
+import pandas as pd
+from value_investment.ValueInvestmentMetric import ValueInvestmentMetric
 
 
-class PiotroskyFScore:
+class PiotroskyFScore(ValueInvestmentMetric):
 
-    def __init__(self, ticker):
-        self.ticker = ticker
 
-        self.income_statement = IncomeStatement(self.ticker)
+    def __init__(self, fundamentals=None):
+        super().__init__()
 
-        self.balance_sheet = BalanceSheet(self.ticker)
+        if fundamentals is not None:
+            self.set_input_data(fundamentals)
 
-        self.cash_flow = CashFlow(self.ticker)
 
-        self.statistics = Statistics(self.ticker)
+    @staticmethod
+    def add_level(ticker, df):
 
-        self.income_statement.get_data()
+        # TODO: Raise exception if the process can not be done, and design exception handling process
+        fundamentals_temp = pd.DataFrame()
+        concat_df = [None]
 
-        # storing information in pandas dataframe
-        combined_financials_cy = pd.DataFrame(financial_dir_cy)
-        combined_financials_cy.dropna(axis=1, inplace=True)  # dropping columns with all NaN values
-        combined_financials_py = pd.DataFrame(financial_dir_py)
-        combined_financials_py.dropna(axis=1, inplace=True)
-        combined_financials_py2 = pd.DataFrame(financial_dir_py2)
-        combined_financials_py2.dropna(axis=1, inplace=True)
-        tickers = combined_financials_cy.columns  # updating the tickers list based on only those tickers whose values were successfully extracted
+        if ticker in df:
+            # Concat latest available period
+            concat_df.append(pd.concat(
+                [df[ticker].iloc[:, [0]], fundamentals_temp],
+                axis=1,
+                keys=[ticker]))
 
-        # selecting relevant financial information for each stock using fundamental data
-        self.stats = ["Net income applicable to common shares",
-                      "Total assets",
-                      "Total cash flow from operating activities",
-                      "Long-term debt",
-                      "Other liabilities",
-                      "Total current assets",
-                      "Total current liabilities",
-                      "Common stock",
-                      "Total revenue",
-                      "Gross profit"]  # change as required
+            concat_df.append(pd.concat(
+                [df[ticker].iloc[:, [1]], fundamentals_temp],
+                axis=1,
+                keys=[ticker]))
 
-        self.indx = ["NetIncome",
-                     "TotAssets",
-                     "CashFlowOps",
-                     "LTDebt",
-                     "OtherLTDebt",
-                     "CurrAssets",
-                     "CurrLiab",
-                     "CommStock",
-                     "TotRevenue",
-                     "GrossProfit"]
+            concat_df.append(pd.concat(
+                [df[ticker].iloc[:, [2]], fundamentals_temp],
+                axis=1,
+                keys=[ticker]))
 
-        self.df_cy
-        self.df_py
-        self.df_py2
+        return concat_df
+
+
+    def set_input_data(self, fundamentals):
+        super().set_input_data(fundamentals)
+
+        if fundamentals.overview_df is None or \
+                fundamentals.balance_sheet_ar_df is None or \
+                fundamentals.income_statement_ar_df is None or \
+                fundamentals.cashflow_ar_df is None:
+            raise ValueError("Not Enough information to calculate the Magic "
+                             "Formula: BSAR:{}, ISAR:{}, CFAR:{}".
+                             format(fundamentals.balance_sheet_ar_df,
+                                    fundamentals.income_statement_ar_df,
+                                    fundamentals.cashflow_ar_df))
+
+        self.tickers = fundamentals.balance_sheet_ar_df.columns.levels[0]
+
+        self.data_df = pd.DataFrame()
+
+        for ticker in self.tickers:
+
+            fundamentals.overview_df.rename(columns={"data": fundamentals.balance_sheet_ar_df[ticker].columns[0]},
+                                            inplace=True)
+
+            df_list_data = [
+                PiotroskyFScore.add_level(ticker, fundamentals.overview_df), # TODO: WTF
+                PiotroskyFScore.add_level(ticker, fundamentals.balance_sheet_ar_df),
+                PiotroskyFScore.add_level(ticker, fundamentals.income_statement_ar_df),
+                PiotroskyFScore.add_level(ticker, fundamentals.cashflow_ar_df)]
+
+            # TODO: Check if this works for bulk
+            fundamentals_df = pd.DataFrame()
+
+            for data in df_list_data:
+                fundamentals_df = fundamentals_df.append(data)
+
+            self.data_df = pd.concat([fundamentals_df, self.data_df], axis=1, join='outer')
+            print("")
+
 
 
     def calculate(self):
@@ -62,27 +84,27 @@ class PiotroskyFScore:
         tickers = df_cy.columns
         for ticker in tickers:
             ROA_FS = int(df_cy.loc["NetIncome", ticker] / (
-                    (df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2) > 0)
+                        (df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2) > 0)
             CFO_FS = int(df_cy.loc["CashFlowOps", ticker] > 0)
-            ROA_D_FS = int(df_cy.loc["NetIncome", ticker] / (
-                    df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2 > df_py.loc[
-                                   "NetIncome", ticker] / (
-                                    df_py.loc["TotAssets", ticker] + df_py2.loc["TotAssets", ticker]) / 2)
-            CFO_ROA_FS = int(df_cy.loc["CashFlowOps", ticker] / df_cy.loc["TotAssets", ticker] > df_cy.loc[
-                "NetIncome", ticker] / ((df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2))
+            ROA_D_FS = int(
+                df_cy.loc["NetIncome", ticker] / (df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2 >
+                df_py.loc["NetIncome", ticker] / (df_py.loc["TotAssets", ticker] + df_py2.loc["TotAssets", ticker]) / 2)
+            CFO_ROA_FS = int(
+                df_cy.loc["CashFlowOps", ticker] / df_cy.loc["TotAssets", ticker] > df_cy.loc["NetIncome", ticker] / (
+                            (df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2))
             LTD_FS = int((df_cy.loc["LTDebt", ticker] + df_cy.loc["OtherLTDebt", ticker]) < (
-                    df_py.loc["LTDebt", ticker] + df_py.loc["OtherLTDebt", ticker]))
+                        df_py.loc["LTDebt", ticker] + df_py.loc["OtherLTDebt", ticker]))
             CR_FS = int((df_cy.loc["CurrAssets", ticker] / df_cy.loc["CurrLiab", ticker]) > (
-                    df_py.loc["CurrAssets", ticker] / df_py.loc["CurrLiab", ticker]))
+                        df_py.loc["CurrAssets", ticker] / df_py.loc["CurrLiab", ticker]))
             DILUTION_FS = int(df_cy.loc["CommStock", ticker] <= df_py.loc["CommStock", ticker])
             GM_FS = int((df_cy.loc["GrossProfit", ticker] / df_cy.loc["TotRevenue", ticker]) > (
-                    df_py.loc["GrossProfit", ticker] / df_py.loc["TotRevenue", ticker]))
+                        df_py.loc["GrossProfit", ticker] / df_py.loc["TotRevenue", ticker]))
             ATO_FS = int(df_cy.loc["TotRevenue", ticker] / (
-                    (df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2) > df_py.loc[
-                                "TotRevenue", ticker] / (
-                                (df_py.loc["TotAssets", ticker] + df_py2.loc["TotAssets", ticker]) / 2))
+                        (df_cy.loc["TotAssets", ticker] + df_py.loc["TotAssets", ticker]) / 2) > df_py.loc[
+                             "TotRevenue", ticker] / (
+                                     (df_py.loc["TotAssets", ticker] + df_py2.loc["TotAssets", ticker]) / 2))
             f_score[ticker] = [ROA_FS, CFO_FS, ROA_D_FS, CFO_ROA_FS, LTD_FS, CR_FS, DILUTION_FS, GM_FS, ATO_FS]
-            f_score_df = pd.DataFrame(f_score,
-                                      index=["PosROA", "PosCFO", "ROAChange", "Accruals", "Leverage", "Liquidity",
-                                             "Dilution", "GM", "ATO"])
-            return f_score_df
+        f_score_df = pd.DataFrame(f_score, index=["PosROA", "PosCFO", "ROAChange", "Accruals", "Leverage", "Liquidity",
+                                                  "Dilution", "GM", "ATO"])
+        return f_score_df
+

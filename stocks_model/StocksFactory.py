@@ -2,15 +2,13 @@ from stocks_model.Stock import Stock
 
 from data.DataCollector import DataCollector
 
-
 import pandas as pd
 import copy
 
 
 class StocksFactory:
 
-
-    # TODO: Fix this was created to fix the problem of having only one stock (input dataframe is different)
+    # TODO: Fix this: It was created to fix the problem of having only one stock (input dataframe is different)
     # This should be removed and dataframe handled accordingly
     @staticmethod
     def add_spi500_ticker(tickers):
@@ -18,7 +16,7 @@ class StocksFactory:
         return tickers
 
     @staticmethod
-    def create_stocks(strategy, tickers, bulk=True):
+    def create_stocks(strategy, tickers, bulk=False):
 
         tickers = StocksFactory.add_spi500_ticker(tickers=tickers)
 
@@ -33,7 +31,6 @@ class StocksFactory:
 
         if DataCollector.HISTORICAL_KEY in data_sources.keys():
             data_source_historical = data_sources[DataCollector.HISTORICAL_KEY]
-
 
             if data_source_historical is not None:
                 data_source_historical.extract_historical_data(
@@ -52,9 +49,8 @@ class StocksFactory:
                 data_source_fundamentals.extract_fundamentals(
                     tickers=tickers,
                     required_elements=strategy.fundamentals_options,
-                    force=strategy.force_fundamentals
+                    force_server_data=strategy.force_fundamentals
                 )
-
 
         indicators = strategy.indicators
         value_investing_metrics = strategy.value_investing_metrics
@@ -81,7 +77,6 @@ class StocksFactory:
         if data_source_historical is None and data_source_fundamentals is None:
             print("Error: Define your data sources first !!!.")
             return
-
 
         if bulk is True:  # print("This option has not been already programmed! wait for next release")
 
@@ -115,30 +110,31 @@ class StocksFactory:
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = pd.DataFrame()
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = pd.DataFrame()
-                    
 
                     data_source_fundamentals_stock.fundamentals.overview_df = \
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.overview_df, ticker)
 
-                    data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df =\
-                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_ar_df, ticker)
+                    data_source_fundamentals_stock.fundamentals.balance_sheet_ar_df = \
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_ar_df,
+                                                        ticker)
 
-                    data_source_fundamentals_stock.fundamentals.balance_sheet_qr_df =\
-                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_qr_df, ticker)
+                    data_source_fundamentals_stock.fundamentals.balance_sheet_qr_df = \
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.balance_sheet_qr_df,
+                                                        ticker)
 
                     data_source_fundamentals_stock.fundamentals.income_statement_ar_df = \
-                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.income_statement_ar_df, ticker)
+                        StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.income_statement_ar_df,
+                                                        ticker)
 
                     data_source_fundamentals_stock.fundamentals.income_statement_qr_df = \
-                        StocksFactory.set_df_per_ticker(data_source_fundamentals_stock.fundamentals.income_statement_qr_df, ticker)
+                        StocksFactory.set_df_per_ticker(
+                            data_source_fundamentals_stock.fundamentals.income_statement_qr_df, ticker)
 
                     data_source_fundamentals_stock.fundamentals.cashflow_ar_df = \
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.cashflow_ar_df, ticker)
 
-                    data_source_fundamentals_stock.fundamentals.cashflow_qr_df =\
+                    data_source_fundamentals_stock.fundamentals.cashflow_qr_df = \
                         StocksFactory.set_df_per_ticker(data_source_fundamentals.fundamentals.cashflow_qr_df, ticker)
-
-
 
                 else:
                     data_source_fundamentals_stock = None
@@ -169,7 +165,6 @@ class StocksFactory:
             stock.append_indicator(copy.copy(indicator))
 
         return stock
-
 
     @staticmethod
     def load_value_investing_metrics(stock, value_investing_metrics):

@@ -2,6 +2,9 @@ from fundamentals.IncomeStatement import IncomeStatement
 from fundamentals.BalanceSheet import BalanceSheet
 from fundamentals.CashFlow import CashFlow
 from fundamentals.Overview import Overview
+from pprint import pprint
+import traceback
+import sys
 
 import pandas as pd
 
@@ -32,56 +35,64 @@ class Fundamentals:
 
 
     def process_data(self, ticker, type_fundamentals, data):
-        if type_fundamentals is FUNDAMENTALSTYPE.OVERVIEW:
-            overview = Overview(ticker, data)
+        try:
+            if type_fundamentals is FUNDAMENTALSTYPE.OVERVIEW:
+                overview = Overview(ticker, data)
 
-            self.overview_df = pd.concat(
-                [overview.data, self.overview_df],
-                axis=1
-            )
+                self.overview_df = pd.concat(
+                    [overview.data, self.overview_df],
+                    axis=1
+                )
 
-        if type_fundamentals is FUNDAMENTALSTYPE.BALANCE_SHEET:
-            balance_sheet = BalanceSheet(ticker, data)
+            if type_fundamentals is FUNDAMENTALSTYPE.BALANCE_SHEET:
+                balance_sheet = BalanceSheet(ticker, data)
 
-            self.balance_sheet_qr_df = pd.concat(
-                [balance_sheet.quarterly_reports, self.balance_sheet_qr_df],
-                axis=1
-            )
+                self.balance_sheet_qr_df = pd.concat(
+                    [balance_sheet.quarterly_reports, self.balance_sheet_qr_df],
+                    axis=1
+                )
 
-            self.balance_sheet_ar_df = pd.concat(
-                [balance_sheet.annual_reports, self.balance_sheet_ar_df],
-                axis=1
-            )
-        if type_fundamentals is FUNDAMENTALSTYPE.INCOME_STATEMENT:
-            income_statement = IncomeStatement(ticker, data)
+                self.balance_sheet_ar_df = pd.concat(
+                    [balance_sheet.annual_reports, self.balance_sheet_ar_df],
+                    axis=1
+                )
+            if type_fundamentals is FUNDAMENTALSTYPE.INCOME_STATEMENT:
+                income_statement = IncomeStatement(ticker, data)
 
-            self.income_statement_qr_df = pd.concat(
-                [income_statement.quarterly_reports, self.income_statement_qr_df],
-                axis=1
-            )
+                self.income_statement_qr_df = pd.concat(
+                    [income_statement.quarterly_reports, self.income_statement_qr_df],
+                    axis=1
+                )
 
-            self.income_statement_ar_df = pd.concat(
-                [income_statement.annual_reports, self.income_statement_ar_df],
-                axis=1
-            )
+                self.income_statement_ar_df = pd.concat(
+                    [income_statement.annual_reports, self.income_statement_ar_df],
+                    axis=1
+                )
 
-        if type_fundamentals is FUNDAMENTALSTYPE.CASH_FLOW:
-            cashflow = CashFlow(ticker, data)
+            if type_fundamentals is FUNDAMENTALSTYPE.CASH_FLOW:
+                cashflow = CashFlow(ticker, data)
 
-            self.cashflow_qr_df = pd.concat(
-                [cashflow.quarterly_reports, self.cashflow_qr_df],
-                axis=1
-            )
+                self.cashflow_qr_df = pd.concat(
+                    [cashflow.quarterly_reports, self.cashflow_qr_df],
+                    axis=1
+                )
 
-            self.cashflow_ar_df = pd.concat(
-                [cashflow.annual_reports, self.cashflow_ar_df],
-                axis=1
-            )
-
-
-
+                self.cashflow_ar_df = pd.concat(
+                    [cashflow.annual_reports, self.cashflow_ar_df],
+                    axis=1
+                )
 
 
+            result = True
+
+        except Exception:
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
+            result = False
+
+
+
+        return result
 
 
 

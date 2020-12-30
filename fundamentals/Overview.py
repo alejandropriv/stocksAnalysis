@@ -10,10 +10,11 @@ class Overview:
         self.set_data()
 
     def set_data(self):
-        pass
+        self.get_ticker()
 
     def get_ticker(self):
         return self.data.loc["Symbol"][0]
+
     def get_AssetType(self):
         return self.data["AssetType"]
 

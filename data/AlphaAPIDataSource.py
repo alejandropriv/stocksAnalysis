@@ -65,21 +65,36 @@ class AlphaAPIDataSource(DataSource):
 
 
     def save_record(self, ticker, element, response):
-        data = {'ticker': ticker, 'element': element.value, 'response': response}
 
-        file_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache', '{}_{}.txt'.format(ticker, element))
+        folder_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache')
+        if not os.path.exists(folder_path):
+            os.mkdir(folder_path)
+
+
+        file_path = os.path.join(folder_path, '{}_{}.txt'.format(ticker, element))
         with open(file_path, 'w') as outfile:
-            json.dump(data, outfile)
+            json.dump(response, outfile)
 
 
     def load_cached_data(self, ticker, element):
-        file_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache', '{}_{}.txt'.format(ticker, element))
-        with open(file_path, 'w') as json_data_file:
-            json.load(json_data_file)
 
-    def extract_fundamentals(self, tickers, required_elements=None, force=0):
+        file_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache', '{}_{}.txt'.format(ticker, element))
+        try:
+            with open(file_path, 'r') as json_data_file:
+                response = json.load(json_data_file)
+
+        except Exception:
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
+            response = None
+
+        return response
+        #Todo: return true if successful then if false do an http request to get the data from the server
+
+    def extract_fundamentals(self, tickers, required_elements=None, force_server_data=0):
 
         num_requests = 1
+        fix_data = 0
 
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
@@ -88,43 +103,58 @@ class AlphaAPIDataSource(DataSource):
 
         for element in required_elements:
 
-            for i in range(0, len(tickers)):
+            i = 0
+            while i < len(tickers):
                 ticker = tickers[i]
                 if ticker.startswith("^"):
+                    i += 1
                     continue
 
-                if force == 0 or force == 2:
-                    self.load_cached_data(ticker, element)
+                response = None
+                if force_server_data == 0 and fix_data == 0:
+                    response = self.load_cached_data(ticker, element)
+                    result = self.fundamentals.process_data(ticker, element, response)
+
+                    # This means that the file loaded is not correct and the correct file
+                    # should be picked from the server
+                    if result is False:
+                        fix_data = 1
+                        response = None
+                        continue
+
+                if response is None:
+                    url = self.calculate_url(ticker, element)
+                    try:
+                        response = \
+                            HttpRequest.execute(
+                                url=url,
+                                proxy=self.proxy,
+                                treat_info_as_error=True
+                            )
+
+                        self.save_record(ticker, element, response)
+
+                    except Exception:
+                        exc_type, exc_value, exc_tb = sys.exc_info()
+                        pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
+                        # TODO: Mirar un timeout o un maximo de excepciones
+                        time.sleep(61)
+
+                    # TODO: This can be severely optimized and in a thread run and with a production api key
+                    if num_requests >= 5 and AlphaAPIDataSource._QA_API_KEY is True:
+                        time.sleep(61)
+                        num_requests = 0
+
+                    num_requests += 1
+
+                    result = self.fundamentals.process_data(ticker, element, response)
 
 
+                print(response)
 
-                url = self.calculate_url(ticker, element)
-                try:
-                    response = \
-                        HttpRequest.execute(
-                            url=url,
-                            proxy=self.proxy,
-                            treat_info_as_error=True
-                        )
-                    self.fundamentals.process_data(ticker, element, response)
-                    self.save_record(ticker, element, response)
-                    print(response)
-                    i += 1
+                i += 1
+                fix_data = 0
 
-                except Exception:
-                    exc_type, exc_value, exc_tb = sys.exc_info()
-                    pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
-                    # TODO: Mirar un timeout o un maximo de excepciones
-                    time.sleep(61)
-
-                # TODO: This can be severely optimized and in a thread run and with a production api key
-                if num_requests >= 5 and AlphaAPIDataSource._QA_API_KEY is True:
-                    time.sleep(61)
-                    num_requests = 0
-
-                num_requests += 1
-
-        #print()
 
     def extract_historical_data(self,
                                 tickers=None,

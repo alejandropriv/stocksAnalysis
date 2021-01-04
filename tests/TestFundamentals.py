@@ -57,8 +57,24 @@ class TestBasics(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
+    # Magic Formula only makes sense in Bulk mode
+    def test_piotroski_score_short(self):
+        AlphaAPIDataSource._QA_API_KEY = True
+        tickers = ["TSLA", "SNAP"]
 
-        print("Fundamentals has been queried")
+        strategies = [StrategyXIII()]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                bulk=True
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
 
 if __name__ == '__main__':
     unittest.main()

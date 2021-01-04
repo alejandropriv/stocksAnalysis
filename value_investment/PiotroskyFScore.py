@@ -61,11 +61,10 @@ class PiotroskyFScore(ValueInvestmentMetric):
             fundamentals.overview_df.rename(columns={"data": fundamentals.balance_sheet_ar_df[ticker].columns[0]},
                                             inplace=True)
 
-            df_list_data = [
-                PiotroskyFScore.add_level(ticker, fundamentals.overview_df), # TODO: WTF
-                PiotroskyFScore.add_level(ticker, fundamentals.balance_sheet_ar_df),
-                PiotroskyFScore.add_level(ticker, fundamentals.income_statement_ar_df),
-                PiotroskyFScore.add_level(ticker, fundamentals.cashflow_ar_df)]
+            PiotroskyFScore.add_level(ticker, fundamentals.overview_df) # TODO: WTF
+            bs_3y = PiotroskyFScore.add_level(ticker, fundamentals.balance_sheet_ar_df)
+            is_3y = PiotroskyFScore.add_level(ticker, fundamentals.income_statement_ar_df)
+            cf_3y = PiotroskyFScore.add_level(ticker, fundamentals.cashflow_ar_df)
 
             # TODO: Check if this works for bulk
             fundamentals_df = pd.DataFrame()

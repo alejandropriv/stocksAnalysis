@@ -1,6 +1,8 @@
 import unittest
 
 from strategy.test_strategies.StrategyXII import StrategyXII
+from strategy.test_strategies.StrategyXIII import StrategyXIII
+
 from strategy.StrategyManager import StrategyManager
 from data.AlphaAPIDataSource import AlphaAPIDataSource
 

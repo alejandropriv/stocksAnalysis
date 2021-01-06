@@ -36,9 +36,6 @@ class Stock:
             self.get_fundamentals()
 
 
-
-
-
         print("Stock {} created".format(tickers))
 
 

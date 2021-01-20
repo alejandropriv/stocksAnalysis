@@ -89,8 +89,6 @@ class MagicFormula(ValueInvestmentMetric):
         total_current_assets_bs_key = "totalCurrentAssets"
         total_current_liabilities_bs_key = "totalCurrentLiabilities"
 
-
-
         dividend_yield_key = "ForwardAnnualDividendYield"
 
         capex_key = "capitalExpenditures"

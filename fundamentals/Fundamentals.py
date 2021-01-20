@@ -85,6 +85,10 @@ class Fundamentals:
 
             result = True
 
+        except TypeError:
+            print("TypeError: 'NoneType' object is not subscriptable\n Correct Data has not been found")
+            result = False
+
         except Exception:
             exc_type, exc_value, exc_tb = sys.exc_info()
             pprint(traceback.format_exception(exc_type, exc_value, exc_tb))

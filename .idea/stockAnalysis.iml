@@ -3,11 +3,11 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/stockenv" />
+      <excludeFolder url="file://$MODULE_DIR$/stocksenv" />
       <excludeFolder url="file://$MODULE_DIR$/stockvirtualenv" />
       <excludeFolder url="file://$MODULE_DIR$/virtualenv" />
-      <excludeFolder url="file://$MODULE_DIR$/stocksenv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (stockAnalysis)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (stockAnalysis)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

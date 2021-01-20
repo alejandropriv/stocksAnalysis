@@ -26,9 +26,11 @@ class AlphaAPIDataSource(DataSource):
     _FUNCTION = "function"
     _SYMBOL = "symbol"
     _API_KEY = "apikey"
-    _AV_API_KEY = "86VFFOKUNB1M9YQ8"
 
-    _QA_API_KEY = False
+    # TODO: Crete a JSON describing each of the keys
+    _AV_API_KEY = "86VFFOKUNB1M9YQ8"
+    _AV_KEY_INDICATOR = 0
+
 
     def __init__(self, proxy=None):
 
@@ -41,12 +43,22 @@ class AlphaAPIDataSource(DataSource):
         self.proxy = proxy
 
         self.url = None
+        self.current_api_key = None
+
+
+    @staticmethod
+    def get_max_rate_per_min():
+        return 5
+        # TODO: put here the data coming from the JSON definition that will be created in the future
+
+
+
 
     # Form the base url, the original function called must return
     # the function name defined in the alpha vantage api and the data
     # key for it and for its meta data.
-    @staticmethod
-    def calculate_url(ticker, function):
+    def calculate_url(self, ticker, function):
+
 
         url = "{}?{}={}&{}={}&{}={}".format(
             AlphaAPIDataSource._AV_API_URL,
@@ -64,7 +76,8 @@ class AlphaAPIDataSource(DataSource):
         return url
 
 
-    def save_record(self, ticker, element, response):
+    @staticmethod
+    def save_record(ticker, element, response):
 
         folder_path = os.path.join(config.ROOT_DIR, 'data', 'av_cache')
         if not os.path.exists(folder_path):
@@ -82,6 +95,10 @@ class AlphaAPIDataSource(DataSource):
         try:
             with open(file_path, 'r') as json_data_file:
                 response = json.load(json_data_file)
+
+        except FileNotFoundError:
+            print("File Not Found")
+            response = None
 
         except Exception:
             exc_type, exc_value, exc_tb = sys.exc_info()
@@ -101,11 +118,12 @@ class AlphaAPIDataSource(DataSource):
 
         self.fundamentals = Fundamentals(tickers)
 
-        for element in required_elements:
+        for ticker in tickers:
 
             i = 0
-            while i < len(tickers):
-                ticker = tickers[i]
+            while i < len(required_elements):
+                element = required_elements[i]
+
                 if ticker.startswith("^"):
                     i += 1
                     continue
@@ -113,14 +131,14 @@ class AlphaAPIDataSource(DataSource):
                 response = None
                 if force_server_data == 0 and fix_data == 0:
                     response = self.load_cached_data(ticker, element)
-                    result = self.fundamentals.process_data(ticker, element, response)
+                    if response is not None:
+                        result = self.fundamentals.process_data(ticker, element, response)
 
-                    # This means that the file loaded is not correct and the correct file
-                    # should be picked from the server
-                    if result is False:
-                        fix_data = 1
-                        response = None
-                        continue
+                        # This means that the file loaded is not correct and the correct file
+                        # should be picked from the server
+                        if result is False:
+                            fix_data = 1
+                            continue
 
                 if response is None:
                     url = self.calculate_url(ticker, element)
@@ -132,16 +150,17 @@ class AlphaAPIDataSource(DataSource):
                                 treat_info_as_error=True
                             )
 
-                        self.save_record(ticker, element, response)
+                        AlphaAPIDataSource.save_record(ticker, element, response)
 
                     except Exception:
                         exc_type, exc_value, exc_tb = sys.exc_info()
                         pprint(traceback.format_exception(exc_type, exc_value, exc_tb))
+
                         # TODO: Mirar un timeout o un maximo de excepciones
                         time.sleep(61)
 
                     # TODO: This can be severely optimized and in a thread run and with a production api key
-                    if num_requests >= 5 and AlphaAPIDataSource._QA_API_KEY is True:
+                    if num_requests >= AlphaAPIDataSource.get_max_rate_per_min():
                         time.sleep(61)
                         num_requests = 0
 

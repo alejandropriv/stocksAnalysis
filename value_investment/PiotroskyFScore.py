@@ -93,7 +93,7 @@ class PiotroskyFScore(ValueInvestmentMetric):
 
         net_income_cf_key = "netIncome"
         total_assets_bs_key = "totalAssets"
-        cash_flow_ops_bs_key = "CashFlowOps"
+        cash_flow_ops_cf_key = "operatingCashflow"
         long_term_debt_bs_key = "longTermDebt"
         other_long_term_debt_bs_key = "OtherLTDebt"#
         current_assets_bs_key = "CurrAssets"
@@ -116,12 +116,12 @@ class PiotroskyFScore(ValueInvestmentMetric):
         for ticker in tickers:
             ROA_FS = int(self.cy_data.loc[net_income_cf_key, ticker] / (
                         (self.cy_data.loc[total_assets_bs_key, ticker] + self.py_data.loc[total_assets_bs_key, ticker]) / 2) > 0)
-            CFO_FS = int(self.cy_data.loc[cash_flow_ops_bs_key, ticker] > 0)
+            CFO_FS = int(self.cy_data.loc[cash_flow_ops_cf_key, ticker] > 0)
             ROA_D_FS = int(
                 self.cy_data.loc[net_income_cf_key, ticker] / (self.cy_data.loc[total_assets_bs_key, ticker] + self.py_data.loc[total_assets_bs_key, ticker]) / 2 >
                 self.py_data.loc[net_income_cf_key, ticker] / (self.py_data.loc[total_assets_bs_key, ticker] + self.p2y_data.loc[total_assets_bs_key, ticker]) / 2)
             CFO_ROA_FS = int(
-                self.cy_data.loc[cash_flow_ops_bs_key, ticker] / self.cy_data.loc[total_assets_bs_key, ticker] > self.cy_data.loc[net_income_cf_key, ticker] / (
+                self.cy_data.loc[cash_flow_ops_cf_key, ticker] / self.cy_data.loc[total_assets_bs_key, ticker] > self.cy_data.loc[net_income_cf_key, ticker] / (
                             (self.cy_data.loc[total_assets_bs_key, ticker] + self.py_data.loc[total_assets_bs_key, ticker]) / 2))
             LTD_FS = int((self.cy_data.loc[long_term_debt_bs_key, ticker] + self.cy_data.loc[other_long_term_debt_bs_key, ticker]) < (
                         self.py_data.loc[long_term_debt_bs_key, ticker] + self.py_data.loc[other_long_term_debt_bs_key, ticker]))

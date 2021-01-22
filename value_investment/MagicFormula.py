@@ -12,7 +12,6 @@ class MagicFormula(ValueInvestmentMetric):
         if fundamentals is not None:
             self.set_input_data(fundamentals)
 
-
     @staticmethod
     def add_level(ticker, df):
         fundamentals_temp = pd.DataFrame()
@@ -46,11 +45,20 @@ class MagicFormula(ValueInvestmentMetric):
 
         for ticker in self.tickers:
 
-            fundamentals.overview_df.rename(columns={"data": fundamentals.balance_sheet_ar_df[ticker].columns[0]},
-                                            inplace=True)
+            market_cap_df = fundamentals.overview_df[ticker].loc[["MarketCapitalization"]]
+            fundamentals_temp = pd.DataFrame()
+
+            # Concat latest available period
+            concat_df = pd.concat(
+                [market_cap_df, fundamentals_temp],
+                axis=1,
+                keys=[ticker])
+
+            concat_df.rename(columns={"data": fundamentals.balance_sheet_ar_df[ticker].columns[0]},
+                             inplace=True)
 
             df_list_data = [
-                MagicFormula.add_level(ticker, fundamentals.overview_df),
+                MagicFormula.add_level(ticker, concat_df),
                 MagicFormula.add_level(ticker, fundamentals.balance_sheet_ar_df),
                 MagicFormula.add_level(ticker, fundamentals.income_statement_ar_df),
                 MagicFormula.add_level(ticker, fundamentals.cashflow_ar_df)]
@@ -62,7 +70,6 @@ class MagicFormula(ValueInvestmentMetric):
 
             self.data_df = pd.concat([fundamentals_df, self.data_df], axis=1, join='outer')
             print("")
-
 
     def calculate(self):
 
@@ -103,12 +110,10 @@ class MagicFormula(ValueInvestmentMetric):
         book_to_market_key = "BookToMkt"
         book_value_key = "BookValue"
 
-
         fcf_yield_r_key = "FCFYield"
         comb_rank_r_key = "CombRank"
         magic_formula_rank_r_key = "MagicFormulaRank"
         combined_rank_r_key = "CombinedRank"
-
 
         for ticker in self.data_df.columns.get_level_values(0):
             self.data_df[ticker] = pd.to_numeric(self.data_df[ticker][self.data_df[ticker].columns[0]].values,
@@ -124,10 +129,10 @@ class MagicFormula(ValueInvestmentMetric):
                                          num_tr_df[capital_lease_obligations_bs_key].fillna(0)
 
         final_stats_df[tev_key] = final_stats_df[total_debt_key].fillna(0) \
-                                + num_tr_df[market_cap_ov_key].fillna(0) \
-                                + num_tr_df[preferred_stock_bs_key].fillna(0) \
-                                + num_tr_df[minority_interest_is_key].fillna(0) \
-                                - num_tr_df[cash_bs_key].fillna(0)
+                                  + num_tr_df[market_cap_ov_key].fillna(0) \
+                                  + num_tr_df[preferred_stock_bs_key].fillna(0) \
+                                  + num_tr_df[minority_interest_is_key].fillna(0) \
+                                  - num_tr_df[cash_bs_key].fillna(0)
         # - (transpose_df[total_current_assets_bs_key].fillna(0) - transpose_df[total_current_liabilities_bs_key].fillna(0)) # CASH Approximation
 
         final_stats_df[earning_yield_key] = final_stats_df[ebit_is_key] / final_stats_df[tev_key]
@@ -145,9 +150,9 @@ class MagicFormula(ValueInvestmentMetric):
         # finding value stocks based on Magic Formula
         final_stats_val_df = final_stats_df  # .loc[tickers, :]
         final_stats_val_df[comb_rank_r_key] = final_stats_val_df[earning_yield_key].rank(ascending=False,
-                                                                                       na_option='bottom') + \
-                                            final_stats_val_df[return_on_capital_key].rank(ascending=False,
-                                                                                           na_option='bottom')
+                                                                                         na_option='bottom') + \
+                                              final_stats_val_df[return_on_capital_key].rank(ascending=False,
+                                                                                             na_option='bottom')
         final_stats_val_df[magic_formula_rank_r_key] = final_stats_val_df[comb_rank_r_key].rank(method='first')
         value_stocks = final_stats_val_df.sort_values(magic_formula_rank_r_key).iloc[:, [2, 4, 8]]
         print("------------------------------------------------")
@@ -162,8 +167,8 @@ class MagicFormula(ValueInvestmentMetric):
 
         # # Magic Formula & Dividend yield combined
         final_stats_df[comb_rank_r_key] = final_stats_df[earning_yield_key].rank(ascending=False, method='first') \
-                                        + final_stats_df[return_on_capital_key].rank(ascending=False, method='first') \
-                                        + final_stats_df[dividend_yield_key].rank(ascending=False, method='first')
+                                          + final_stats_df[return_on_capital_key].rank(ascending=False, method='first') \
+                                          + final_stats_df[dividend_yield_key].rank(ascending=False, method='first')
         final_stats_df[combined_rank_r_key] = final_stats_df[comb_rank_r_key].rank(method='first')
         value_high_div_stocks = final_stats_df.sort_values(combined_rank_r_key).iloc[:, [2, 4, 6, 8]]
         print("------------------------------------------------")

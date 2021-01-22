@@ -47,6 +47,7 @@ class StocksFactory:
 
             if data_source_fundamentals is not None:
                 data_source_fundamentals.extract_fundamentals(
+                    date=strategy.start_date,
                     tickers=tickers,
                     required_elements=strategy.fundamentals_options,
                     force_server_data=strategy.force_fundamentals

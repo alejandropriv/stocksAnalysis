@@ -9,6 +9,7 @@ class Overview:
 
         self.set_data()
 
+
     def set_data(self):
         self.get_ticker()
 

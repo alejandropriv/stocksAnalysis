@@ -22,7 +22,8 @@ class FUNDAMENTALSTYPE(Enum):
 class Fundamentals:
 
 
-    def __init__(self, tickers):
+    def __init__(self):
+        self.date = None
         self.error = None
         self.data = {}
         self.overview_df = pd.DataFrame()

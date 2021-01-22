@@ -38,7 +38,7 @@ class StrategyXII(Strategy):
     # If period is not None it will precede over date
     def set_date_parameters(self):
         self.period = None
-        self.end_date = datetime.datetime.today()
+        self.end_date = "31/3/2020"
         date_str = "11/07/2019"
         self.start_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
         self.interval = Constants.INTERVAL.DAY

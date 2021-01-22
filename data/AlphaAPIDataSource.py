@@ -108,7 +108,7 @@ class AlphaAPIDataSource(DataSource):
         return response
         #Todo: return true if successful then if false do an http request to get the data from the server
 
-    def extract_fundamentals(self, tickers, required_elements=None, force_server_data=0):
+    def extract_fundamentals(self, date, tickers, required_elements=None, force_server_data=0):
 
         num_requests = 1
         fix_data = 0
@@ -116,7 +116,7 @@ class AlphaAPIDataSource(DataSource):
         if required_elements is None:
             raise ValueError("No fundamentals selected, please check your code")
 
-        self.fundamentals = Fundamentals(tickers)
+        self.fundamentals = Fundamentals()
 
         for ticker in tickers:
 

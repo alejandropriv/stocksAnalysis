@@ -45,20 +45,20 @@ class MagicFormula(ValueInvestmentMetric):
 
         for ticker in self.tickers:
 
-            market_cap_df = fundamentals.overview_df[ticker].loc[["MarketCapitalization"]]
+            overview_temp_df = fundamentals.overview_df[ticker].loc[["MarketCapitalization", "BookValue", "ForwardAnnualDividendYield"]]
             fundamentals_temp = pd.DataFrame()
 
             # Concat latest available period
-            concat_df = pd.concat(
-                [market_cap_df, fundamentals_temp],
+            overview_df = pd.concat(
+                [overview_temp_df, fundamentals_temp],
                 axis=1,
                 keys=[ticker])
 
-            concat_df.rename(columns={"data": fundamentals.balance_sheet_ar_df[ticker].columns[0]},
+            overview_df.rename(columns={"data": fundamentals.balance_sheet_ar_df[ticker].columns[0]},
                              inplace=True)
 
             df_list_data = [
-                MagicFormula.add_level(ticker, concat_df),
+                MagicFormula.add_level(ticker, overview_df),
                 MagicFormula.add_level(ticker, fundamentals.balance_sheet_ar_df),
                 MagicFormula.add_level(ticker, fundamentals.income_statement_ar_df),
                 MagicFormula.add_level(ticker, fundamentals.cashflow_ar_df)]

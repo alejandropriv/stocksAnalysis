@@ -59,10 +59,10 @@ class TestBasics(unittest.TestCase):
                 bulk=True
             )
 
-        stocks_per_strategy = manager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                print(stock.price_info)
+#        stocks_per_strategy = manager.stocks_per_strategy
+#        for stock_per_strategy in stocks_per_strategy:
+#            for stock in stocks_per_strategy[stock_per_strategy]:
+#                print(stock.price_info)
 
 
         print("Fundamentals has been queried")
@@ -70,10 +70,9 @@ class TestBasics(unittest.TestCase):
 
     # Magic Formula only makes sense in Bulk mode
     def test_magic_formula_short(self):
-        tickers = [ "EA", "FB"]
-
-        date = ""
-        #tickers = ["TSLA", "SNAP"]
+        tickers = ["AXP", "AAPL", "BA", "CAT", "CVX", "CSCO", "DIS", "DOW", "XOM",
+           "HD", "IBM", "INTC", "JNJ", "KO", "MCD", "MMM", "MRK", "MSFT",
+           "NKE", "PFE", "PG", "TRV", "UNH", "VZ", "V", "WMT", "WBA"]
 
         strategies = [StrategyXII()]
 

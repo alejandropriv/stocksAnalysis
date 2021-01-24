@@ -45,7 +45,7 @@ class MagicFormula(ValueInvestmentMetric):
 
         for ticker in self.tickers:
 
-            overview_temp_df = fundamentals.overview_df[ticker].loc[["MarketCapitalization", "BookValue", "ForwardAnnualDividendYield"]]
+            overview_temp_df = fundamentals.overview_df[ticker].loc[["MarketCapitalization", "ForwardAnnualDividendYield"]]
             fundamentals_temp = pd.DataFrame()
 
             # Concat latest available period
@@ -69,28 +69,22 @@ class MagicFormula(ValueInvestmentMetric):
                 fundamentals_df = fundamentals_df.append(data)
 
             self.data_df = pd.concat([fundamentals_df, self.data_df], axis=1, join='outer')
-            print("")
+
 
     def calculate(self):
 
         self.data_df.sort_index(inplace=True)
 
         print("----------------- data -------------------")
-        print(self.data_df)
+        # print(self.data_df)
+        # print(self.data_df.index)
 
-        print(self.data_df.index)
-
-        operating_cashflow_key = "operatingCashflow"
+        operating_cashflow_key = "operatingCashflow" #+Other operating cashflow??
 
         ebit_is_key = "ebit"
 
         long_term_debt_bs_key = "totalLongTermDebt"
-        short_term_debt_bs_key = "shortTermDebt"
-        capital_lease_obligations_bs_key = "capitalLeaseObligations"
 
-        preferred_stock_bs_key = "preferredStockTotalEquity"
-        minority_interest_is_key = "minorityInterest"
-        cash_bs_key = "cash"
 
         property_plant_equipment_bs_key = "propertyPlantEquipment"
         total_current_assets_bs_key = "totalCurrentAssets"
@@ -108,7 +102,7 @@ class MagicFormula(ValueInvestmentMetric):
 
         # TODO: Why are those even calculated
         book_to_market_key = "BookToMkt"
-        book_value_key = "BookValue"
+        book_value_key = "totalShareholderEquity"
 
         fcf_yield_r_key = "FCFYield"
         comb_rank_r_key = "CombRank"
@@ -124,28 +118,30 @@ class MagicFormula(ValueInvestmentMetric):
         # calculating relevant financial metrics for each stock
         final_stats_df = pd.DataFrame()
         final_stats_df[ebit_is_key] = num_tr_df[ebit_is_key]
-        final_stats_df[total_debt_key] = num_tr_df[long_term_debt_bs_key].fillna(0) + \
-                                         num_tr_df[short_term_debt_bs_key].fillna(0) + \
-                                         num_tr_df[capital_lease_obligations_bs_key].fillna(0)
+        final_stats_df[total_debt_key] = num_tr_df[long_term_debt_bs_key].fillna(0)
 
-        final_stats_df[tev_key] = final_stats_df[total_debt_key].fillna(0) \
-                                  + num_tr_df[market_cap_ov_key].fillna(0) \
-                                  + num_tr_df[preferred_stock_bs_key].fillna(0) \
-                                  + num_tr_df[minority_interest_is_key].fillna(0) \
-                                  - num_tr_df[cash_bs_key].fillna(0)
-        # - (transpose_df[total_current_assets_bs_key].fillna(0) - transpose_df[total_current_liabilities_bs_key].fillna(0)) # CASH Approximation
+        final_stats_df[tev_key] = num_tr_df[market_cap_ov_key].fillna(0) \
+                                + final_stats_df[total_debt_key].fillna(0) \
+                                - num_tr_df[total_current_assets_bs_key].fillna(0) \
+                                - num_tr_df[total_current_liabilities_bs_key].fillna(0)
 
         final_stats_df[earning_yield_key] = final_stats_df[ebit_is_key] / final_stats_df[tev_key]
         # TODO: Check what this metric really means
         final_stats_df[fcf_yield_r_key] = (num_tr_df[operating_cashflow_key] - num_tr_df[capex_key]) / num_tr_df[
             market_cap_ov_key]
         final_stats_df[return_on_capital_key] = num_tr_df[ebit_is_key] / (
-                num_tr_df[property_plant_equipment_bs_key] + num_tr_df[total_current_assets_bs_key] - num_tr_df[
-            total_current_liabilities_bs_key])
+                num_tr_df[property_plant_equipment_bs_key] + num_tr_df[total_current_assets_bs_key] - num_tr_df[total_current_liabilities_bs_key])
         final_stats_df[book_to_market_key] = num_tr_df[book_value_key] / num_tr_df[market_cap_ov_key]
         final_stats_df[dividend_yield_key] = num_tr_df[dividend_yield_key]
 
         # ###############################Output Dataframes##############################
+
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+
+            print("------------------------------------------------")
+            print("DEBUG DEBUG DEBUG")
+            print(final_stats_df)
+
 
         # finding value stocks based on Magic Formula
         final_stats_val_df = final_stats_df  # .loc[tickers, :]

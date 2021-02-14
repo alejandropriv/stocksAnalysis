@@ -274,7 +274,7 @@ class Plotter:
             label='Volume'
         )
 
-        position = self.get_legend_position()
+        position = Plotter.get_legend_position()
         self.axes_main[Constants.volume_axis].legend(loc=position)
         self.axes_main[Constants.volume_axis].set_xlim(
             self.volume_series[ticker].iloc[[0]].index,

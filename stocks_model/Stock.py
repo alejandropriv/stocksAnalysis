@@ -27,6 +27,8 @@ class Stock:
 
         self.indicators = []
         self.value_investing_metrics = []
+        self.kpis = []
+
 
         if data_source_historical is not None:
             self.get_prices_data()
@@ -152,7 +154,13 @@ class Stock:
 
         self.value_investing_metrics.append(new_metric)
 
+    def append_kpis(self, new_kpis=None):
 
+        # if get_historical_data has already been called it returns the cached data
+        new_kpis.set_input_data(self.price_info)
+        new_kpis.calculate()
+
+        self.kpis.append(new_kpis)
 
 
     def get_statistical_data(self, period):

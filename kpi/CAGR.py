@@ -3,17 +3,12 @@ from kpi.KPI import KPI
 import pandas as pd
 
 
-
-
 class CAGR(KPI):
-    def __init__(self, df):
+    def __init__(self, df=None):
         super().__init__()
-
-        self.close_key = None
 
         if df is not None:
             self.set_input_data(df)
-
 
     def set_input_data(self, df):
         super().set_input_data(df)
@@ -38,25 +33,26 @@ class CAGR(KPI):
         self.df = df_kpi.copy()
 
 
-
-
-
     def calculate(self):
         """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
         super().calculate()
 
         df_result = []
+        daily_ret_key = Constants.get_daiy_ret_key()
+        cum_ret_key = Constants.get_key("cum_return")
+        value_key = Constants.get_key("CAGR")
 
         for ticker in self.tickers:
-
             df_data = self.df[ticker].copy()
 
-            daily_ret_key = Constants.get_daiy_ret_key(self.ticker)
-            cum_ret_key = Constants.get_key(self.ticker, "cum_return")
+            df_data[daily_ret_key] = df_data[self.prices_key].pct_change()
+            df_data[cum_ret_key] = (1 + df_data[daily_ret_key]).cumprod()
+            n = len(self.df.index) / 252
+            value = (df_data[cum_ret_key][-1]) ** (1 / n) - 1
 
-            self.df[daily_ret_key] = self.df[self.adj_close_key].pct_change()
-            self.df[cum_ret_key] = (1 + self.df[daily_ret_key]).cumprod()
-            n = len(self.df) / 252
-            self.value = (self.df[cum_ret_key][-1]) ** (1 / n) - 1
-            return self.value
+            df_result_value = pd.DataFrame([value], columns=[value_key])
+            df_result.append(df_result_value.loc[:, [value_key]])
 
+        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+
+        return self.df

@@ -1,39 +1,39 @@
+from kpi.CAGR import CAGR
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
-from indicators.MACD import MACD
-from indicators.ATR import ATR
+
 from data.DataSource import DATASOURCETYPE
+from kpi.CAGR import CAGR
 
 import datetime
 
 
-class StrategyC(Strategy):
-
-    name = "StrategyC"
+class StrategyXX(Strategy):
+    name = "StrategyXX"
 
     def __init__(self):
-
         super().__init__()
         self.set_data_source_types()
         self.set_date_parameters()
         self.set_indicators()
-
-
+        self.set_kpi()
 
     def set_data_source_types(self):
         self.data_source_type_historical = DATASOURCETYPE.YFINANCE
         self.data_source_type_fundamentals = None
 
     # If period is not None it will precede over date
+
     def set_date_parameters(self):
         self.period = None
         self.end_date = datetime.datetime.today()
-        date_str = "11/07/2019"
+        date_str = "01/01/2020"
         self.start_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
-        macd = MACD(fast_period=12, slow_period=26, signal_period=9)
-        atr = ATR(n=14)
+        self.indicators = []
 
-        self.indicators = [macd, atr]
+    def set_kpi(self):
+        cagr = CAGR()
+        self.kpis = [cagr]

@@ -55,13 +55,16 @@ class StocksFactory:
 
         indicators = strategy.indicators
         value_investing_metrics = strategy.value_investing_metrics
+        kpis = strategy.kpis
+
         stocks = StocksFactory.load_stocks(
             tickers=tickers,
             data_source_historical=data_source_historical,
             data_source_fundamentals=data_source_fundamentals,
             bulk=bulk,
             indicators=indicators,
-            value_investing_metrics=value_investing_metrics
+            value_investing_metrics=value_investing_metrics,
+            kpis=kpis
         )
 
         return stocks
@@ -72,7 +75,9 @@ class StocksFactory:
                     data_source_fundamentals=None,
                     bulk=False,
                     indicators=None,
-                    value_investing_metrics=None):
+                    value_investing_metrics=None,
+                    kpis=None
+                    ):
 
         stocks = []
         if data_source_historical is None and data_source_fundamentals is None:
@@ -87,6 +92,8 @@ class StocksFactory:
 
             stock = StocksFactory.load_indicators(stock, indicators)
             stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)
+            stock = StocksFactory.load_kpis(stock, kpis)
+
             stocks.append(stock)
 
         else:
@@ -146,6 +153,7 @@ class StocksFactory:
 
                 stock = StocksFactory.load_indicators(stock, indicators)
                 stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)
+                stock = StocksFactory.load_kpis(stock, kpis)
 
                 stocks.append(stock)
 
@@ -164,6 +172,17 @@ class StocksFactory:
 
         for indicator in indicators:
             stock.append_indicator(copy.copy(indicator))
+
+        return stock
+
+    @staticmethod
+    def load_kpis(stock, kpis):
+
+        if kpis is None:
+            kpis = []
+
+        for kpi in kpis:
+            stock.append_kpis(copy.copy(kpi))
 
         return stock
 

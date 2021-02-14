@@ -3,8 +3,6 @@ from data.DataSource import DATASOURCETYPE
 from fundamentals.Fundamentals import FUNDAMENTALSTYPE
 
 
-
-
 class Strategy(metaclass=abc.ABCMeta):
 
     def __init__(self):
@@ -16,12 +14,14 @@ class Strategy(metaclass=abc.ABCMeta):
         self.end_date = None
         self.interval = None
         self.indicators = []
-        self.kpi = []
+        self.kpis = []
         self.data_source_type_fundamentals = False
         self.fundamentals_options = [FUNDAMENTALSTYPE.BALANCE_SHEET,
                                      FUNDAMENTALSTYPE.INCOME_STATEMENT,
                                      FUNDAMENTALSTYPE.CASH_FLOW]
         self.value_investing_metrics = []
+
+        self.kpis = []
 
         # 0: run the normal flow
         # 1: force new data to be requested from server

@@ -2,6 +2,7 @@ from utilities.Constants import Constants
 from kpi.KPI import KPI
 
 import numpy as np
+import pandas as pd
 
 
 
@@ -14,14 +15,31 @@ class Volatility(KPI):
         self.negative = negative
 
         if df is not None:
-            self.set_input_data(df)
+            self.set_input_df(df)
 
 
     def set_input_data(self, df):
-        super().set_input_data(df)
-        self.adj_close_key = Constants.get_adj_close_key(self.ticker)
+        self.set_input_df(df)
 
-        self.df = df.iloc[:, [self.adj_close_key]].copy()
+        prices_temp = pd.DataFrame()
+
+        df_list = []
+        for ticker in self.tickers:
+            df_list.append(
+                pd.concat(
+                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
+                    axis=1,
+                    keys=[ticker]
+                )
+            )
+
+        df_kpi = pd.concat(
+            df_list,
+            axis=1
+        )
+
+        self.df = df_kpi.copy()
+
 
 
 
@@ -30,15 +48,29 @@ class Volatility(KPI):
         super().calculate()
 
         """function to calculate annualized volatility of a trading strategy"""
-        daily_ret_key = Constants.get_daiy_ret_key(self.ticker)
 
-        # Whole volatility was calculated
-        if self.negative is False:
-            self.df[daily_ret_key] = self.df[self.adj_close_key].pct_change()
-            vol = self.df[daily_ret_key].std() * np.sqrt(252)
+        df_result = []
 
-        else:
-            self.df[daily_ret_key] = self.df[self.adj_close_key].pct_change()
-            vol = self.df[self.df[daily_ret_key] < 0][daily_ret_key].std() * np.sqrt(252)
+        value_key = Constants.get_key("CAGR")
 
-        return vol
+        daily_ret_key = Constants.get_daiy_ret_key()
+
+        for ticker in self.tickers:
+            df_data = self.df[ticker].copy()
+
+            # Whole volatility was calculated
+            if self.negative is False:
+                df_data[daily_ret_key] = df_data[self.prices_key].pct_change()
+                value = df_data[daily_ret_key].std() * np.sqrt(252)
+
+            else:
+                df_data[daily_ret_key] = df_data[self.prices_key].pct_change()
+                value = df_data[df_data[daily_ret_key] < 0][daily_ret_key].std() * np.sqrt(252)
+
+
+            df_result_value = pd.DataFrame([value], columns=[value_key])
+            df_result.append(df_result_value.loc[:, [value_key]])
+
+        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+
+        return self.df

@@ -7,15 +7,17 @@ import numpy as np
 
 
 class Calmar(KPI):
-    def __init__(self, df):
+    def __init__(self, df=None):
         super().__init__()
 
+        self.negative = False
+
         if df is not None:
-            self.set_input_data(df)
+            self.set_input_df(df)
 
 
     def set_input_data(self, df, negative=False):
-        super().set_input_data(df)
+        self.set_input_df(df)
 
         prices_temp = pd.DataFrame()
 
@@ -40,7 +42,7 @@ class Calmar(KPI):
         self.negative = negative
 
     def calculate(self):
-        """function to calculate annualized volatility of a trading strategy"""
+        """function to calculate Calmar"""
         super().calculate()
 
 

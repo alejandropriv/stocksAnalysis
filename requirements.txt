@@ -6,3 +6,4 @@ yahoofinancials==1.6
 yfinance==0.1.54
 statsmodels==0.12.2
 stocktrends==0.1.4
+pandas==1.2.2

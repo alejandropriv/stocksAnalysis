@@ -88,6 +88,24 @@ class TestBasics(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
+
+    def test_magic_formula_shorts(self):
+        tickers = ["AAPL"]
+
+        strategies = [StrategyXII()]
+
+        manager = \
+            StrategyManager(
+                strategies=strategies,
+                tickers=tickers,
+                bulk=True
+            )
+
+        stocks_per_strategy = manager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                print(stock.price_info)
+
     # Magic Formula only makes sense in Bulk mode
     def test_piotroski_score_short(self):
         tickers = ["TSLA", "SNAP"]

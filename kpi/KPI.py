@@ -12,8 +12,7 @@ class KPI(metaclass=abc.ABCMeta):
         self.value = None
         self.prices_key = None
 
-    @abc.abstractmethod
-    def set_input_data(self, df):
+    def set_input_df(self, df):
         if df is None:
             print("Error: data not found")
             raise IOError

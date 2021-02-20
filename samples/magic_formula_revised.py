@@ -14,6 +14,7 @@ tickers = ["AXP", "AAPL", "BA", "CAT", "CVX", "CSCO", "DIS", "DOW", "XOM",
            "HD", "IBM", "INTC", "JNJ", "KO", "MCD", "MMM", "MRK", "MSFT",
            "NKE", "PFE", "PG", "TRV", "UNH", "VZ", "V", "WMT", "WBA"]
 
+tickers = ["AAPL"]
 # list of tickers whose financial data needs to be extracted
 financial_dir = {}
 
@@ -76,23 +77,38 @@ for ticker in tickers:
 
 # storing information in pandas dataframe
 
+i=0
+financial_dir2 = dict({"AAPL":dict({})})
+
 for ext_key in financial_dir.keys():
     for key in financial_dir[ext_key].keys():
+
+        old_key = key
         if key.find("&") != -1:
-            financial_dir[ext_key][key.replace("&", "-")] = financial_dir[ext_key].pop(key)
+            key = key.replace("&", "-")
 
-        elif key.find("/") != -1:
-            financial_dir[ext_key][key.replace("/", "-")] = financial_dir[ext_key].pop(key)
+        if key.find("/") != -1:
+            key = key.replace("/", "-")
 
-        # elif key.find("(") != -1 :
-        #     financial_dir[ext_key][key.replace("(", "-")] = financial_dir[ext_key].pop(key)
-        #
-        # elif key.find(")") != -1 :
-        #     financial_dir[ext_key][key.replace(")", "-")] = financial_dir[ext_key].pop(key)
 
-        elif key.find("%") != -1:
-            financial_dir[ext_key][key.replace("%", "-")] = financial_dir[ext_key].pop(key)
+        if key.find("(") != -1 :
+            key = key.replace("(", "-")
 
+
+        if key.find(")") != -1 :
+            key = key.replace(")", "-")
+
+
+        if key.find("%") != -1:
+            key = key.replace("%", "-")
+
+
+
+        financial_dir2[ext_key][key] = financial_dir[ext_key][old_key]
+
+
+
+financial_dir = financial_dir2
 combined_financials = pd.DataFrame(financial_dir)
 combined_financials.dropna(how='all', axis=1, inplace=True)  # dropping columns with all NaN values
 tickers = combined_financials.columns  # updating the tickers list based on only those tickers whose values were successfully extracted
@@ -102,7 +118,7 @@ for ticker in tickers:
 # creating dataframe with relevant financial information for each stock using fundamental data
 stats = ["EBITDA",
          "Depreciation - amortisation",
-         "Market cap (intra-day)",
+         "Market cap -intra-day-",
          "Net income available to common shareholders",
          "Net cash provided by operating activities",
          "Capital expenditure",

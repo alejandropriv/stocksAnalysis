@@ -1,0 +1,50 @@
+/Users/alejandroprieto/Projects/stockMagic/stockenv/bin/python /Users/alejandroprieto/Projects/stockMagic/samples/magic_formula_revised.py
+https://in.finance.yahoo.com/quote/AAPL/balance-sheet?p=AAPL
+https://in.finance.yahoo.com/quote/AAPL/financials?p=AAPL
+https://in.finance.yahoo.com/quote/AAPL/cash-flow?p=AAPL
+https://in.finance.yahoo.com/quote/AAPL/key-statistics?p=AAPL
+------------------------------------------------
+DEBUG DEBUG DEBUG
+          EBITDA         D-A        EBIT           TEV  EarningYield  \
+AAPL  85160000.0  11533000.0  73627000.0  2.300346e+09      0.032007
+
+      FCFYield       ROC  BookToMkt  DivYield
+AAPL  0.039424  0.980556   0.029169    0.0061
+------------------------------------------------
+Value stocks based on Greenblatt's Magic Formula
+          EBITDA         D-A        EBIT           TEV  EarningYield  \
+AAPL  85160000.0  11533000.0  73627000.0  2.300346e+09      0.032007
+
+      FCFYield       ROC  BookToMkt  DivYield  CombRank  MagicFormulaRank
+AAPL  0.039424  0.980556   0.029169    0.0061       2.0               1.0
+------------------------------------------------
+Highest dividend paying stocks
+AAPL    0.980556
+Name: ROC, dtype: float64
+------------------------------------------------
+Magic Formula and Dividend Yield combined
+            EBIT  EarningYield       ROC  DivYield
+AAPL  73627000.0      0.032007  0.980556    0.0061
+
+Process finished with exit code 0
+
+
+
+----------------- data -------------------
+------------------------------------------------
+DEBUG DEBUG DEBUG
+                         ebit     TotalDebt           TEV  EarningYield  FCFYield      ROC  BookToMkt  ForwardAnnualDividendYield
+AAPL 2020-09-30  6.709100e+10  9.866700e+10  2.122167e+12  0.031614      0.032282  0.89351  0.028751   0.0061
+------------------------------------------------
+Value stocks based on Greenblatt's Magic Formula
+                          TEV  FCFYield  CombRank
+AAPL 2020-09-30  2.122167e+12  0.032282  2.0
+------------------------------------------------
+Highest dividend paying stocks
+AAPL  2020-09-30    0.028751
+Name: BookToMkt, dtype: float64
+------------------------------------------------
+Magic Formula and Dividend Yield combined
+                          TEV  FCFYield  BookToMkt  CombRank
+AAPL 2020-09-30  2.122167e+12  0.032282  0.028751   3.0
+None

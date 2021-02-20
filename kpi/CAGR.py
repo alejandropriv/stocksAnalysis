@@ -11,7 +11,7 @@ class CAGR(KPI):
             self.set_input_data(df)
 
     def set_input_data(self, df):
-        super().set_input_data(df)
+        self.set_input_df(df)
 
         prices_temp = pd.DataFrame()
 
@@ -39,7 +39,7 @@ class CAGR(KPI):
 
         df_result = []
         daily_ret_key = Constants.get_daiy_ret_key()
-        cum_ret_key = Constants.get_key("cum_return")
+        cum_ret_key = Constants.get_cum_return_key()
         value_key = Constants.get_key("CAGR")
 
         for ticker in self.tickers:

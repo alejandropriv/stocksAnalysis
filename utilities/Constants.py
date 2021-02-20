@@ -79,6 +79,11 @@ class Constants:
         return key
 
     @staticmethod
+    def get_cum_return_key():
+        key = "{}".format("cum_return")
+        return key
+
+    @staticmethod
     def get_key(base_key):
         key = "{}".format(base_key)
         return key

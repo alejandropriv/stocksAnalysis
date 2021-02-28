@@ -4,39 +4,26 @@ import pandas as pd
 
 
 class MaxDrawdown(KPI):
-    def __init__(self, df):
-        super().__init__()
+    kpi_name = "MaxDrawdown"
 
-        if df is not None:
-            self.set_input_data(df)
+    def __init__(self, params=None):
+        super().__init__(params)
+        if not params:
+            self.params = {}
 
+    def calculate(self, df):
+        self.result = MaxDrawdown.get_max_drawdown(df, self.params)
+        return self.result
 
-    def set_input_data(self, df):
-        super().set_input_df(df)
-        prices_temp = pd.DataFrame()
-
-        df_list = []
-        for ticker in self.tickers:
-            df_list.append(
-                pd.concat(
-                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
-                    axis=1,
-                    keys=[ticker]
-                )
-            )
-
-        df_kpi = pd.concat(
-            df_list,
-            axis=1
-        )
-
-        self.df = df_kpi.copy()
-
-
-    def calculate(self):
+    @staticmethod
+    def get_max_drawdown(df, params):
         """ function to calculate max drawdown"        """
 
-        super().calculate()
+        in_d = KPI.get_standard_input_data(df)
+        tickers = in_d[Constants.get_tickers_key()]
+        pricesk = in_d[Constants.get_prices_key()]
+        df = in_d[Constants.get_input_df_key()]
+
 
         df_result = []
         daily_ret_key = Constants.get_daiy_ret_key()
@@ -46,22 +33,24 @@ class MaxDrawdown(KPI):
         drawdown_pct_key = Constants.get_key("drawdown_pct")
 
         value_key = Constants.get_key("MaxDrawdown")
+        df_data = pd.DataFrame()
 
-        for ticker in self.tickers:
-            df_data = self.df[ticker].copy()
 
-            df_data = df_data[self.prices_key].pct_change()
+        for ticker in tickers:
+
+            df_data[daily_ret_key] = df[ticker][pricesk].pct_change()
             df_data[cum_return_key] = (1 + df_data[daily_ret_key]).cumprod()
             df_data[cum_roll_max_key] = df_data[cum_return_key].cummax()
             df_data[drawdown_key] = df_data[cum_roll_max_key] - df_data[cum_return_key]
             df_data[drawdown_pct_key] = df_data[drawdown_key] / df_data[cum_roll_max_key]
-            max_dd = df_data[drawdown_pct_key].max()
-
-            value = max_dd
+            value = df_data[drawdown_pct_key].max()
 
             df_result_value = pd.DataFrame([value], columns=[value_key])
             df_result.append(df_result_value.loc[:, [value_key]])
 
-        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+        result = KPI.KPIResult(
+            MaxDrawdown.kpi_name,
+            pd.concat(df_result, axis=1, keys=tickers)
+        )
 
-        return self.df
+        return result

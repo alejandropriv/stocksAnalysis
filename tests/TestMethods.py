@@ -2,64 +2,50 @@ import unittest
 
 import matplotlib.pyplot as plt
 
+
 from strategy.StrategyManager import StrategyManager
 
-from strategy.test_strategies.StrategyXX import StrategyXX
+from strategy.SMonthlyRebalance import SMonthlyRebalance
 from strategy.test_strategies.StrategyXXII import StrategyXXII
 
 from plotter.Plotter import Plotter
 
 import datetime
 
+
 DEVELOPMENT = True
 
+class TestMethods(unittest.TestCase):
 
-class TestKPI(unittest.TestCase):
+    def test_portfolio_rebalance(self):
 
-    def test_CAGR(self):
-        tickers = ["TSLA", "SPY"]
+        tickers = ["MMM","AXP","T","BA","CAT","CSCO","KO", "XOM","GE","GS","HD",
+                   "IBM","INTC","JNJ","JPM","MCD","MRK","MSFT","NKE","PFE","PG","TRV",
+                   "UNH","VZ","V","WMT","DIS"]
 
-        strategies = [StrategyXX()]
+        strategies = [SMonthlyRebalance()]
 
-        results = \
+        smanager = \
             StrategyManager.load_strategies(
                 strategies=strategies,
                 tickers=tickers
             )
 
-        for key in results:
-            for stock in results[key]:
-                stock.print()
+        stocks_per_strategy = smanager.stocks_per_strategy
+        for stock_per_strategy in stocks_per_strategy:
+            for stock in stocks_per_strategy[stock_per_strategy]:
+                for kpi in stock.kpis:
+                    print(kpi.df)
 
         if DEVELOPMENT == True:
             plt.show()
 
-    def test_Calmar(self):
-        tickers = ["TSLA", "SPY"]
 
-        strategies = [StrategyXX()]
-
-        results = \
-            StrategyManager.load_strategies(
-                strategies=strategies,
-                tickers=tickers
-            )
-
-        for key in results:
-            print(results[key])
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-    @staticmethod
-    def print_report(reports):
-        for report in reports:
-            report.print()
 
     def test_calmar(self):
         tickers = ["TSLA", "SPY"]
 
-        strategies = [StrategyXXI()]
+        strategies = [SMonthlyRebalance()]
 
         smanager = \
             StrategyManager(
@@ -75,6 +61,7 @@ class TestKPI(unittest.TestCase):
 
         if DEVELOPMENT == True:
             plt.show()
+
 
     def test_max_drawdown(self):
         tickers = ["TSLA", "SPY"]

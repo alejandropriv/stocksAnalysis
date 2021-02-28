@@ -8,7 +8,7 @@ import pandas as pd
 
 
 class Volatility(KPI):
-    def __init__(self, df, negative=False):
+    def __init__(self, df=None, negative=False):
         super().__init__()
 
         self.adj_close_key = None

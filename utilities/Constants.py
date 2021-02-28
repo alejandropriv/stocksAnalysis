@@ -41,7 +41,20 @@ class Constants:
 
 
 
+    @staticmethod
+    def get_prices_key():
+        key = "{}".format("prices_key")
+        return key\
 
+    @staticmethod
+    def get_tickers_key():
+        key = "{}".format("tickers_key")
+        return key
+
+    @staticmethod
+    def get_input_df_key():
+        key = "{}".format("input_df_key")
+        return key
 
     @staticmethod
     def get_adj_close_key():

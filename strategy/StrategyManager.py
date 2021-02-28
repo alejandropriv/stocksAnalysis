@@ -3,38 +3,49 @@ from stocks_model.StocksFactory import StocksFactory
 
 class StrategyManager:
 
-    def __init__(self,
-                 strategies,
-                 tickers,
-                 bulk=False):
+    def __init__(self):
+        pass
 
-        self.strategies = strategies
 
-        self.tickers = tickers
+    @staticmethod
+    def load_strategies(strategies, tickers, bulk=False):
 
-        self.bulk = bulk
-        self.stocks_per_strategy = {}
-
-        self.load_strategy()
-
-    def load_strategy(self):
-
-        for strategy in self.strategies:
-            self.stocks_per_strategy[strategy.name] = \
+        reports = {}
+        results = {}
+        stocks = {}
+        for strategy in strategies:
+            stocks[strategy.name] = \
                 StocksFactory.create_stocks(
                     strategy=strategy,
-                    tickers=self.tickers,
-                    bulk=self.bulk
+                    tickers=tickers,
+                    bulk=bulk
                 )
 
-            self.run_strategies()
+            results[strategy.name] = StrategyManager.run_strategy(strategy, stocks[strategy.name])
+            reports[strategy.name] = StrategyManager.run_report(strategy, results[strategy.name])
 
-    def run_strategies(self):
-        if not self.stocks_per_strategy:  # Empty dictionary
-            print("Error: Load Strategy first")
-            raise ValueError
+        return reports
 
-        self.report()
 
-    def report(self):
-        pass
+    @staticmethod
+    def run_strategy(strategy, stocks):
+        results = {}
+        if not strategy.methods:
+            return stocks
+
+        for method in strategy.methods:
+            results[method.name] = method.execute(stocks)
+
+        return strategy.methods
+
+    @staticmethod
+    def run_report(strategy, results):
+
+        reports = {}
+        if not strategy.reports:
+            return results
+
+        for report in strategy.reports:
+            reports[report.name] = report.generate(results)
+
+        return strategy.reports

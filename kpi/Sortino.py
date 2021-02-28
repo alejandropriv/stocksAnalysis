@@ -4,7 +4,7 @@ from kpi.KPI import KPI
 from kpi.CAGR import CAGR
 import pandas as pd
 
-from kpi.Volatilty import Volatility
+from kpi.Volatility import Volatility
 
 
 class Sortino(KPI):

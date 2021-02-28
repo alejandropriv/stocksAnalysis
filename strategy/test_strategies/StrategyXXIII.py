@@ -19,8 +19,8 @@ class StrategyXXIII(Strategy):
         self.set_kpi()
 
     def set_data_source_types(self):
-        self.data_source_type_historical = DATASOURCETYPE.YFINANCE
-        self.data_source_type_fundamentals = None
+        self.dst_historical = DATASOURCETYPE.YFINANCE
+        self.dst_fundamentals = None
 
     # If period is not None it will precede over date
 

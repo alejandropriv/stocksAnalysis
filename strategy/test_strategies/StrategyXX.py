@@ -1,9 +1,12 @@
-from kpi.CAGR import CAGR
 from strategy.Strategy import Strategy
 from utilities.Constants import Constants
 
 from data.DataSource import DATASOURCETYPE
 from kpi.CAGR import CAGR
+from kpi.Calmar import Calmar
+from kpi.MaxDrawdown import MaxDrawdown
+
+from reports.BasicReport import BasicReport
 
 import datetime
 
@@ -19,8 +22,8 @@ class StrategyXX(Strategy):
         self.set_kpi()
 
     def set_data_source_types(self):
-        self.data_source_type_historical = DATASOURCETYPE.YFINANCE
-        self.data_source_type_fundamentals = None
+        self.dst_historical = DATASOURCETYPE.YFINANCE
+        self.dst_fundamentals = None
 
     # If period is not None it will precede over date
 
@@ -36,4 +39,11 @@ class StrategyXX(Strategy):
 
     def set_kpi(self):
         cagr = CAGR()
-        self.kpis = [cagr]
+        calmar = Calmar()
+        md = MaxDrawdown()
+        calmar.negative = False
+        self.kpis = [cagr, calmar, md]
+
+    def set_report(self):
+        report = BasicReport()
+        self.reports = [report]

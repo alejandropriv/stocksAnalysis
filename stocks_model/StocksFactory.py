@@ -25,8 +25,8 @@ class StocksFactory:
 
         data_sources = \
             DataCollector.get_data_sources(
-                strategy.data_source_type_historical,
-                strategy.data_source_type_fundamentals
+                strategy.dst_historical,
+                strategy.dst_fundamentals
             )
 
         if DataCollector.HISTORICAL_KEY in data_sources.keys():
@@ -171,7 +171,7 @@ class StocksFactory:
             indicators = []
 
         for indicator in indicators:
-            stock.append_indicator(copy.copy(indicator))
+            stock.append_indicator(indicator)
 
         return stock
 
@@ -182,7 +182,7 @@ class StocksFactory:
             kpis = []
 
         for kpi in kpis:
-            stock.append_kpis(copy.copy(kpi))
+            stock.append_kpis(kpi)
 
         return stock
 

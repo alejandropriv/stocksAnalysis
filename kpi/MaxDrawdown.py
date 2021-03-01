@@ -11,7 +11,9 @@ class MaxDrawdown(KPI):
         if not params:
             self.params = {}
 
-    def calculate(self, df):
+    def calculate(self, df, params=None):
+        super().calculate(df, params)
+
         self.result = MaxDrawdown.get_max_drawdown(df, self.params)
         return self.result
 

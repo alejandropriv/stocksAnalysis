@@ -12,9 +12,13 @@ class Calmar(KPI):
 
     def __init__(self, params=None):
         super().__init__(params)
+        if not params:
+            self.params = {}
 
 
-    def calculate(self, df):
+    def calculate(self, df, params=None):
+        super().calculate(df, params)
+
         self.result = Calmar.get_calmar(df, self.params)
         return self.result
 
@@ -22,7 +26,7 @@ class Calmar(KPI):
     def get_calmar(df, params=None):
         """function to calculate Calmar"""
 
-        if params is None:
+        if params is None or "negative" not in params.keys():
             params = {"negative": False}
 
         elif params["negative"] != True:

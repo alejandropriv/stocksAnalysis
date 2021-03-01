@@ -16,7 +16,7 @@ DEVELOPMENT = True
 
 class TestKPI(unittest.TestCase):
 
-    def test_CAGR(self):
+    def test_KPI(self):
         tickers = ["TSLA", "SPY"]
 
         strategies = [StrategyXX()]
@@ -34,22 +34,6 @@ class TestKPI(unittest.TestCase):
         if DEVELOPMENT == True:
             plt.show()
 
-    def test_Calmar(self):
-        tickers = ["TSLA", "SPY"]
-
-        strategies = [StrategyXX()]
-
-        results = \
-            StrategyManager.load_strategies(
-                strategies=strategies,
-                tickers=tickers
-            )
-
-        for key in results:
-            print(results[key])
-
-        if DEVELOPMENT == True:
-            plt.show()
 
     @staticmethod
     def print_report(reports):

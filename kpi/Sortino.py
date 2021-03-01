@@ -10,65 +10,50 @@ from kpi.Volatility import Volatility
 class Sortino(KPI):
 
     #RF is risk free rate
-    def __init__(self, df=None, rf=None):
-        super().__init__()
+    def __init__(self, params=None):
+        super().__init__(params)
+        if not params:
+            self.params = {}
 
-        self.adj_close_key = None
-        self.rf = rf
+    def calculate(self, df, params=None):
+        super().calculate(df, params)
 
-        if df is not None:
-            self.set_input_df(df)
+        self.result = Sortino.get_sortino(df, self.params)
+        return self.result
 
+    @staticmethod
+    def get_sortino(self, df, params=None):
 
-    def set_input_data(self, df, rf):
-        self.set_input_df(df)
+        if params is None or "rf" not in params.keys():
+            params = {"rf": 0.05}
 
-        self.rf = rf
-
-        prices_temp = pd.DataFrame()
-
-        df_list = []
-        for ticker in self.tickers:
-            df_list.append(
-                pd.concat(
-                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
-                    axis=1,
-                    keys=[ticker]
-                )
-            )
-
-        df_kpi = pd.concat(
-            df_list,
-            axis=1
-        )
-
-        self.df = df_kpi.copy()
+        rf = params["rf"]
 
 
-    def calculate(self):
-
-        super().calculate()
+        in_d = KPI.get_standard_input_data(df)
+        tickers = in_d[Constants.get_tickers_key()]
+        pricesk = in_d[Constants.get_prices_key()]
+        df = in_d[Constants.get_input_df_key()]
 
         df_result = []
 
         value_key = Constants.get_key("CAGR")
 
-
-        for ticker in self.tickers:
-            df_data = self.df[ticker].copy()
+        vol_params = {}
+        for ticker in tickers:
+            df_data = df[ticker][pricesk].copy()
 
             "function to calculate sharpe ratio ; rf is the risk free rate"
-            cagr_obj = CAGR(df_data)
-            cagr = cagr_obj.calculate()
+            cagr = CAGR.get_cagr(df_data, None)
 
-            volatility_obj = Volatility(self.df, negative=True)
-            neg_vol = volatility_obj.calculate()
+            vol_params["negative"] = True
+            neg_vol = Volatility.get_volatility(df, vol_params)
 
-            value = (cagr - self.rf)/neg_vol
+            value = (cagr - rf)/neg_vol
 
             df_result_value = pd.DataFrame([value], columns=[value_key])
             df_result.append(df_result_value.loc[:, [value_key]])
 
-        self.df = pd.concat(df_result, axis=1, keys=self.tickers)
+        df = pd.concat(df_result, axis=1, keys=self.tickers)
 
-        return self.df
+        return df

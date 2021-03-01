@@ -27,8 +27,9 @@ class KPI(metaclass=abc.ABCMeta):
         self.params = params
 
     @abc.abstractmethod
-    def calculate(self, df):
-        pass
+    def calculate(self, df, params=None):
+        if params is not None:
+            self.params = params
 
     @staticmethod
     def get_standard_input_data(df):

@@ -8,9 +8,15 @@ class CAGR(KPI):
 
     def __init__(self, params=None):
         super().__init__(params)
+        if not params:
+            self.params = {}
 
 
-    def calculate(self, df):
+    def calculate(self, df, params=None):
+        """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
+
+        super().calculate(df, params)
+
         self.result = CAGR.get_cagr(df, self.params)
         return self.result
 
@@ -19,14 +25,10 @@ class CAGR(KPI):
     def get_cagr(df, params):
         """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
 
-        if params is None:
+        if params is None or "period" not in params.keys():
             params = {"period": "M"}
 
-        elif params["period"] != "D":
-            params["period"] = "M"
-
         period = params["period"]
-
 
 
         in_d = KPI.get_standard_input_data(df)

@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class MaxDrawdown(KPI):
-    kpi_name = "MaxDrawdown"
+    kpi_name = Constants.get_key("MaxDrawdown")
 
     def __init__(self, params=None):
         super().__init__(params)
@@ -26,15 +26,13 @@ class MaxDrawdown(KPI):
         pricesk = in_d[Constants.get_prices_key()]
         df = in_d[Constants.get_input_df_key()]
 
-
-        df_result = []
-        daily_ret_key = Constants.get_daiy_ret_key()
+        d_result = {}
+        daily_ret_key = Constants.get_day_ret_key()
         cum_return_key = Constants.get_cum_return_key()
         cum_roll_max_key = Constants.get_key("cum_roll_max")
         drawdown_key = Constants.get_key("drawdown")
         drawdown_pct_key = Constants.get_key("drawdown_pct")
 
-        value_key = Constants.get_key("MaxDrawdown")
         df_data = pd.DataFrame()
 
 
@@ -47,12 +45,11 @@ class MaxDrawdown(KPI):
             df_data[drawdown_pct_key] = df_data[drawdown_key] / df_data[cum_roll_max_key]
             value = df_data[drawdown_pct_key].max()
 
-            df_result_value = pd.DataFrame([value], columns=[value_key])
-            df_result.append(df_result_value.loc[:, [value_key]])
+            d_result[ticker] = value
 
         result = KPI.KPIResult(
             MaxDrawdown.kpi_name,
-            pd.concat(df_result, axis=1, keys=tickers)
+            d_result
         )
 
         return result

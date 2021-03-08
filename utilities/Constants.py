@@ -87,7 +87,7 @@ class Constants:
         return key
 
     @staticmethod
-    def get_daiy_ret_key():
+    def get_day_ret_key():
         key = "{}".format("Daily_Ret")
         return key
 

@@ -2,7 +2,6 @@ import unittest
 
 import matplotlib.pyplot as plt
 
-
 from strategy.StrategyManager import StrategyManager
 
 from strategy.test_strategies.StrategyII import StrategyII
@@ -19,15 +18,12 @@ from strategy.test_strategies.StrategyCI import StrategyCI
 from strategy.test_strategies.StrategyCII import StrategyCII
 from strategy.test_strategies.StrategyCIII import StrategyCIII
 
-
 from plotter.Plotter import Plotter
 
 import datetime
 
-
-
-
 DEVELOPMENT = True
+
 
 class TestIndicators(unittest.TestCase):
     apikey = "86VFFOKUNB1M9YQ8"
@@ -39,11 +35,9 @@ class TestIndicators(unittest.TestCase):
     stock = None
     stocks_factory = None
 
-
     @staticmethod
     def truncate(n):
         return int(n * 1000) / 1000
-
 
     def test_macd_no_plot(self):
         tickers = ["TSLA", "SPY"]
@@ -61,11 +55,8 @@ class TestIndicators(unittest.TestCase):
             for stock in stocks_per_strategy[stock_per_strategy]:
                 print(stock.price_info)
 
-
         if DEVELOPMENT == True:
             plt.show()
-
-
 
         test_date = "14/07/2020"
         test_df = stocks_per_strategy[StrategyIII.name][0].price_info
@@ -81,9 +72,7 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
         print("Analysis has been run")
-
 
     def test_bollinger_bands(self):
         tickers = ["TSLA", "SNAP"]
@@ -121,7 +110,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_bollinger_bands_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -161,8 +149,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
-
     def test_macd(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -181,13 +167,10 @@ class TestIndicators(unittest.TestCase):
                 plotter = Plotter(period=500)
                 plotter.plot_stock(stock)
 
-
         print("Analysis has been run")
 
         if DEVELOPMENT == True:
             plt.show()
-
-
 
         test_date = "14/07/2020"
         test_df = stocks_per_strategy[StrategyIII.name][0].price_info
@@ -202,7 +185,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_macd_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -222,13 +204,10 @@ class TestIndicators(unittest.TestCase):
                 plotter = Plotter(period=500)
                 plotter.plot_stock(stock, collapse_indicators=True)
 
-
         print("Analysis has been run")
 
         if DEVELOPMENT == True:
             plt.show()
-
-
 
         test_date = "14/07/2020"
         test_df = stocks_per_strategy[StrategyIII.name][0].price_info
@@ -243,8 +222,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
-
 
     def test_macd_bulk(self):
         tickers = ["TSLA"]  # , "SPY", "TSLA", "SNAP"
@@ -265,14 +242,10 @@ class TestIndicators(unittest.TestCase):
                 plotter = Plotter(period=500)
                 plotter.plot_stock(stock)
 
-
         print("Analysis has been run")
-
 
         if DEVELOPMENT == True:
             plt.show()
-
-
 
         test_date = "14/07/2020"
         test_df = stocks_per_strategy[StrategyIII.name][0].price_info
@@ -287,7 +260,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_atr(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -326,7 +298,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_atr_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -367,7 +338,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
     def test_rsi(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -404,7 +374,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_rsi_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -444,7 +413,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
     def test_adx(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -481,7 +449,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_adx_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -521,7 +488,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
     def test_obv(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -558,7 +524,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_obv_bulk(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -598,7 +563,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
     def test_slope(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -635,8 +599,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
-
 
     def test_renko(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -675,8 +637,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
-
     def test_renko_macd(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -713,7 +673,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_macd_rsi(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -752,8 +711,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
-
     def test_macd_rsi_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -791,7 +748,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
     def test_macd_atr_collapse(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
 
@@ -828,7 +784,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
     def test_macd_atr(self):
         tickers = ["TSLA", "SNAP"]  # , "SPY", "CCL"
@@ -904,7 +859,6 @@ class TestIndicators(unittest.TestCase):
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
 
-
     def test_macd_rsi_adx_atr_obv_bb(self):
         tickers = ["TSLA", "SNAP"]
 
@@ -941,7 +895,6 @@ class TestIndicators(unittest.TestCase):
                     ].iloc[0])
             assert value == TestIndicators.truncate(values[i]), value
             i += 1
-
 
 
 if __name__ == '__main__':

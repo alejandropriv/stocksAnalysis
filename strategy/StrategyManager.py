@@ -41,11 +41,11 @@ class StrategyManager:
     @staticmethod
     def run_report(strategy, results):
 
-        reports = {}
+        reports_data = {}
         if not strategy.reports:
             return results
 
         for report in strategy.reports:
-            reports[report.name] = report.generate(results)
+            reports_data = report.generate(results)
 
-        return strategy.reports
+        return reports_data

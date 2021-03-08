@@ -53,18 +53,14 @@ class StocksFactory:
                     force_server_data=strategy.force_fundamentals
                 )
 
-        indicators = strategy.indicators
-        value_investing_metrics = strategy.value_investing_metrics
-        kpis = strategy.kpis
-
         stocks = StocksFactory.load_stocks(
             tickers=tickers,
             data_source_historical=data_source_historical,
             data_source_fundamentals=data_source_fundamentals,
             bulk=bulk,
-            indicators=indicators,
-            value_investing_metrics=value_investing_metrics,
-            kpis=kpis
+            indicators=strategy.indicators,
+            value_investing_metrics=strategy.value_investing_metrics,
+            kpis=strategy.kpis
         )
 
         return stocks

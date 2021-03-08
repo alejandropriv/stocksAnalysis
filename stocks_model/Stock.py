@@ -101,12 +101,9 @@ class Stock:
 
                 prices = self.data_source_historical.get_prices(self.tickers, key_titles)
 
-
             else:
                 print("{} - There are no prices information, for ticker:{}".format(method_tag, self.tickers))
                 raise ValueError
-
-
 
         else:
             print("There has been an error in {}".format(method_tag))
@@ -138,7 +135,6 @@ class Stock:
         new_metric.calculate()
 
         self.value_investing_metrics.append(new_metric)
-
 
     def append_kpis(self, new_kpis=None):
 

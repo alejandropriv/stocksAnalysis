@@ -3,6 +3,8 @@ from utilities.Constants import Constants
 
 from kpi.CAGR import CAGR
 from kpi.Volatility import Volatility
+from utilities.Handlers import Handlers
+
 
 
 class Sharpe(KPI):
@@ -34,7 +36,7 @@ class Sharpe(KPI):
 
         rf = params["rf"]
 
-        in_d = KPI.get_standard_input_data(df)
+        in_d = Handlers.get_standard_input_data(df)
         tickers = in_d[Constants.get_tickers_key()]
         df = in_d[Constants.get_input_df_key()]
 

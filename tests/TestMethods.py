@@ -2,7 +2,6 @@ import unittest
 
 import matplotlib.pyplot as plt
 
-
 from strategy.StrategyManager import StrategyManager
 
 from strategy.SMonthlyRebalance import SMonthlyRebalance
@@ -12,16 +11,16 @@ from plotter.Plotter import Plotter
 
 import datetime
 
-
 DEVELOPMENT = True
+
 
 class TestMethods(unittest.TestCase):
 
     def test_portfolio_rebalance(self):
 
-        tickers = ["MMM","AXP","T","BA","CAT","CSCO","KO", "XOM","GE","GS","HD",
-                   "IBM","INTC","JNJ","JPM","MCD","MRK","MSFT","NKE","PFE","PG","TRV",
-                   "UNH","VZ","V","WMT","DIS"]
+        tickers = ["MMM", "AXP", "T", "BA", "CAT", "CSCO", "KO", "XOM", "GE", "GS", "HD",
+                   "IBM", "INTC", "JNJ", "JPM", "MCD", "MRK", "MSFT", "NKE", "PFE", "PG", "TRV",
+                   "UNH", "VZ", "V", "WMT", "DIS"]
 
         strategies = [SMonthlyRebalance()]
 
@@ -39,7 +38,6 @@ class TestMethods(unittest.TestCase):
 
         if DEVELOPMENT == True:
             plt.show()
-
 
 
 if __name__ == '__main__':

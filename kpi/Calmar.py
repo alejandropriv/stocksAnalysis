@@ -3,6 +3,7 @@ from kpi.KPI import KPI
 
 from kpi.CAGR import CAGR
 from kpi.MaxDrawdown import MaxDrawdown
+from utilities.Handlers import Handlers
 
 
 class Calmar(KPI):
@@ -25,7 +26,7 @@ class Calmar(KPI):
         if params is None:
             params = {}
 
-        in_d = KPI.get_standard_input_data(df)
+        in_d = Handlers.get_standard_input_data(df)
         tickers = in_d[Constants.get_tickers_key()]
         df = in_d[Constants.get_input_df_key()]
 

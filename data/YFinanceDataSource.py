@@ -84,8 +84,8 @@ class YFinanceDataSource(DataSource):
                 # (optional, default is None)
                 proxy=None
         )
-
-        self.prices.dropna(inplace=True)
+        self.prices.dropna(axis='columns', how="all", inplace=True)
+        self.prices.dropna(axis='rows', how="all", inplace=True)
 
         self.prices.bfill(axis=0, inplace=True)
 

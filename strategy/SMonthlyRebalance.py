@@ -22,7 +22,8 @@ class SMonthlyRebalance(Strategy):
         super().__init__()
         self.set_data_source_types()
         self.set_date_parameters()
-        self.set_kpis()
+        self.set_kpi()
+        self.set_methods()
 
 
 
@@ -33,13 +34,11 @@ class SMonthlyRebalance(Strategy):
     # If period is not None it will precede over date
     def set_date_parameters(self):
         self.period = None
-        end_date_str = dt.datetime.today()
-        self.end_date = end_date_str
-        start_date_str = dt.datetime.today() - dt.timedelta(3650)
-        self.start_date = dt.datetime.strptime(start_date_str, "%d/%m/%Y")
+        self.end_date = dt.datetime.today()
+        self.start_date = self.end_date - dt.timedelta(3650)
         self.interval = Constants.INTERVAL.MONTH
 
-    def set_kpis(self):
+    def set_kpi(self):
         cagr = CAGR()
         calmar = Calmar()
         md = MaxDrawdown()

@@ -3,6 +3,9 @@ from kpi.KPI import KPI
 
 import numpy as np
 
+from utilities.Handlers import Handlers
+
+
 
 class Volatility(KPI):
 
@@ -35,7 +38,7 @@ class Volatility(KPI):
 
         negative = params["negative"]
 
-        in_d = KPI.get_standard_input_data(df)
+        in_d = Handlers.get_standard_input_data(df)
         tickers = in_d[Constants.get_tickers_key()]
         pricesk = in_d[Constants.get_prices_key()]
         df = in_d[Constants.get_input_df_key()]

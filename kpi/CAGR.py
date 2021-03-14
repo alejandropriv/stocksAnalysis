@@ -1,6 +1,7 @@
 from utilities.Constants import Constants
 from kpi.KPI import KPI
 import pandas as pd
+from utilities.Handlers import Handlers
 
 
 class CAGR(KPI):
@@ -30,7 +31,7 @@ class CAGR(KPI):
 
         reference_days = KPI.get_reference_days(params)
 
-        in_d = KPI.get_standard_input_data(df)
+        in_d = Handlers.get_standard_input_data(df)
         tickers = in_d[Constants.get_tickers_key()]
         pricesk = in_d[Constants.get_prices_key()]
         df = in_d[Constants.get_input_df_key()]

@@ -1,6 +1,9 @@
 from utilities.Constants import Constants
 from method.Method import Method
+from utilities.Handlers import Handlers
+
 import pandas as pd
+import numpy as np
 
 
 # Good for Bullish market
@@ -10,46 +13,27 @@ class PortfolioRebalance(Method):
     def __init__(self, df=None):
         super().__init__()
 
-        if df is not None:
-            self.set_input_data(df)
-
-    def set_input_data(self, df):
-        self.set_input_df(df)
-
-        prices_temp = pd.DataFrame()
-
-        df_list = []
-        for ticker in self.tickers:
-            df_list.append(
-                pd.concat(
-                    [df[ticker].loc[:, [self.prices_key]], prices_temp],
-                    axis=1,
-                    keys=[ticker]
-                )
-            )
-
-        df_pr = pd.concat(
-            df_list,
-            axis=1
-        )
-
-        self.df = df_pr.copy()
-
     def back_test(self):
 
         """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
         super().backtest()
         ################################ Backtesting ####################################
+        PortfolioRebalance.pfolio()
 
-
+    """Returns cumulative portfolio return
+    DF = dataframe with monthly return info for all stocks
+    m = number of stock in the portfolio
+    x = number of underperforming stocks to be removed from portfolio monthly"""
 
     # function to calculate portfolio return iteratively
-    def pflio(DF, m, x):
-        """Returns cumulative portfolio return
-        DF = dataframe with monthly return info for all stocks
-        m = number of stock in the portfolio
-        x = number of underperforming stocks to be removed from portfolio monthly"""
-        df = DF.copy()
+    @staticmethod
+    def pfolio(df, m, x):
+
+        in_d = Handlers.get_standard_input_data(df)
+        tickers = in_d[Constants.get_tickers_key()]
+        pricesk = in_d[Constants.get_prices_key()]
+        df = in_d[Constants.get_input_df_key()]
+
         portfolio = []
         monthly_ret = [0]
         for i in range(len(df)):

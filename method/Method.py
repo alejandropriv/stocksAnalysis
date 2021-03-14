@@ -33,5 +33,5 @@ class Method:
         self.value = None
 
 
-    def calculate(self):
+    def backtest(self):
         pass

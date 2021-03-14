@@ -42,47 +42,5 @@ class TestMethods(unittest.TestCase):
 
 
 
-    def test_calmar(self):
-        tickers = ["TSLA", "SPY"]
-
-        strategies = [SMonthlyRebalance()]
-
-        smanager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers
-            )
-
-        stocks_per_strategy = smanager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                for kpi in stock.kpis:
-                    print(kpi.df)
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-
-    def test_max_drawdown(self):
-        tickers = ["TSLA", "SPY"]
-
-        strategies = [StrategyXXII()]
-
-        smanager = \
-            StrategyManager(
-                strategies=strategies,
-                tickers=tickers
-            )
-
-        stocks_per_strategy = smanager.stocks_per_strategy
-        for stock_per_strategy in stocks_per_strategy:
-            for stock in stocks_per_strategy[stock_per_strategy]:
-                for kpi in stock.kpis:
-                    print(kpi.df)
-
-        if DEVELOPMENT == True:
-            plt.show()
-
-
 if __name__ == '__main__':
     unittest.main()

@@ -24,8 +24,10 @@ class Sharpe(KPI):
     @staticmethod
     def get_sharpe(df, params):
         """ function to calculate sharpe """
+        if params is None:
+            params = {}
 
-        if params is None or "rf" not in params.keys():
+        if "rf" not in params.keys():
             # USA: risk free rate
             params = {"rf": 0.0144}
 

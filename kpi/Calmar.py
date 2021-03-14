@@ -1,11 +1,9 @@
 from utilities.Constants import Constants
 from kpi.KPI import KPI
-import pandas as pd
-
-import numpy as np
 
 from kpi.CAGR import CAGR
 from kpi.MaxDrawdown import MaxDrawdown
+
 
 class Calmar(KPI):
     kpi_name = Constants.get_key("Calmar")
@@ -26,11 +24,6 @@ class Calmar(KPI):
 
         if params is None:
             params = {}
-
-        if "period" not in params.keys():
-            params = {"period": "M"}
-
-        period = params["period"]
 
         in_d = KPI.get_standard_input_data(df)
         tickers = in_d[Constants.get_tickers_key()]

@@ -19,15 +19,18 @@ class MaxDrawdown(KPI):
 
     @staticmethod
     def get_max_drawdown(df, params):
-        """ function to calculate max drawdown"        """
 
+        if params is None:
+            params = {}
+
+        """ function to calculate max drawdown"        """
         in_d = KPI.get_standard_input_data(df)
         tickers = in_d[Constants.get_tickers_key()]
         pricesk = in_d[Constants.get_prices_key()]
         df = in_d[Constants.get_input_df_key()]
 
         d_result = {}
-        daily_ret_key = Constants.get_day_ret_key()
+        daily_ret_key = Constants.get_ret_key()
         cum_return_key = Constants.get_cum_return_key()
         cum_roll_max_key = Constants.get_key("cum_roll_max")
         drawdown_key = Constants.get_key("drawdown")

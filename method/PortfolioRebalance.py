@@ -3,6 +3,9 @@ from method.Method import Method
 import pandas as pd
 
 
+# Good for Bullish market
+# Rebalance Every certain specific time: i.e. 3M
+# Also works for short
 class PortfolioRebalance(Method):
     def __init__(self, df=None):
         super().__init__()
@@ -32,23 +35,11 @@ class PortfolioRebalance(Method):
 
         self.df = df_pr.copy()
 
-
     def back_test(self):
 
         """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
-        super().calculate()
-        ################################Backtesting####################################
-
-        df_result = []
-        ohlc_mon = {}  # directory with ohlc value for each stock
-        ohlc_dict = copy.deepcopy(ohlc_mon)
-        return_df = pd.DataFrame()
-
-        for ticker in self.tickers:
-            df_data = self.df[ticker].copy()
-            print("calculating monthly return for ", ticker)
-            ohlc_dict[ticker]["mon_ret"] = ohlc_dict[ticker]["Adj Close"].pct_change()
-            return_df[ticker] = ohlc_dict[ticker]["mon_ret"]
+        super().backtest()
+        ################################ Backtesting ####################################
 
 
 
@@ -73,7 +64,7 @@ class PortfolioRebalance(Method):
         monthly_ret_df = pd.DataFrame(np.array(monthly_ret), columns=["mon_ret"])
         return monthly_ret_df
 
-    # calculating overall strategy's KPIs
+        # calculating overall strategy's KPIs
         CAGR(pflio(return_df, 6, 3))
         sharpe(pflio(return_df, 6, 3), 0.025)
         max_dd(pflio(return_df, 6, 3))

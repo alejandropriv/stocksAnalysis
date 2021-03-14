@@ -10,8 +10,12 @@ import yfinance as yf
 import numpy as np
 import datetime as dt
 
+
 # Download historical data for required stocks
 def volatility(DF):
+
+
+
     "function to calculate annualized volatility of a trading strategy"
     df = DF.copy()
     df["daily_ret"] = DF["Adj Close"].pct_change()
@@ -20,5 +24,5 @@ def volatility(DF):
 
 
 ticker = "TSLA"
-SnP = yf.download(ticker,dt.datetime(2021, 3, 7)-dt.timedelta(1825), dt.datetime(2021, 3, 7))
+SnP = yf.download(ticker, dt.datetime(2021, 3, 7) - dt.timedelta(1825), dt.datetime(2021, 3, 7))
 print(volatility(SnP))

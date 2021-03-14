@@ -16,7 +16,6 @@ class KPI(metaclass=abc.ABCMeta):
         def print(self):
             print("Name: {} \n Result: {}".format(self.name, self.result))
 
-
     @abc.abstractmethod
     def __init__(self, params=None):
         if params is None:
@@ -30,6 +29,23 @@ class KPI(metaclass=abc.ABCMeta):
     def calculate(self, df, params=None):
         if params is not None:
             self.params = params
+
+    @staticmethod
+    def get_reference_days(params):
+        if "period" in params.keys():
+            period = params["period"]
+        else:
+            period = Constants.INTERVAL.MONTH
+
+        if period == Constants.INTERVAL.DAY:
+            # 252 trading days
+            reference_days = 252
+        else:
+            # 12 months
+            reference_days = 12
+
+        return reference_days
+
 
     @staticmethod
     def get_standard_input_data(df):
@@ -48,7 +64,6 @@ class KPI(metaclass=abc.ABCMeta):
 
         else:
             prices_key = close_key
-
 
         prices_temp = pd.DataFrame()
 

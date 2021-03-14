@@ -29,7 +29,9 @@ class Volatility(KPI):
             params = {}
 
         if "negative" not in params.keys():
-            params = {"negative": False}
+            params["negative"] = False
+
+        reference_days = KPI.get_reference_days(params)
 
         negative = params["negative"]
 
@@ -40,21 +42,21 @@ class Volatility(KPI):
 
         d_result = {}
 
-        daily_ret_key = Constants.get_day_ret_key()
+        daily_ret_key = Constants.get_ret_key()
         neg_daily_ret_key = Constants.get_key("neg_vol")
 
 
         for ticker in tickers:
 
+            df[daily_ret_key] = df[ticker][pricesk].pct_change()
+
             # Whole volatility was calculated
             if negative is False:
-                df[daily_ret_key] = df[ticker][pricesk].pct_change()
-                value = df[daily_ret_key].std() * np.sqrt(252)
+                value = df[daily_ret_key].std() * np.sqrt(reference_days)
 
             else:
-                df[daily_ret_key] = df[ticker][pricesk].pct_change()
                 df[neg_daily_ret_key] = np.where(df[daily_ret_key] < 0, df[daily_ret_key], 0)
-                value = df[neg_daily_ret_key].std() * np.sqrt(252)
+                value = df[neg_daily_ret_key].std() * np.sqrt(reference_days)
 
             d_result[ticker] = value
 

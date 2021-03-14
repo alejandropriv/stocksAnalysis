@@ -45,7 +45,8 @@ class Sortino(KPI):
 
             cagr = CAGR.get_cagr(df[[ticker]], params)
 
-            vol_params = {"negative": True}
+            vol_params = params
+            vol_params["negative"] = True
             neg_vol = Volatility.get_volatility(df[[ticker]], vol_params)
             value = (cagr.result[ticker] - rf) / neg_vol.result[ticker]
 

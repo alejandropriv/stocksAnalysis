@@ -36,27 +36,27 @@ class StrategyXX(Strategy):
         self.end_date = dt.datetime(2021, 3, 7)
         # date_str = "01/01/2020"
         self.start_date = self.end_date-dt.timedelta(1825)
-        # self.start_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
         self.interval = Constants.INTERVAL.DAY
 
     def set_indicators(self):
         self.indicators = []
 
     def set_kpi(self):
-        cagr = CAGR()
+        params_cagr = {'period': self.interval}
+        cagr = CAGR(params_cagr)
 
-        params_calmar = {'negative': False}
+        params_calmar = {'period': self.interval}
         calmar = Calmar(params_calmar)
 
         md = MaxDrawdown()
 
-        params_sharpe = {'rf': 0.0144}
+        params_sharpe = {'rf': 0.0144, 'period': self.interval}
         sharpe = Sharpe(params_sharpe)
 
-        params_sortino = {'rf': 0.0144}
+        params_sortino = {'rf': 0.0144, 'period': self.interval}
         sortino = Sortino(params_sortino)
 
-        params_volatility = {'negative': False}
+        params_volatility = {'negative': False, 'period': self.interval}
         volatility = Volatility(params_volatility)
 
         self.kpis = [cagr, calmar, md, sharpe, sortino, volatility]

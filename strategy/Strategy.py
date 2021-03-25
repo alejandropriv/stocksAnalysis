@@ -15,6 +15,7 @@ class Strategy(metaclass=abc.ABCMeta):
         self.interval = None
         self.indicators = []
         self.kpis = []
+        self.methods_kpis = []
         self.methods = []
         self.reports = []
         self.fundamentals_options = [FUNDAMENTALSTYPE.BALANCE_SHEET,

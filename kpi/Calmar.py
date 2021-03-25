@@ -3,11 +3,11 @@ from kpi.KPI import KPI
 
 from kpi.CAGR import CAGR
 from kpi.MaxDrawdown import MaxDrawdown
-from utilities.Handlers import Handlers
+import pandas as pd
 
 
 class Calmar(KPI):
-    kpi_name = Constants.get_key("Calmar")
+    kpi_name = Constants.calmar_key()
 
     def __init__(self, params=None):
         super().__init__(params)
@@ -20,28 +20,18 @@ class Calmar(KPI):
         return self.result
 
     @staticmethod
-    def get_calmar(df, params=None):
+    def get_calmar(input_df, params=None):
         """function to calculate Calmar"""
-
         if params is None:
             params = {}
 
-        in_d = Handlers.get_standard_input_data(df)
-        tickers = in_d[Constants.get_tickers_key()]
-        df = in_d[Constants.get_input_df_key()]
+        cagr = CAGR.get_cagr(input_df, params)
+        max_dd = MaxDrawdown.get_max_drawdown(input_df)
 
-        d_result = {}
+        cagr.columns = cagr.columns.droplevel(1)
+        max_dd.columns = max_dd.columns.droplevel(1)
 
-        for ticker in tickers:
-            cagr = CAGR.get_cagr(df[[ticker]], params)
-            max_dd = MaxDrawdown.get_max_drawdown(df[[ticker]], params)
-            value = cagr.result[ticker] / max_dd.result[ticker]
+        result_df = cagr / max_dd
+        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Calmar.kpi_name]])
 
-            d_result[ticker] = value
-
-        result = KPI.KPIResult(
-            Calmar.kpi_name,
-            d_result
-        )
-
-        return result
+        return result_df

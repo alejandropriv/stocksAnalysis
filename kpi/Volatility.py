@@ -1,15 +1,12 @@
-from utilities.Constants import Constants
+from utilities.Constants import Constants as Ct
 from kpi.KPI import KPI
-
+import pandas as pd
 import numpy as np
-
-from utilities.Handlers import Handlers
-
 
 
 class Volatility(KPI):
 
-    kpi_name = Constants.get_key("Volatility")
+    kpi_name = Ct.volatility_key()
 
     def __init__(self, params=None):
         super().__init__(params)
@@ -25,47 +22,30 @@ class Volatility(KPI):
 
 
     @staticmethod
-    def get_volatility(df, params=None):
+    def get_volatility(input_df, params=None):
         """function to calculate annualized volatility of a trading strategy"""
 
         if params is None:
-            params = {}
+            raise ValueError("Please set the corresponding Interval parameter"
+                             "{interval:Ct.INTERVAL.MONTH|Ct.INTERVAL.DAY}")
 
-        if "negative" not in params.keys():
-            params["negative"] = False
+        if Ct.neg_volatility_key() not in params.keys():
+            params[Ct.neg_volatility_key()] = False
+
 
         reference_days = KPI.get_reference_days(params)
+        negative = params[Ct.neg_volatility_key()]
 
-        negative = params["negative"]
+        df = input_df.copy()
+        # Whole volatility was calculated
+        if negative is False:
+            result_df = (df.std() * np.sqrt(reference_days)).to_frame().transpose()
 
-        in_d = Handlers.get_standard_input_data(df)
-        tickers = in_d[Constants.get_tickers_key()]
-        pricesk = in_d[Constants.get_prices_key()]
-        df = in_d[Constants.get_input_df_key()]
+        else:
+            df_neg = df.where(df < 0, 0)
+            result_df = (df_neg.std() * np.sqrt(reference_days)).to_frame().transpose()
 
-        d_result = {}
+        result_df.columns = result_df.columns.droplevel(1)
+        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Volatility.kpi_name]])
 
-        daily_ret_key = Constants.get_ret_key()
-        neg_daily_ret_key = Constants.get_key("neg_vol")
-
-
-        for ticker in tickers:
-
-            df[daily_ret_key] = df[ticker][pricesk].pct_change()
-
-            # Whole volatility was calculated
-            if negative is False:
-                value = df[daily_ret_key].std() * np.sqrt(reference_days)
-
-            else:
-                df[neg_daily_ret_key] = np.where(df[daily_ret_key] < 0, df[daily_ret_key], 0)
-                value = df[neg_daily_ret_key].std() * np.sqrt(reference_days)
-
-            d_result[ticker] = value
-
-        result = KPI.KPIResult(
-            Volatility.kpi_name,
-            d_result
-        )
-
-        return result
+        return result_df

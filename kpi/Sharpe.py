@@ -3,12 +3,12 @@ from utilities.Constants import Constants
 
 from kpi.CAGR import CAGR
 from kpi.Volatility import Volatility
-from utilities.Handlers import Handlers
+import pandas as pd
 
 
 
 class Sharpe(KPI):
-    kpi_name = Constants.get_key("Sharpe")
+    kpi_name = Constants.sharpe_key()
 
     # rf = Risk free rate
     def __init__(self, params=None):
@@ -24,37 +24,25 @@ class Sharpe(KPI):
 
 
     @staticmethod
-    def get_sharpe(df, params):
+    def get_sharpe(input_df, params):
         """ function to calculate sharpe """
         if params is None:
             params = {}
 
         if "rf" not in params.keys():
             # USA: risk free rate
-            params = {"rf": 0.0144}
-
+            params["rf"] = 0.0144
 
         rf = params["rf"]
 
-        in_d = Handlers.get_standard_input_data(df)
-        tickers = in_d[Constants.get_tickers_key()]
-        df = in_d[Constants.get_input_df_key()]
+        "function to calculate sharpe ratio ; rf is the risk free rate"
+        cagr = CAGR.get_cagr(input_df, params)
+        volatility = Volatility.get_volatility(input_df, params)
 
-        d_result = {}
+        cagr.columns = cagr.columns.droplevel(1)
+        volatility.columns = volatility.columns.droplevel(1)
+        result_df = (cagr - rf) / volatility
 
-        for ticker in tickers:
-            "function to calculate sharpe ratio ; rf is the risk free rate"
-            cagr = CAGR.get_cagr(df[[ticker]], params)  # TODO: Fix here dataframe double index
+        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Sharpe.kpi_name]])
 
-            volatility = Volatility.get_volatility(df[[ticker]], params)
-
-            value = (cagr.result[ticker] - rf) / volatility.result[ticker]
-
-            d_result[ticker] = value
-
-        result = KPI.KPIResult(
-            Sharpe.kpi_name,
-            d_result
-        )
-
-        return result
+        return result_df

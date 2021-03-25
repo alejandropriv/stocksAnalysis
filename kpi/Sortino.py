@@ -1,16 +1,16 @@
-from utilities.Constants import Constants
+from utilities.Constants import Constants as Ct
 from kpi.KPI import KPI
 
 from kpi.CAGR import CAGR
 
 from kpi.Volatility import Volatility
+import pandas as pd
 
-from utilities.Handlers import Handlers
 
 
 
 class Sortino(KPI):
-    kpi_name = Constants.get_key("Sortino")
+    kpi_name = Ct.sortino_key()
 
     # RF is risk free rate
     def __init__(self, params=None):
@@ -25,7 +25,7 @@ class Sortino(KPI):
         return self.result
 
     @staticmethod
-    def get_sortino(df, params=None):
+    def get_sortino(input_df, params=None):
 
         if params is None:
             params = {}
@@ -36,28 +36,19 @@ class Sortino(KPI):
 
         rf = params["rf"]
 
-        in_d = Handlers.get_standard_input_data(df)
-        tickers = in_d[Constants.get_tickers_key()]
-        df = in_d[Constants.get_input_df_key()]
+        "function to calculate Sortino ratio ; rf is the risk free rate"
 
-        d_result = {}
+        cagr = CAGR.get_cagr(input_df, params)
 
+        vol_params = params
+        vol_params[Ct.neg_volatility_key()] = True
+        neg_vol = Volatility.get_volatility(input_df, vol_params)
 
-        for ticker in tickers:
-            "function to calculate Sortino ratio ; rf is the risk free rate"
+        cagr.columns = cagr.columns.droplevel(1)
+        neg_vol.columns = neg_vol.columns.droplevel(1)
 
-            cagr = CAGR.get_cagr(df[[ticker]], params)
+        result_df = (cagr - rf) / neg_vol
 
-            vol_params = params
-            vol_params["negative"] = True
-            neg_vol = Volatility.get_volatility(df[[ticker]], vol_params)
-            value = (cagr.result[ticker] - rf) / neg_vol.result[ticker]
+        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Sortino.kpi_name]])
 
-            d_result[ticker] = value
-
-        result = KPI.KPIResult(
-            Sortino.kpi_name,
-            d_result
-        )
-
-        return result
+        return result_df

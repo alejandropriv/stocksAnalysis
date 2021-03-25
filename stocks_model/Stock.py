@@ -1,4 +1,4 @@
-from utilities.Constants import Constants
+from utilities.Constants import Constants as Ct
 
 
 class Stock:
@@ -42,34 +42,8 @@ class Stock:
     def get_key_titles(keys):
 
         key_titles = []
-        if keys["has_high_key"] == True:
-            key = Constants.get_high_key()
-            if key is not None:
-                key_titles.append(key)
-
-        if keys["has_low_key"] == True:
-            key = Constants.get_low_key()
-            if key is not None:
-                key_titles.append(key)
-
-        if keys["has_open_key"] == True:
-            key = Constants.get_open_key()
-            if key is not None:
-                key_titles.append(key)
-
-        if keys["has_close_key"] == True:
-            key = Constants.get_close_key()
-            if key is not None:
-                key_titles.append(key)
-
-        if keys["has_adj_close_key"] == True:
-            key = Constants.get_adj_close_key()
-            if key is not None:
-                key_titles.append(key)
-
-        if keys["has_volume_key"] == True:
-            key = Constants.get_volume_key()
-            if key is not None:
+        for key in keys:
+            if keys[key] is True:
                 key_titles.append(key)
 
         return key_titles
@@ -81,12 +55,12 @@ class Stock:
         if keys is None or len(keys) == 0:
             print("No keys has been specified. All keys were selected. ")
 
-            keys = {'has_high_key': True,
-                    'has_low_key': True,
-                    'has_open_key': True,
-                    'has_close_key': True,
-                    'has_adj_close_key': True,
-                    'has_volume_key': True
+            keys = {Ct.high_key(): True,
+                    Ct.low_key(): True,
+                    Ct.open_key(): True,
+                    Ct.close_key(): True,
+                    Ct.adj_close_key(): True,
+                    Ct.volume_key(): True
                     }
 
         method_tag = "get_prices_data"

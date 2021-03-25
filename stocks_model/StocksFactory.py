@@ -5,6 +5,9 @@ from data.DataCollector import DataCollector
 import pandas as pd
 import copy
 
+from utilities.Constants import Constants as Ct
+
+
 
 class StocksFactory:
 
@@ -16,17 +19,17 @@ class StocksFactory:
         return tickers
 
     @staticmethod
-    def create_stocks(strategy, tickers, bulk=False):
+    def create_stocks(conf):
 
-        tickers = StocksFactory.add_spi500_ticker(tickers=tickers)
+        tickers=conf[Ct.tickers_key()]
 
         data_source_historical = None
         data_source_fundamentals = None
 
         data_sources = \
             DataCollector.get_data_sources(
-                strategy.dst_historical,
-                strategy.dst_fundamentals
+                conf[Ct.historical_type_key()],
+                conf[Ct.fundamentals_type_key()]
             )
 
         if DataCollector.HISTORICAL_KEY in data_sources.keys():
@@ -35,10 +38,10 @@ class StocksFactory:
             if data_source_historical is not None:
                 data_source_historical.extract_historical_data(
                     tickers=tickers,
-                    start_date=strategy.start_date,
-                    end_date=strategy.end_date,
-                    period=strategy.period,
-                    interval=strategy.interval
+                    start_date=conf[Ct.start_date_key()],
+                    end_date=conf[Ct.end_date_key()],
+                    period=conf[Ct.period_key()],
+                    interval=conf[Ct.interval_key()]
 
                 )
 
@@ -47,20 +50,18 @@ class StocksFactory:
 
             if data_source_fundamentals is not None:
                 data_source_fundamentals.extract_fundamentals(
-                    date=strategy.start_date,
                     tickers=tickers,
-                    required_elements=strategy.fundamentals_options,
-                    force_server_data=strategy.force_fundamentals
+                    date=conf[Ct.start_date_key],
+                    required_elements=conf[Ct.fundamentals_options_key()],
+                    force_server_data=conf[Ct.force_fundamentals_key()]
                 )
 
         stocks = StocksFactory.load_stocks(
             tickers=tickers,
             data_source_historical=data_source_historical,
             data_source_fundamentals=data_source_fundamentals,
-            bulk=bulk,
-            indicators=strategy.indicators,
-            value_investing_metrics=strategy.value_investing_metrics,
-            kpis=strategy.kpis
+            bulk=conf[Ct.bulk_key()],
+            indicators=conf[Ct.indicators_key()]
         )
 
         return stocks
@@ -70,9 +71,7 @@ class StocksFactory:
                     data_source_historical=None,
                     data_source_fundamentals=None,
                     bulk=False,
-                    indicators=None,
-                    value_investing_metrics=None,
-                    kpis=None
+                    indicators=None
                     ):
 
         stocks = []
@@ -87,9 +86,6 @@ class StocksFactory:
                           data_source_fundamentals=data_source_fundamentals)
 
             stock = StocksFactory.load_indicators(stock, indicators)
-            stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)
-            stock = StocksFactory.load_kpis(stock, kpis)
-
             stocks.append(stock)
 
         else:
@@ -148,8 +144,6 @@ class StocksFactory:
                               data_source_fundamentals=data_source_fundamentals_stock)
 
                 stock = StocksFactory.load_indicators(stock, indicators)
-                stock = StocksFactory.load_value_investing_metrics(stock, value_investing_metrics)
-                stock = StocksFactory.load_kpis(stock, kpis)
 
                 stocks.append(stock)
 
@@ -168,27 +162,5 @@ class StocksFactory:
 
         for indicator in indicators:
             stock.append_indicator(indicator)
-
-        return stock
-
-    @staticmethod
-    def load_kpis(stock, kpis):
-
-        if kpis is None:
-            kpis = []
-
-        for kpi in kpis:
-            stock.append_kpis(kpi)
-
-        return stock
-
-    @staticmethod
-    def load_value_investing_metrics(stock, value_investing_metrics):
-
-        if value_investing_metrics is None:
-            value_investing_metrics = []
-
-        for metric in value_investing_metrics:
-            stock.append_value_investing_metric(copy.copy(metric))
 
         return stock

@@ -70,7 +70,7 @@ class YFinanceDataSource(DataSource):
 
                 # adjust all OHLC automatically
                 # (optional, default is False)
-                auto_adjust=True,
+                auto_adjust=False,
 
                 # download pre/post regular market hours data
                 # (optional, default is False)
@@ -88,6 +88,10 @@ class YFinanceDataSource(DataSource):
         self.prices.dropna(axis='rows', how="all", inplace=True)
 
         self.prices.bfill(axis=0, inplace=True)
+
+        if len(tickers) == 1:
+            self.prices.columns = pd.MultiIndex.from_product([tickers, self.prices.columns])
+
 
         return self.prices
 
@@ -140,38 +144,15 @@ class YFinanceDataSource(DataSource):
 
 
 
-    def extract_fundamentals(self):
+    def extract_fundamentals(self, tickers, date, required_elements=None, force_server_data=0):
         pass
 
     def get_prices(self, tickers, key_titles):
-        available_titles = [Constants.get_open_key(),
-                            Constants.get_close_key(),
-                            Constants.get_high_key(),
-                            Constants.get_low_key(),
-                            Constants.get_volume_key()]
 
-
-        search_titles = []
-        for key_title in key_titles:
-            if key_title in available_titles:
-                search_titles.append(key_title)
-
-        if len(search_titles) == 0:
+        if len(key_titles) == 0:
             print("No valid keys were requested returning empty dataframe")
             return pd.DataFrame()
 
-        # prices_temp = self.prices.copy()
-        prices_temp = pd.DataFrame()
+        bool_titles = self.prices.columns.get_level_values(1).isin(key_titles)
+        return self.prices.loc[:, bool_titles]
 
-        df_list = []
-        for ticker in tickers:
-            df_list.append(pd.concat([self.prices[ticker].loc[:, search_titles], prices_temp], axis=1, keys=[ticker]))
-
-        prices_temp = pd.concat(
-            df_list,
-            axis=1
-        )
-
-
-        self.prices = prices_temp.copy()
-        return self.prices

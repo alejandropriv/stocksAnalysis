@@ -3,11 +3,6 @@ from enum import Enum
 
 class Constants:
 
-    adj_close = "Adj_Close"
-    volume = "Volume"
-    prices_axis = "prices_axis"
-    volume_axis = "volume_axis"
-
     # intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
     class INTERVAL(Enum):
         MINUTE = '1m'
@@ -42,59 +37,147 @@ class Constants:
 
 
     @staticmethod
-    def get_prices_key():
+    def prices_key():
         key = "{}".format("prices_key")
         return key\
 
     @staticmethod
-    def get_tickers_key():
-        key = "{}".format("tickers_key")
+    def tickers_key():
+        key = "{}".format("tickers")
         return key
 
     @staticmethod
-    def get_input_df_key():
+    def input_df_key():
         key = "{}".format("input_df_key")
         return key
 
     @staticmethod
-    def get_adj_close_key():
-        key = "{}".format("Adj_Close")
+    def adj_close_key():
+        key = "{}".format("Adj Close")
         return key
 
     @staticmethod
-    def get_high_key():
+    def high_key():
         key = "{}".format("High")
         return key
 
     @staticmethod
-    def get_low_key():
+    def low_key():
         key = "{}".format("Low")
         return key
 
     @staticmethod
-    def get_open_key():
+    def open_key():
         key = "{}".format("Open")
         return key
 
     @staticmethod
-    def get_close_key():
+    def close_key():
         key = "{}".format("Close")
         return key
 
     @staticmethod
-    def get_volume_key():
+    def volume_key():
         key = "{}".format("Volume")
         return key
 
     @staticmethod
-    def get_ret_key():
+    def ret_key():
         key = "{}".format("Ret")
         return key
 
     @staticmethod
-    def get_cum_return_key():
+    def start_date_key():
+        key = "{}".format("start_date")
+        return key
+
+    @staticmethod
+    def end_date_key():
+        key = "{}".format("end_date")
+        return key
+
+    @staticmethod
+    def cum_return_key():
         key = "{}".format("cum_return")
         return key
+
+    @staticmethod
+    def historical_type_key():
+        key = "{}".format("has_historical_data")
+        return key
+
+    @staticmethod
+    def period_key():
+        key = "{}".format("period")
+        return key
+
+    @staticmethod
+    def interval_key():
+        key = "{}".format("interval")
+        return key
+
+    @staticmethod
+    def fundamentals_type_key():
+        key = "{}".format("has_fundamentals_data")
+        return key
+
+    @staticmethod
+    def indicators_key():
+        key = "{}".format("indicators")
+        return key
+
+    @staticmethod
+    def bulk_key():
+        key = "{}".format("bulk")
+        return key
+
+    @staticmethod
+    def fundamentals_options_key():
+        key = "{}".format("fundamentals_options")
+        return key
+
+    @staticmethod
+    def force_fundamentals_key():
+        key = "{}".format("force_fundamentals")
+        return key
+
+    # KPIS keys
+    @staticmethod
+    def cagr_key():
+        key = "{}".format("cagr")
+        return key
+
+    @staticmethod
+    def calmar_key():
+        key = "{}".format("calmar")
+        return key
+
+    @staticmethod
+    def max_drawdown_key():
+        key = "{}".format("max_drawdown")
+        return key
+
+    @staticmethod
+    def volatility_key():
+        key = "{}".format("volatility")
+        return key
+
+    @staticmethod
+    def neg_volatility_key():
+        key = "{}".format("volatility")
+        return key
+
+
+    @staticmethod
+    def sharpe_key():
+        key = "{}".format("sharpe")
+        return key
+
+    @staticmethod
+    def sortino_key():
+        key = "{}".format("sortino")
+        return key
+
 
     @staticmethod
     def get_key(base_key):

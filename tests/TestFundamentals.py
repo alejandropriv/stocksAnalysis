@@ -1,7 +1,7 @@
 import unittest
 
-
 DEVELOPMENT = True
+
 
 class TestBasics(unittest.TestCase):
     data_source_type = None
@@ -12,7 +12,8 @@ class TestBasics(unittest.TestCase):
     stock = None
 
     def test_magic_formula(self):
-       pass
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

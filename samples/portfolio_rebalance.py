@@ -94,17 +94,19 @@ def pflio(DF,m,x):
     return monthly_ret_df
 
 
+portfolio = pflio(return_df,6,3)
 #calculating overall strategy's KPIs
-CAGR(pflio(return_df,6,3))
-sharpe(pflio(return_df,6,3),0.025)
-max_dd(pflio(return_df,6,3)) 
+print("CAGR - Portfolio: {}".format(CAGR(portfolio)))
+print("Sharpe - Portfolio: {}".format(sharpe(portfolio,0.025)))
+print("MAX-Drawdown - Portfolio: {}".format(max_dd(portfolio)))
 
 #calculating KPIs for Index buy and hold strategy over the same period
 DJI = yf.download("^DJI",dt.date.today()-dt.timedelta(3650),dt.date.today(),interval='1mo')
 DJI["mon_ret"] = DJI["Adj Close"].pct_change().fillna(0)
-CAGR(DJI)
-sharpe(DJI,0.025)
-max_dd(DJI)
+
+print("CAGR - Reference: {}".format(CAGR(DJI)))
+print("Sharpe - Reference: {}".format(sharpe(DJI,0.025)))
+print("MAX-Drawdown - Reference: {}".format(max_dd(DJI)))
 
 #visualization
 fig, ax = plt.subplots()
@@ -114,3 +116,4 @@ plt.title("Index Return vs Strategy Return")
 plt.ylabel("cumulative return")
 plt.xlabel("months")
 ax.legend(["Strategy Return","Index Return"])
+plt.show()

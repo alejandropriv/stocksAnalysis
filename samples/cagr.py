@@ -14,11 +14,15 @@ import pandas as pd
 def CAGR(DF):
     "function to calculate the Cumulative Annual Growth Rate of a trading strategy"
     df = DF.copy()
-    print(df)
     df["daily_ret"] = DF["Adj Close"].pct_change()
     df["cum_return"] = (1 + df["daily_ret"]).cumprod()
     n = len(df)/252
     CAGR = (df["cum_return"][-1])**(1/n) - 1
+    print(df["cum_return"])
+    print("Len df: {}".format(len(df)))
+    print("N: {}".format(n))
+    print(CAGR)
+
     return CAGR
 
 
@@ -26,5 +30,6 @@ ticker = "TSLA"
 SnP = yf.download(ticker,dt.datetime(2021, 3, 7)-dt.timedelta(1825), dt.datetime(2021, 3, 7))
 
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-    print(CAGR(SnP))
+    cagr = CAGR(SnP)
+
 

@@ -1,4 +1,4 @@
-from utilities.Constants import Constants
+from utilities.Constants import Constants as Ct
 from kpi.KPI import KPI
 
 from kpi.CAGR import CAGR
@@ -7,7 +7,7 @@ import pandas as pd
 
 
 class Calmar(KPI):
-    kpi_name = Constants.calmar_key()
+    kpi_name = Ct.calmar_key()
 
     def __init__(self, params=None):
         super().__init__(params)
@@ -28,10 +28,7 @@ class Calmar(KPI):
         cagr = CAGR.get_cagr(input_df, params)
         max_dd = MaxDrawdown.get_max_drawdown(input_df)
 
-        cagr.columns = cagr.columns.droplevel(1)
-        max_dd.columns = max_dd.columns.droplevel(1)
-
-        result_df = cagr / max_dd
-        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Calmar.kpi_name]])
+        result_df = pd.DataFrame()
+        result_df[Calmar.kpi_name] = (cagr[Ct.cagr_key()]/max_dd[Ct.max_drawdown_key()])
 
         return result_df

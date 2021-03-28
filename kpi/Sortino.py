@@ -44,11 +44,9 @@ class Sortino(KPI):
         vol_params[Ct.neg_volatility_key()] = True
         neg_vol = Volatility.get_volatility(input_df, vol_params)
 
-        cagr.columns = cagr.columns.droplevel(1)
-        neg_vol.columns = neg_vol.columns.droplevel(1)
+        result_df = pd.DataFrame()
+        result_df[Sortino.kpi_name] = (cagr.loc[:, Ct.cagr_key()] - rf) / neg_vol.loc[:, Ct.volatility_key()]
 
-        result_df = (cagr - rf) / neg_vol
-
-        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Sortino.kpi_name]])
+        result_df.rename(index={0: Sortino.kpi_name}, inplace=True)
 
         return result_df

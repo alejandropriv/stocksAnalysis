@@ -55,8 +55,8 @@ class TestKPI(unittest.TestCase):
         cagr = CAGR()
         result = cagr.calculate(df, params)
 
-        self.assertEqual(0.7093784038450781, result['TSLA'][Ct.cagr_key()][0])
-        self.assertEqual(0.1608091728848835, result['SPY'][Ct.cagr_key()][0])
+        self.assertEqual(0.7093784038450781, result[Ct.cagr_key()]['TSLA'])
+        self.assertEqual(0.1608091728848835, result[Ct.cagr_key()]['SPY'])
 
 
 
@@ -91,7 +91,8 @@ class TestKPI(unittest.TestCase):
         md = MaxDrawdown()
         result = md.calculate(df)
 
-        self.assertEqual(0.6062653645917145, result['TSLA'][Ct.max_drawdown_key()][0])
+        self.assertEqual(0.6062653645917145, result[Ct.max_drawdown_key()]['TSLA'])
+        self.assertEqual(0.3371725544013077, result[Ct.max_drawdown_key()]['SPY'])
 
 
     def test_KPI_calmar(self):
@@ -126,7 +127,8 @@ class TestKPI(unittest.TestCase):
         calmar = Calmar()
         result = calmar.calculate(df, params)
 
-        self.assertEqual(1.1700790532917946, result['TSLA'][Ct.calmar_key()][0])
+        self.assertEqual(1.1700790532917946, result[Ct.calmar_key()]['TSLA'])
+
 
     def test_KPI_volatility(self):
         tickers = ["TSLA", "SPY"]
@@ -159,7 +161,7 @@ class TestKPI(unittest.TestCase):
         params = {Ct.interval_key(): interval}
         volatility = Volatility()
         result = volatility.calculate(df, params)
-        self.assertEqual(0.5809557173271221, result['TSLA'][Ct.volatility_key()][0])
+        self.assertEqual(0.5807261171106989, result[Ct.volatility_key()]['TSLA'])
 
 
 
@@ -195,7 +197,7 @@ class TestKPI(unittest.TestCase):
         params = {Ct.interval_key(): interval, "rf": 0.0144}
         sharpe = Sharpe()
         result = sharpe.calculate(df, params)
-        self.assertEqual(1.1962674316083073, result['TSLA'][Ct.sharpe_key()][0])
+        self.assertEqual(1.1967403968377064, result[Ct.sharpe_key()]['TSLA'])
 
 
 
@@ -230,7 +232,7 @@ class TestKPI(unittest.TestCase):
         params = {Ct.interval_key(): interval, "rf": 0.0144}
         sortino = Sortino()
         result = sortino.calculate(df, params)
-        self.assertEqual(2.071479016783677, result['TSLA'][Ct.sortino_key()][0])
+        self.assertEqual(2.071479016783677, result[Ct.sortino_key()]['TSLA'])
 
 
 

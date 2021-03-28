@@ -20,6 +20,7 @@ class CAGR(KPI):
         self.result = CAGR.get_cagr(df, self.params)
         return self.result
 
+
     # Params: {period:Ct.INTERVAL.MONTH|Ct.INTERVAL.DAY}
     # DF should be a percentage change
     @staticmethod
@@ -30,12 +31,9 @@ class CAGR(KPI):
         df = input_df.copy()
         df.columns = df.columns.droplevel(1)
 
-
         cagr_data = (1 + df).cumprod()
         n = len(cagr_data) / reference_days
-        result_df = ((cagr_data[-1:]) ** (1 / n) - 1).reset_index(drop=True)
-
-
-        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [CAGR.kpi_name]])
+        result_df = pd.DataFrame()
+        result_df[CAGR.kpi_name] = cagr_data.iloc[-1] ** (1 / n) - 1
 
         return result_df

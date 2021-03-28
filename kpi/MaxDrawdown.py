@@ -30,8 +30,7 @@ class MaxDrawdown(KPI):
         cum_roll_max_df = cumprod_df.cummax()
         drawdown_df = cum_roll_max_df - cumprod_df
         drawdown_pct_df = drawdown_df / cum_roll_max_df
-        result_df = drawdown_pct_df.max().to_frame().transpose()
-
-        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [MaxDrawdown.kpi_name]])
+        result_df = pd.DataFrame()
+        result_df[MaxDrawdown.kpi_name] = drawdown_pct_df.max()
 
         return result_df

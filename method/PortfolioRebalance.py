@@ -41,21 +41,20 @@ class PortfolioRebalance(Method):
         # calculating overall strategy's KPIs
 
         mon_ret_df = Financials.pct_change(ref_prices)
-        p_return_ref = PortfolioRebalance.calculate(mon_ret_df, m, x)
 
-        cagr_ref = CAGR.get_cagr(p_return, cagr_params)
-        sharpe_params = {"rf": 0.025, Ct.interval_key():interval}
-        sharpe_ref = Sharpe.get_sharpe(p_return_ref, sharpe_params)
-        max_dd_ref = MaxDrawdown.get_max_drawdown(p_return_ref)
+        cagr_ref = CAGR.get_cagr(mon_ret_df, cagr_params)
+        sharpe_params = {"rf": 0.025, Ct.interval_key(): interval}
+        sharpe_ref = Sharpe.get_sharpe(mon_ret_df, sharpe_params)
+        max_dd_ref = MaxDrawdown.get_max_drawdown(mon_ret_df)
 
-        print("CAGR - Portfolio: {}".format(cagr))
-        print("Sharpe - Portfolio: {}".format(sharpe))
-        print("MAX-Drawdown - Portfolio: {}".format(cagr))
-        print("CAGR - Portfolio: {}".format(cagr_ref))
-        print("Sharpe - Portfolio: {}".format(sharpe_ref))
-        print("MAX-Drawdown - Ref: {}".format(max_dd_ref))
+        print("CAGR - Portfolio: {}".format(cagr[Ct.cagr_key()]["mon_ret"]))
+        print("Sharpe - Portfolio: {}".format(sharpe[Ct.sharpe_key()]["mon_ret"]))
+        print("MAX-Drawdown - Portfolio: {}".format(max_dd[Ct.max_drawdown_key()]["mon_ret"]))
+        print("CAGR - Ref: {}".format(cagr_ref[Ct.cagr_key()]["^DJI"]))
+        print("Sharpe - Ref: {}".format(sharpe_ref[Ct.sharpe_key()]["^DJI"]))
+        print("MAX-Drawdown - Ref: {}".format(max_dd_ref[Ct.max_drawdown_key()]["^DJI"]))
 
-        PortfolioRebalance.plot(p_return, p_return_ref)
+        PortfolioRebalance.plot(p_return, mon_ret_df)
 
 
 

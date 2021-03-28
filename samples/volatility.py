@@ -18,7 +18,8 @@ def volatility(DF):
 
     "function to calculate annualized volatility of a trading strategy"
     df = DF.copy()
-    df["daily_ret"] = DF["Adj Close"].pct_change()
+    df["daily_ret"] = DF["Adj Close"].pct_change().fillna(0)
+    print("sum: {}".format(df["daily_ret"].sum()))
     vol = df["daily_ret"].std() * np.sqrt(252)
     return vol
 

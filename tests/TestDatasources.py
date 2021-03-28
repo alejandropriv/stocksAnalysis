@@ -1,11 +1,6 @@
 import unittest
-from stocks_model.Stock import Stock
 from data.YFinanceDataSource import YFinanceDataSource
 from utilities.Constants import Constants
-
-
-
-import pprint
 
 
 class TestFundamentals(unittest.TestCase):

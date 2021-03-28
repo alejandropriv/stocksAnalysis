@@ -39,7 +39,7 @@ class TestMethods(unittest.TestCase):
             Ct.fundamentals_options_key(): [],
             Ct.force_fundamentals_key(): False,
             Ct.indicators_key(): [],
-            Ct.start_date_key(): end_date-dt.timedelta(1825),
+            Ct.start_date_key(): end_date-dt.timedelta(3650),
             Ct.end_date_key(): end_date,
             Ct.interval_key(): interval,
             Ct.period_key(): None,

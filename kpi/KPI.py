@@ -46,4 +46,3 @@ class KPI(metaclass=abc.ABCMeta):
             reference_days = 12
 
         return reference_days
-

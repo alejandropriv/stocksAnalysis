@@ -8,4 +8,4 @@ class Financials:
     @staticmethod
     def pct_change(input_df):
 
-        return input_df.pct_change()
+        return input_df.pct_change().fillna(0)

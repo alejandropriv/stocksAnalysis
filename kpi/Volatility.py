@@ -37,15 +37,16 @@ class Volatility(KPI):
         negative = params[Ct.neg_volatility_key()]
 
         df = input_df.copy()
+
+        df.columns = df.columns.droplevel(1)
+
+        result_df = pd.DataFrame()
         # Whole volatility was calculated
         if negative is False:
-            result_df = (df.std() * np.sqrt(reference_days)).to_frame().transpose()
+            result_df[Volatility.kpi_name] = (df.std() * np.sqrt(reference_days))
 
         else:
             df_neg = df.where(df < 0, 0)
-            result_df = (df_neg.std() * np.sqrt(reference_days)).to_frame().transpose()
-
-        result_df.columns = result_df.columns.droplevel(1)
-        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Volatility.kpi_name]])
+            result_df[Volatility.kpi_name] = (df_neg.std() * np.sqrt(reference_days))
 
         return result_df

@@ -1,5 +1,5 @@
 from kpi.KPI import KPI
-from utilities.Constants import Constants
+from utilities.Constants import Constants as Ct
 
 from kpi.CAGR import CAGR
 from kpi.Volatility import Volatility
@@ -8,7 +8,7 @@ import pandas as pd
 
 
 class Sharpe(KPI):
-    kpi_name = Constants.sharpe_key()
+    kpi_name = Ct.sharpe_key()
 
     # rf = Risk free rate
     def __init__(self, params=None):
@@ -39,10 +39,7 @@ class Sharpe(KPI):
         cagr = CAGR.get_cagr(input_df, params)
         volatility = Volatility.get_volatility(input_df, params)
 
-        cagr.columns = cagr.columns.droplevel(1)
-        volatility.columns = volatility.columns.droplevel(1)
-        result_df = (cagr - rf) / volatility
-
-        result_df.columns = pd.MultiIndex.from_product([result_df.columns, [Sharpe.kpi_name]])
+        result_df = pd.DataFrame()
+        result_df[Sharpe.kpi_name] = (cagr.loc[:, Ct.cagr_key()] - rf) / volatility.loc[:, Ct.volatility_key()]
 
         return result_df

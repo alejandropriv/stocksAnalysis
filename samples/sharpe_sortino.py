@@ -16,7 +16,7 @@ def CAGR(DF):
     "function to calculate the Cumulative Annual Growth Rate of a trading strategy"
     df = DF.copy()
     print(df)
-    df["daily_ret"] = DF["Adj Close"].pct_change()
+    df["daily_ret"] = DF["Adj Close"].pct_change().fillna(0)
     df["cum_return"] = (1 + df["daily_ret"]).cumprod()
     n = len(df)/252
     CAGR = (df["cum_return"][-1])**(1/n) - 1
@@ -26,7 +26,7 @@ def CAGR(DF):
 def volatility(DF):
     "function to calculate annualized volatility of a trading strategy"
     df = DF.copy()
-    df["daily_ret"] = DF["Adj Close"].pct_change()
+    df["daily_ret"] = DF["Adj Close"].pct_change().fillna(0)
     vol = df["daily_ret"].std() * np.sqrt(252)
     return vol
 
@@ -39,7 +39,7 @@ def sharpe(DF,rf):
 def sortino(DF,rf):
     "function to calculate sortino ratio ; rf is the risk free rate"
     df = DF.copy()
-    df["daily_ret"] = DF["Adj Close"].pct_change()
+    df["daily_ret"] = DF["Adj Close"].pct_change().fillna(0)
     df["neg_ret"] = np.where(df["daily_ret"]<0,df["daily_ret"],0)
     neg_vol = df["neg_ret"].std() * np.sqrt(252)
     sr = (CAGR(df) - rf)/neg_vol
@@ -47,5 +47,5 @@ def sortino(DF,rf):
 
 ticker = "TSLA"
 SnP = yf.download(ticker,dt.datetime(2021, 3, 7)-dt.timedelta(1825), dt.datetime(2021, 3, 7))
-print(sortino(SnP, 0.0144))
-print(sharpe(SnP, 0.0144))
+print("Sortino: {}".format(sortino(SnP, 0.0144)))
+print("Sharpe: {}".format(sharpe(SnP, 0.0144)))

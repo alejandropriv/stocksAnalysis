@@ -11,7 +11,6 @@ class CAGR(KPI):
         if not params:
             self.params = {}
 
-
     def calculate(self, df, params=None):
         """"function to calculate the Cumulative Annual Growth Rate of a trading strategy"""
 

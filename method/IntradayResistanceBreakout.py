@@ -16,7 +16,7 @@ from kpi.Sharpe import Sharpe
 from kpi.MaxDrawdown import MaxDrawdown
 
 
-class PortfolioRebalance(Method):
+class IntradayResistanceBreakout(Method):
 
     def __init__(self, stocks=None):
         super().__init__()
@@ -30,7 +30,7 @@ class PortfolioRebalance(Method):
         interval = params[Ct.interval_key()]
 
         mon_ret_df = Financials.pct_change(prices)
-        p_return = PortfolioRebalance.calculate(mon_ret_df, m, x)
+        p_return = IntradayResistanceBreakout.calculate(mon_ret_df, m, x)
 
         cagr_params = {Ct.interval_key(): interval}
         cagr = CAGR.get_cagr(p_return, cagr_params)
@@ -54,7 +54,7 @@ class PortfolioRebalance(Method):
         print("Sharpe - Ref: {}".format(sharpe_ref[Ct.sharpe_key()]["^DJI"]))
         print("MAX-Drawdown - Ref: {}".format(max_dd_ref[Ct.max_drawdown_key()]["^DJI"]))
 
-        PortfolioRebalance.plot(p_return, mon_ret_df)
+        IntradayResistanceBreakout.plot(p_return, mon_ret_df)
 
 
 

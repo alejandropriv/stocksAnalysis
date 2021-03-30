@@ -20,15 +20,20 @@ class KPI(metaclass=abc.ABCMeta):
         if params is None:
             params = {}
 
-        self.kpi_name = ""
         self.result = {"name": "", "result": 0}
         self.params = params
 
     @abc.abstractmethod
     def calculate(self, df, params=None):
+        """function to calculate the KPI"""
         # Params can also be set in the constructor
         if params is not None:
             self.params = params
+
+        if df is None:
+            print("Error: DF has not been set, there is no data to calculate the indicator. "
+                  "Please verify the indicator constructor")
+            raise IOError
 
     @staticmethod
     def get_reference_days(params):

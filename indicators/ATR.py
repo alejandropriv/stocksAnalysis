@@ -26,7 +26,7 @@ class ATR(Indicator):
     def get_atr(input_df, params=None):
 
         n = params["n"]
-        
+
         # Set temp dataframe keys
         h_l_key = Ct.get_key("H-L")
         h_pc_key = Ct.get_key("H-PC")
@@ -38,8 +38,8 @@ class ATR(Indicator):
 
 
         df_data[h_l_key] = abs(df_data[Ct.high_key()] - df_data[Ct.low_key()])
-        df_data[h_pc_key] = abs(df_data[Ct.high_key()] - df_data[self.prices_key].shift(1))
-        df_data[l_pc_key] = abs(df_data[Ct.low_key()] - df_data[self.prices_key].shift(1))
+        df_data[h_pc_key] = abs(df_data[Ct.high_key()] - df_data[Ct.prices_key()].shift(1))
+        df_data[l_pc_key] = abs(df_data[Ct.low_key()] - df_data[Ct.prices_key()].shift(1))
         df_data[tr_key] = df_data[[h_l_key, h_pc_key, l_pc_key]].max(axis=1, skipna=False)
         df_data[Ct.atr_key()] = df_data[tr_key].rolling(n).mean()
         # df[Ct.atr_key()] = df[tr_key].ewm(span=n,adjust=False,min_periods=n).mean()
@@ -47,12 +47,10 @@ class ATR(Indicator):
 
         df_data.drop([h_l_key, h_pc_key, l_pc_key], axis=1, inplace=True)
 
-        df_result.append(df_data.loc[:, [Ct.atr_key(), tr_key]])
+        result_df = pd.DataFrame()
+        result_df.append(df_data.loc[:, [Ct.atr_key(), tr_key]])
 
-    self.df = pd.concat(df_result, axis=1, keys=self.tickers)
-
-
-    return self.df
+        return result_df
 
 
 

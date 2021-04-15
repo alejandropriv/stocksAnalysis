@@ -14,7 +14,7 @@ class Indicator(metaclass=abc.ABCMeta):
             params = {}
 
         self.params = params
-
+        
 
     @abc.abstractmethod
     def calculate(self, df, params):

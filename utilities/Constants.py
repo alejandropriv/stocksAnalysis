@@ -181,7 +181,6 @@ class Constants:
 
     @staticmethod
     def get_key(base_key):
-        base_key = base_key.lower()
         key = "{}".format(base_key)
         return key
 
